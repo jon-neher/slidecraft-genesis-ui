@@ -144,12 +144,12 @@ const HeroSection = () => {
             <motion.div
               animate={isShaking ? { x: [-5, 5, -5, 5, 0] } : {}}
               transition={{ duration: 0.5 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               <Button
                 type="submit"
                 className="gold-gradient text-navy-950 font-semibold px-8 py-3 hover:scale-105 transition-transform duration-200"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
               >
                 Get Your Free Deck
               </Button>
