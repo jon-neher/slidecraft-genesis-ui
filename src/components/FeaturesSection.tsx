@@ -8,19 +8,22 @@ const features = [
     icon: Star,
     title: "Data-Driven Designs",
     description: "Transform your raw data into stunning visual narratives with AI-powered design intelligence.",
-    gradient: "from-blue-500 to-cyan-500"
+    gradient: "from-blue-500 to-cyan-500",
+    status: "Coming Soon"
   },
   {
     icon: Image,
     title: "Brand-Safe Templates",
-    description: "Pre-approved templates that automatically maintain your brand guidelines and visual identity.",
-    gradient: "from-purple-500 to-pink-500"
+    description: "Pre-approved templates that will automatically maintain your brand guidelines and visual identity.",
+    gradient: "from-purple-500 to-pink-500",
+    status: "Coming Soon"
   },
   {
     icon: FileText,
     title: "1-Click Export",
     description: "Export to PowerPoint, Google Slides, or PDF with perfect formatting and high-resolution assets.",
-    gradient: "from-orange-500 to-red-500"
+    gradient: "from-orange-500 to-red-500",
+    status: "Coming Soon"
   }
 ];
 
@@ -44,8 +47,7 @@ const FeaturesSection = () => {
       opacity: 1, 
       y: 0,
       transition: {
-        duration: 0.6,
-        ease: "easeOut"
+        duration: 0.6
       }
     }
   };
@@ -61,10 +63,10 @@ const FeaturesSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
-            <span className="text-gradient">Powerful Features</span>
+            <span className="text-gradient">Revolutionary Features</span>
           </h2>
           <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            Everything you need to create professional presentations in seconds, not hours.
+            Everything you'll need to create professional presentations in seconds, not hours.
           </p>
         </motion.div>
 
@@ -82,8 +84,13 @@ const FeaturesSection = () => {
               <motion.div
                 key={index}
                 variants={cardVariants}
-                className="card-gradient rounded-2xl p-8 hover:scale-105 transition-transform duration-300 will-change-transform"
+                className="card-gradient rounded-2xl p-8 hover:scale-105 transition-transform duration-300 will-change-transform relative"
               >
+                {/* Coming Soon Badge */}
+                <div className="absolute top-4 right-4 bg-gold-400 text-navy-950 text-xs font-semibold px-3 py-1 rounded-full">
+                  {feature.status}
+                </div>
+
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   transition={{ type: "spring", stiffness: 300 }}

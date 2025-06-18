@@ -3,22 +3,25 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mail, Star, Image } from 'lucide-react';
+import { Mail, Twitter, Bell } from 'lucide-react';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !email.includes('@')) return;
     console.log('Newsletter subscription:', email);
+    setIsSubscribed(true);
     setEmail('');
   };
 
   const socialIcons = [
-    { icon: Mail, href: '#', label: 'Email' },
-    { icon: Star, href: '#', label: 'Reviews' },
-    { icon: Image, href: '#', label: 'Gallery' }
+    { icon: Mail, href: '#', label: 'Email Updates' },
+    { icon: Twitter, href: '#', label: 'Twitter' },
+    { icon: Bell, href: '#', label: 'Notifications' }
   ];
 
   return (
@@ -34,39 +37,49 @@ const Footer = () => {
             className="mb-16"
           >
             <h3 className="text-3xl font-display font-bold mb-4">
-              Stay <span className="text-gradient">Updated</span>
+              Stay in the <span className="text-gradient">Loop</span>
             </h3>
             <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
-              Get the latest features, templates, and AI presentation insights delivered to your inbox.
+              Get exclusive updates on our development progress, early access opportunities, and launch announcements.
             </p>
             
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            {!isSubscribed ? (
+              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <motion.div
+                  className="flex-1"
+                  animate={isFocused ? {
+                    scale: 1.02,
+                  } : {}}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Input
+                    type="email"
+                    placeholder="Get launch updates"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    className={`bg-navy-800/50 border-slate-600 text-white placeholder:text-slate-400 transition-all duration-300 ${
+                      isFocused ? 'border-gold-400 animate-pulse-border' : ''
+                    }`}
+                  />
+                </motion.div>
+                <Button
+                  type="submit"
+                  className="gold-gradient text-navy-950 font-semibold px-6 hover:scale-105 transition-transform duration-200"
+                >
+                  Subscribe
+                </Button>
+              </form>
+            ) : (
               <motion.div
-                className="flex-1"
-                animate={isFocused ? {
-                  scale: 1.02,
-                } : {}}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-gold-400 font-semibold"
               >
-                <Input
-                  type="email"
-                  placeholder="Your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                  className={`bg-navy-800/50 border-slate-600 text-white placeholder:text-slate-400 transition-all duration-300 ${
-                    isFocused ? 'border-gold-400 animate-pulse-border' : ''
-                  }`}
-                />
+                ✓ You'll be the first to know when we launch!
               </motion.div>
-              <Button
-                type="submit"
-                className="gold-gradient text-navy-950 font-semibold px-6 hover:scale-105 transition-transform duration-200"
-              >
-                Subscribe
-              </Button>
-            </form>
+            )}
           </motion.div>
 
           {/* Social Links */}
@@ -123,7 +136,7 @@ const Footer = () => {
                   Terms of Service
                 </a>
                 <a href="#" className="text-slate-400 hover:text-gold-400 transition-colors">
-                  Support
+                  Contact
                 </a>
               </nav>
             </div>
@@ -131,7 +144,7 @@ const Footer = () => {
             <div className="mt-8 pt-8 border-t border-slate-800 text-slate-500 text-sm">
               <p>&copy; 2024 SlideCraft AI. All rights reserved.</p>
               <p className="mt-2">
-                Transform your data into stunning presentations with the power of artificial intelligence.
+                Building the future of AI-powered presentations. Coming soon.
               </p>
             </div>
           </motion.div>

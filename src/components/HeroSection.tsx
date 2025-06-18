@@ -7,9 +7,10 @@ import { Input } from '@/components/ui/input';
 const HeroSection = () => {
   const [email, setEmail] = useState('');
   const [isShaking, setIsShaking] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [displayText, setDisplayText] = useState('');
   
-  const mainHeadline = "Decks Done in Seconds";
+  const mainHeadline = "The Future of Presentations";
 
   useEffect(() => {
     // Typewriter effect for headline
@@ -32,7 +33,8 @@ const HeroSection = () => {
       setTimeout(() => setIsShaking(false), 500);
       return;
     }
-    console.log('Email submitted:', email);
+    console.log('Email submitted to waitlist:', email);
+    setIsSubmitted(true);
     // Handle successful submission
   };
 
@@ -114,6 +116,8 @@ const HeroSection = () => {
             className="text-5xl md:text-7xl font-display font-bold mb-6"
           >
             <span className="text-gradient typewriter">{displayText}</span>
+            <br />
+            <span className="text-3xl md:text-4xl text-slate-300 font-normal">is Coming Soon</span>
           </motion.h1>
 
           {/* Subline with staggered fade-in */}
@@ -121,40 +125,61 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 2.8, duration: 0.6 }}
-            className="text-xl md:text-2xl text-slate-300 mb-12 max-w-2xl mx-auto"
+            className="text-xl md:text-2xl text-slate-300 mb-4 max-w-2xl mx-auto"
           >
-            Automatic, data-driven decks for every team
+            AI-powered, data-driven presentations that adapt to your brand
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 3.2, duration: 0.6 }}
+            className="text-lg text-gold-400 mb-12 font-semibold"
+          >
+            Join the exclusive waitlist for early access
           </motion.p>
 
           {/* CTA Form */}
-          <motion.form
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 3.4, duration: 0.6 }}
-            onSubmit={handleEmailSubmit}
-            className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
-          >
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 bg-navy-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-gold-400 transition-colors"
-            />
-            <motion.div
-              animate={isShaking ? { x: [-5, 5, -5, 5, 0] } : {}}
-              transition={{ duration: 0.5 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+          {!isSubmitted ? (
+            <motion.form
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 3.4, duration: 0.6 }}
+              onSubmit={handleEmailSubmit}
+              className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
             >
-              <Button
-                type="submit"
-                className="gold-gradient text-navy-950 font-semibold px-8 py-3 hover:scale-105 transition-transform duration-200"
+              <Input
+                type="email"
+                placeholder="Enter your email for early access"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="flex-1 bg-navy-800/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-gold-400 transition-colors"
+              />
+              <motion.div
+                animate={isShaking ? { x: [-5, 5, -5, 5, 0] } : {}}
+                transition={{ duration: 0.5 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                Get Your Free Deck
-              </Button>
+                <Button
+                  type="submit"
+                  className="gold-gradient text-navy-950 font-semibold px-8 py-3 hover:scale-105 transition-transform duration-200"
+                >
+                  Join Waitlist
+                </Button>
+              </motion.div>
+            </motion.form>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-center"
+            >
+              <div className="text-2xl text-gold-400 mb-2">🎉 You're on the list!</div>
+              <p className="text-slate-300">We'll notify you when SlideCraft AI launches</p>
             </motion.div>
-          </motion.form>
+          )}
 
           {/* Trust indicators */}
           <motion.div
@@ -163,7 +188,7 @@ const HeroSection = () => {
             transition={{ delay: 4, duration: 0.6 }}
             className="mt-8 text-sm text-slate-400"
           >
-            ✨ No credit card required • 🚀 Generate in under 30 seconds
+            ✨ No spam, just early access • 🚀 Launching in 2024
           </motion.div>
         </div>
       </div>
