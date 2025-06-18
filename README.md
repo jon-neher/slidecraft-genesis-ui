@@ -1,73 +1,193 @@
-# Welcome to your Lovable project
+# SlideCraft AI - Landing Page
 
-## Project info
+A premium, responsive landing page for SlideCraft AI, an AI-powered presentation generation tool. Built with React, Framer Motion, and Tailwind CSS.
 
-**URL**: https://lovable.dev/projects/538214fd-eceb-44cd-9968-8f827c09902f
+## 🚀 Features
 
-## How can I edit this code?
+- **Premium Design**: Dark navy theme with gold accents and subtle gradients
+- **Smooth Animations**: Framer Motion powered interactions and micro-animations
+- **Responsive Layout**: Mobile-first design that works on all devices
+- **Performance Optimized**: Uses `will-change` and transform-only animations
 
-There are several ways of editing your application.
+## 🎨 Design System
 
-**Use Lovable**
+### Colors
+- **Primary Background**: Navy (#020617 to #1e293b gradient)
+- **Accent Color**: Gold (#fbbf24 to #d97706 gradient)
+- **Text**: High contrast white/gray scale
+- **Cards**: Semi-transparent with backdrop blur
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/538214fd-eceb-44cd-9968-8f827c09902f) and start prompting.
+### Typography
+- **Display Font**: Montserrat (headlines)
+- **Body Font**: Inter (content)
+- **Weights**: 300, 400, 500, 600, 700, 800
 
-Changes made via Lovable will be committed automatically to this repo.
+### Animation Principles
+- **Entrance**: Staggered fade-up animations
+- **Hover**: Subtle scale and rotation effects
+- **Focus**: Pulsing borders and gentle scaling
+- **Performance**: Transform-only animations with `will-change`
 
-**Use your preferred IDE**
+## 🧩 Components
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### HeroSection
+- Typewriter effect headline animation
+- Simulated Lottie-style slide assembly
+- Email capture with shake animation on invalid input
+- Floating background particles
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### FeaturesSection
+- Three feature cards with staggered entrance
+- Icon pop animations on hover
+- Gradient backgrounds per feature
 
-Follow these steps:
+### MetricsSection
+- Animated counters that trigger on scroll
+- Infinite marquee logo rail
+- Trust indicators and social proof
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Footer
+- Newsletter subscription with focus animations
+- Social icons with rotation on hover
+- Pulsing border effects on form focus
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🛠 Animation Details
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Framer Motion Configuration
+```jsx
+// Staggered children animation
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.2 }
+  }
+};
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+// Individual card animation
+const cardVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" }
+  }
+};
 ```
 
-**Edit a file directly in GitHub**
+### Performance Optimizations
+- Uses `whileInView` with `viewport={{ once: true }}` for scroll-triggered animations
+- Transform-only animations for 60fps performance
+- `will-change` CSS property for optimized rendering
+- Efficient counter animations with controlled intervals
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📁 Project Structure
 
-**Use GitHub Codespaces**
+```
+src/
+├── components/
+│   ├── HeroSection.tsx      # Main hero with typewriter effect
+│   ├── FeaturesSection.tsx  # Feature cards with staggered animation
+│   ├── MetricsSection.tsx   # Animated counters and logo marquee
+│   └── Footer.tsx           # Newsletter and social links
+├── pages/
+│   └── Index.tsx            # Main landing page assembly
+└── index.css                # Custom theme and animation styles
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🎯 Customization Guide
 
-## What technologies are used for this project?
+### Replacing Lottie Animation
+Replace the simulated slide assembly in `HeroSection.tsx`:
 
-This project is built with:
+```jsx
+// Replace this section with actual Lottie Player
+<motion.div className="mb-12">
+  <Player
+    autoplay
+    loop
+    src="/path/to/your/lottie.json"
+    style={{ height: '300px', width: '400px' }}
+  />
+</motion.div>
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Adding Real Logos
+Update the `partnerLogos` array in `MetricsSection.tsx`:
 
-## How can I deploy this project?
+```jsx
+const partnerLogos = [
+  { name: "Microsoft", logo: "/logos/microsoft.svg" },
+  { name: "Google", logo: "/logos/google.svg" },
+  // Add your actual partner logos
+];
+```
 
-Simply open [Lovable](https://lovable.dev/projects/538214fd-eceb-44cd-9968-8f827c09902f) and click on Share -> Publish.
+### Customizing Colors
+Modify the theme in `tailwind.config.ts`:
 
-## Can I connect a custom domain to my Lovable project?
+```js
+colors: {
+  navy: {
+    950: '#your-custom-dark',
+    // ... other shades
+  },
+  gold: {
+    400: '#your-custom-gold',
+    // ... other shades
+  }
+}
+```
 
-Yes, you can!
+### Animation Tweaking
+Adjust timing and easing in component props:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```jsx
+// Slower, bouncier animation
+transition={{ 
+  duration: 1.2, 
+  ease: "backOut",
+  type: "spring",
+  stiffness: 100
+}}
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 📱 Mobile Responsiveness
+
+- Grid layouts automatically stack on mobile
+- Text sizes scale down appropriately
+- Touch-friendly button sizes (min 44px)
+- Reduced animation intensity on mobile for performance
+
+## 🔧 Installation & Setup
+
+1. Install dependencies:
+```bash
+npm install framer-motion
+```
+
+2. Update fonts in `index.html`:
+```html
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+```
+
+3. The components are ready to use with the existing shadcn/ui setup.
+
+## 🎪 Animation Showcase
+
+- **Typewriter Effect**: Letter-by-letter headline reveal
+- **Staggered Cards**: Sequential feature card entrance
+- **Animated Counters**: Number counting on scroll trigger
+- **Infinite Marquee**: Seamless logo carousel
+- **Micro-interactions**: Hover states, focus effects, and button feedback
+- **Particle System**: Floating background elements
+
+## 🚀 Performance Notes
+
+- All animations use `transform` and `opacity` only
+- Leverages hardware acceleration with `will-change`
+- Scroll-triggered animations use `once: true` to prevent re-triggering
+- Efficient counter animations with proper cleanup
+- CSS-based marquee for smooth logo scrolling
+
+This landing page showcases modern web animation techniques while maintaining excellent performance and accessibility standards.
