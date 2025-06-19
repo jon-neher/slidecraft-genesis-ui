@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import ThreadingAnimation from './ThreadingAnimation';
+import ClerkWaitlistForm from './ClerkWaitlistForm';
 import { Button } from './ui/button';
 
 const ModernHero = () => {
@@ -70,15 +71,19 @@ const ModernHero = () => {
             Thread together your data, ideas, and insights into compelling presentations with AI-powered design intelligence.
           </motion.p>
 
-          {/* CTA buttons */}
+          {/* Clerk Waitlist Form */}
           <motion.div 
             variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
+            className="mb-12"
           >
-            <Button className="btn-primary group">
-              Join Early Access
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <ClerkWaitlistForm />
+          </motion.div>
+
+          {/* Secondary CTA */}
+          <motion.div 
+            variants={itemVariants}
+            className="flex justify-center mb-16"
+          >
             <Button variant="outline" className="btn-secondary">
               Watch Demo
             </Button>
@@ -91,7 +96,7 @@ const ModernHero = () => {
           >
             <div className="flex items-center justify-center gap-6 flex-wrap">
               <span className="flex items-center gap-2">
-                ✨ No spam, just early access
+                ✨ Secure authentication with Clerk
               </span>
               <span className="flex items-center gap-2">
                 🚀 Launching Q1 2024
