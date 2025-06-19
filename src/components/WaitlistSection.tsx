@@ -52,12 +52,7 @@ const progressVariants = {
   hidden: { width: 0, opacity: 0 },
   visible: { 
     width: "68%", 
-    opacity: 1,
-    transition: {
-      duration: 2,
-      ease: "easeOut",
-      delay: 0.5
-    }
+    opacity: 1
   }
 };
 
@@ -171,6 +166,11 @@ const WaitlistSection = () => {
                 whileInView="visible"
                 viewport={{ once: true }}
                 className="gold-gradient h-2 sm:h-3 rounded-full relative"
+                transition={{
+                  duration: 2,
+                  ease: "easeOut",
+                  delay: 0.5
+                }}
               >
                 <motion.div
                   className="absolute inset-0 bg-white/20 rounded-full"
