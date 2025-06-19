@@ -113,7 +113,7 @@
   }
 }
 
-/* Typewriter effect */
+/* Typewriter effect - improved for mobile */
 .typewriter {
   overflow: hidden;
   border-right: 2px solid #fbbf24;
@@ -124,4 +124,23 @@
 @keyframes blink-caret {
   from, to { border-color: transparent; }
   50% { border-color: #fbbf24; }
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  .typewriter {
+    white-space: normal;
+    border-right: none;
+    animation: none;
+  }
+  
+  .typewriter::after {
+    content: '';
+    display: inline-block;
+    width: 2px;
+    height: 1.2em;
+    background-color: #fbbf24;
+    margin-left: 2px;
+    animation: blink-caret 1s step-end infinite;
+  }
 }
