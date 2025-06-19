@@ -25,7 +25,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="py-20 px-6 border-t border-slate-800">
+    <footer className="py-16 sm:py-20 px-4 sm:px-6 border-t border-slate-800">
       <div className="container mx-auto">
         <div className="max-w-4xl mx-auto text-center">
           {/* Newsletter Section */}
@@ -34,13 +34,13 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="mb-16"
+            className="mb-12 sm:mb-16"
           >
-            <h3 className="text-3xl font-display font-bold mb-4">
-              Stay in the <span className="text-gradient">Loop</span>
+            <h3 className="text-2xl sm:text-3xl font-display font-bold mb-4">
+              Stay <span className="text-gradient">Connected</span>
             </h3>
-            <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
-              Get exclusive updates on our development progress, early access opportunities, and launch announcements.
+            <p className="text-slate-300 mb-6 sm:mb-8 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+              Get exclusive updates on Threadline's development progress, early access opportunities, and launch announcements.
             </p>
             
             {!isSubscribed ? (
@@ -59,14 +59,14 @@ const Footer = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    className={`bg-navy-800/50 border-slate-600 text-white placeholder:text-slate-400 transition-all duration-300 ${
+                    className={`bg-navy-800/50 border-slate-600 text-white placeholder:text-slate-400 transition-all duration-300 h-12 text-base ${
                       isFocused ? 'border-gold-400 animate-pulse-border' : ''
                     }`}
                   />
                 </motion.div>
                 <Button
                   type="submit"
-                  className="gold-gradient text-navy-950 font-semibold px-6 hover:scale-105 transition-transform duration-200"
+                  className="gold-gradient text-navy-950 font-semibold px-6 h-12 hover:scale-105 transition-transform duration-200"
                 >
                   Subscribe
                 </Button>
@@ -75,7 +75,7 @@ const Footer = () => {
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="text-gold-400 font-semibold"
+                className="text-gold-400 font-semibold text-base sm:text-lg"
               >
                 ✓ You'll be the first to know when we launch!
               </motion.div>
@@ -88,7 +88,7 @@ const Footer = () => {
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
             viewport={{ once: true }}
-            className="flex justify-center space-x-6 mb-12"
+            className="flex justify-center space-x-4 sm:space-x-6 mb-10 sm:mb-12"
           >
             {socialIcons.map((social, index) => {
               const IconComponent = social.icon;
@@ -103,10 +103,10 @@ const Footer = () => {
                   }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 300 }}
-                  className="w-12 h-12 card-gradient rounded-full flex items-center justify-center hover:border-gold-400 transition-colors duration-300"
+                  className="w-10 h-10 sm:w-12 sm:h-12 card-gradient rounded-full flex items-center justify-center hover:border-gold-400 transition-colors duration-300"
                   aria-label={social.label}
                 >
-                  <IconComponent className="w-5 h-5 text-gold-400" />
+                  <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 text-gold-400" />
                 </motion.a>
               );
             })}
@@ -118,17 +118,17 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
             viewport={{ once: true }}
-            className="border-t border-slate-800 pt-8"
+            className="border-t border-slate-800 pt-6 sm:pt-8"
           >
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6">
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 gold-gradient rounded-lg flex items-center justify-center">
-                  <span className="text-navy-950 font-bold text-sm">SC</span>
+                  <span className="text-navy-950 font-bold text-sm">TL</span>
                 </div>
-                <span className="font-display font-bold text-xl">SlideCraft AI</span>
+                <span className="font-display font-bold text-lg sm:text-xl">Threadline</span>
               </div>
               
-              <nav className="flex space-x-8 text-sm">
+              <nav className="flex flex-wrap justify-center gap-4 sm:gap-8 text-sm">
                 <a href="#" className="text-slate-400 hover:text-gold-400 transition-colors">
                   Privacy Policy
                 </a>
@@ -141,10 +141,10 @@ const Footer = () => {
               </nav>
             </div>
             
-            <div className="mt-8 pt-8 border-t border-slate-800 text-slate-500 text-sm">
-              <p>&copy; 2024 SlideCraft AI. All rights reserved.</p>
+            <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-slate-800 text-slate-500 text-xs sm:text-sm">
+              <p>&copy; 2024 Threadline. All rights reserved.</p>
               <p className="mt-2">
-                Building the future of AI-powered presentations. Coming soon.
+                Threading together the future of AI-powered presentations.
               </p>
             </div>
           </motion.div>
