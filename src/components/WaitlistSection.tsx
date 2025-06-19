@@ -44,13 +44,7 @@ const cardVariants = {
     opacity: 1, 
     y: 0,
     scale: 1,
-    rotateX: 0,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15,
-      duration: 0.6
-    }
+    rotateX: 0
   }
 };
 
@@ -87,7 +81,11 @@ const WaitlistSection = () => {
             className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-12 sm:mb-16 px-4"
             initial={{ opacity: 0, y: 50, rotateX: -15 }}
             whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-            transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+            transition={{ 
+              duration: 0.8, 
+              type: "spring", 
+              stiffness: 100 
+            }}
             viewport={{ once: true }}
           >
             Building Something <span className="text-gradient">Revolutionary</span>
@@ -104,14 +102,15 @@ const WaitlistSection = () => {
                 className="card-gradient rounded-xl p-4 sm:p-6 text-center group cursor-pointer"
                 whileHover={{ 
                   scale: 1.05,
-                  rotateY: 5,
-                  transition: {
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 20
-                  }
+                  rotateY: 5
                 }}
                 whileTap={{ scale: 0.95 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15,
+                  duration: 0.6
+                }}
               >
                 <motion.div 
                   className="text-lg sm:text-xl font-display font-bold text-gradient mb-2"

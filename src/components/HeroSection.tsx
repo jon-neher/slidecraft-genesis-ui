@@ -26,13 +26,7 @@ const itemVariants = {
   visible: { 
     opacity: 1, 
     y: 0,
-    scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15,
-      duration: 0.6
-    }
+    scale: 1
   }
 };
 
@@ -65,7 +59,12 @@ const HeroSection = () => {
             variants={itemVariants}
             className="mb-6 sm:mb-8"
             whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 15,
+              duration: 0.6
+            }}
           >
             <motion.h3 
               className="text-lg sm:text-xl md:text-2xl font-display font-semibold text-gold-400 mb-4"
@@ -78,7 +77,15 @@ const HeroSection = () => {
           </motion.div>
 
           {/* Main headline with typewriter effect */}
-          <motion.div variants={itemVariants}>
+          <motion.div 
+            variants={itemVariants}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 15,
+              duration: 0.6
+            }}
+          >
             <TypewriterHeadline />
           </motion.div>
 
@@ -87,7 +94,12 @@ const HeroSection = () => {
             variants={itemVariants}
             className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-300 mb-3 sm:mb-4 max-w-3xl mx-auto leading-relaxed px-4"
             whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300 }}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 15,
+              duration: 0.6
+            }}
           >
             Thread together your data, ideas, and insights into compelling presentations with AI
           </motion.p>
@@ -97,13 +109,27 @@ const HeroSection = () => {
             className="text-sm sm:text-base md:text-lg text-gold-400 mb-8 sm:mb-12 font-semibold px-4"
             initial={{ opacity: 0, rotateX: -20 }}
             animate={{ opacity: 1, rotateX: 0 }}
-            transition={{ delay: 1, duration: 0.8 }}
+            transition={{
+              delay: 1, 
+              duration: 0.8,
+              type: "spring",
+              stiffness: 100,
+              damping: 15
+            }}
           >
             Be the first to experience the future of presentation creation
           </motion.p>
 
           {/* CTA Form */}
-          <motion.div variants={itemVariants}>
+          <motion.div 
+            variants={itemVariants}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 15,
+              duration: 0.6
+            }}
+          >
             <EmailWaitlistForm />
           </motion.div>
 
@@ -112,7 +138,12 @@ const HeroSection = () => {
             variants={itemVariants}
             className="mt-6 sm:mt-8 text-xs sm:text-sm text-slate-400 px-4"
             whileHover={{ y: -2 }}
-            transition={{ type: "spring", stiffness: 300 }}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 15,
+              duration: 0.6
+            }}
           >
             <motion.span
               initial={{ opacity: 0, x: -10 }}
