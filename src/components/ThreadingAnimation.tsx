@@ -11,20 +11,20 @@ const ThreadingAnimation = () => {
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="xMidYMid slice"
       >
-        {/* Data points scattered across the canvas */}
+        {/* Data points with continuous pulsing animation */}
         {[
-          { cx: 120, cy: 80, delay: 0.5, size: 2 },
+          { cx: 120, cy: 80, delay: 0, size: 2 },
           { cx: 680, cy: 120, delay: 0.8, size: 3 },
-          { cx: 200, cy: 200, delay: 1.1, size: 2.5 },
-          { cx: 600, cy: 180, delay: 1.4, size: 2 },
-          { cx: 150, cy: 350, delay: 1.7, size: 3 },
-          { cx: 500, cy: 300, delay: 2.0, size: 2.5 },
-          { cx: 750, cy: 400, delay: 2.3, size: 2 },
-          { cx: 100, cy: 480, delay: 2.6, size: 2.5 },
-          { cx: 400, cy: 450, delay: 2.9, size: 3 },
-          { cx: 650, cy: 500, delay: 3.2, size: 2 },
-          { cx: 300, cy: 100, delay: 1.0, size: 2 },
-          { cx: 450, cy: 250, delay: 1.8, size: 2.5 }
+          { cx: 200, cy: 200, delay: 1.6, size: 2.5 },
+          { cx: 600, cy: 180, delay: 2.4, size: 2 },
+          { cx: 150, cy: 350, delay: 3.2, size: 3 },
+          { cx: 500, cy: 300, delay: 4.0, size: 2.5 },
+          { cx: 750, cy: 400, delay: 4.8, size: 2 },
+          { cx: 100, cy: 480, delay: 5.6, size: 2.5 },
+          { cx: 400, cy: 450, delay: 6.4, size: 3 },
+          { cx: 650, cy: 500, delay: 7.2, size: 2 },
+          { cx: 300, cy: 100, delay: 8.0, size: 2 },
+          { cx: 450, cy: 250, delay: 8.8, size: 2.5 }
         ].map((point, index) => (
           <motion.circle
             key={index}
@@ -32,31 +32,35 @@ const ThreadingAnimation = () => {
             cy={point.cy}
             r={point.size}
             fill="#fbbf24"
-            initial={{ scale: 0, opacity: 0 }}
             animate={{ 
-              scale: [0, 1, 1.2, 1],
-              opacity: [0, 1, 0.8, 0.6] 
+              scale: [1, 1.5, 1, 0.8, 1],
+              opacity: [0.4, 0.8, 0.6, 0.3, 0.4] 
             }}
             transition={{ 
               delay: point.delay, 
-              duration: 1.2,
+              duration: 4,
               repeat: Infinity,
-              repeatDelay: 8,
               ease: "easeInOut"
             }}
           />
         ))}
         
-        {/* Threading lines connecting data points */}
+        {/* Continuously animating threading lines */}
         <motion.path
           d="M 120 80 Q 200 140 300 100"
           stroke="#fbbf24"
           strokeWidth="1"
           fill="none"
           opacity="0.6"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ delay: 1.5, duration: 2, ease: "easeInOut" }}
+          animate={{ 
+            pathLength: [0, 1, 1, 0],
+            opacity: [0, 0.6, 0.8, 0]
+          }}
+          transition={{ 
+            duration: 6, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         <motion.path
           d="M 300 100 Q 400 150 500 300"
@@ -64,9 +68,16 @@ const ThreadingAnimation = () => {
           strokeWidth="1"
           fill="none"
           opacity="0.6"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ delay: 2.2, duration: 2.5, ease: "easeInOut" }}
+          animate={{ 
+            pathLength: [0, 1, 1, 0],
+            opacity: [0, 0.6, 0.8, 0]
+          }}
+          transition={{ 
+            delay: 1.5,
+            duration: 6, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         <motion.path
           d="M 200 200 Q 350 250 450 250"
@@ -74,9 +85,16 @@ const ThreadingAnimation = () => {
           strokeWidth="1"
           fill="none"
           opacity="0.6"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ delay: 2.8, duration: 2, ease: "easeInOut" }}
+          animate={{ 
+            pathLength: [0, 1, 1, 0],
+            opacity: [0, 0.6, 0.8, 0]
+          }}
+          transition={{ 
+            delay: 3,
+            duration: 6, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         <motion.path
           d="M 450 250 Q 550 200 650 500"
@@ -84,9 +102,16 @@ const ThreadingAnimation = () => {
           strokeWidth="1"
           fill="none"
           opacity="0.6"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ delay: 3.5, duration: 2.8, ease: "easeInOut" }}
+          animate={{ 
+            pathLength: [0, 1, 1, 0],
+            opacity: [0, 0.6, 0.8, 0]
+          }}
+          transition={{ 
+            delay: 4.5,
+            duration: 6, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         <motion.path
           d="M 150 350 Q 300 400 400 450"
@@ -94,9 +119,16 @@ const ThreadingAnimation = () => {
           strokeWidth="1"
           fill="none"
           opacity="0.6"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ delay: 4, duration: 2.2, ease: "easeInOut" }}
+          animate={{ 
+            pathLength: [0, 1, 1, 0],
+            opacity: [0, 0.6, 0.8, 0]
+          }}
+          transition={{ 
+            delay: 6,
+            duration: 6, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         <motion.path
           d="M 500 300 Q 600 350 750 400"
@@ -104,12 +136,19 @@ const ThreadingAnimation = () => {
           strokeWidth="1"
           fill="none"
           opacity="0.6"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ delay: 4.5, duration: 2.5, ease: "easeInOut" }}
+          animate={{ 
+            pathLength: [0, 1, 1, 0],
+            opacity: [0, 0.6, 0.8, 0]
+          }}
+          transition={{ 
+            delay: 7.5,
+            duration: 6, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         
-        {/* Presentation elements forming from connections */}
+        {/* Presentation elements with continuous scaling */}
         <motion.rect
           x="180"
           y="180"
@@ -120,9 +159,15 @@ const ThreadingAnimation = () => {
           strokeWidth="1.5"
           rx="4"
           opacity="0.7"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.7 }}
-          transition={{ delay: 5, duration: 1 }}
+          animate={{ 
+            scale: [0.8, 1, 1.1, 1, 0.8],
+            opacity: [0.3, 0.7, 0.9, 0.7, 0.3]
+          }}
+          transition={{ 
+            duration: 8, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         <motion.rect
           x="420"
@@ -134,9 +179,16 @@ const ThreadingAnimation = () => {
           strokeWidth="1.5"
           rx="4"
           opacity="0.7"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.7 }}
-          transition={{ delay: 5.5, duration: 1 }}
+          animate={{ 
+            scale: [0.8, 1, 1.1, 1, 0.8],
+            opacity: [0.3, 0.7, 0.9, 0.7, 0.3]
+          }}
+          transition={{ 
+            delay: 2,
+            duration: 8, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         <motion.rect
           x="130"
@@ -148,12 +200,19 @@ const ThreadingAnimation = () => {
           strokeWidth="1.5"
           rx="4"
           opacity="0.7"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.7 }}
-          transition={{ delay: 6, duration: 1 }}
+          animate={{ 
+            scale: [0.8, 1, 1.1, 1, 0.8],
+            opacity: [0.3, 0.7, 0.9, 0.7, 0.3]
+          }}
+          transition={{ 
+            delay: 4,
+            duration: 8, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         
-        {/* Smaller presentation elements (charts/data visualizations) */}
+        {/* Smaller presentation elements with rotation */}
         <motion.circle
           cx="220"
           cy="200"
@@ -162,9 +221,15 @@ const ThreadingAnimation = () => {
           stroke="#fbbf24"
           strokeWidth="1"
           opacity="0.5"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 5.2, duration: 0.8 }}
+          animate={{ 
+            scale: [0.5, 1, 1.2, 1, 0.5],
+            rotate: [0, 180, 360]
+          }}
+          transition={{ 
+            duration: 10, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         <motion.rect
           x="450"
@@ -173,9 +238,16 @@ const ThreadingAnimation = () => {
           height="15"
           fill="#fbbf24"
           opacity="0.3"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 5.7, duration: 0.6 }}
+          animate={{ 
+            scaleY: [0.5, 1, 1.5, 1, 0.5],
+            opacity: [0.2, 0.5, 0.8, 0.5, 0.2]
+          }}
+          transition={{ 
+            delay: 1,
+            duration: 5, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         <motion.rect
           x="475"
@@ -184,12 +256,19 @@ const ThreadingAnimation = () => {
           height="20"
           fill="#fbbf24"
           opacity="0.4"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 5.9, duration: 0.6 }}
+          animate={{ 
+            scaleY: [0.3, 1, 1.8, 1, 0.3],
+            opacity: [0.2, 0.6, 0.9, 0.6, 0.2]
+          }}
+          transition={{ 
+            delay: 2.5,
+            duration: 5, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         
-        {/* Continuous flowing lines for atmosphere */}
+        {/* Multiple flowing atmospheric lines */}
         <motion.path
           d="M 0 300 Q 200 280 400 300 Q 600 320 800 300"
           stroke="#fbbf24"
@@ -200,14 +279,38 @@ const ThreadingAnimation = () => {
             d: [
               "M 0 300 Q 200 280 400 300 Q 600 320 800 300",
               "M 0 300 Q 200 320 400 300 Q 600 280 800 300",
+              "M 0 300 Q 200 290 400 310 Q 600 300 800 290",
               "M 0 300 Q 200 280 400 300 Q 600 320 800 300"
-            ]
+            ],
+            opacity: [0.2, 0.4, 0.6, 0.4, 0.2]
           }}
           transition={{ 
-            duration: 8, 
+            duration: 12, 
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: 3
+            ease: "easeInOut"
+          }}
+        />
+        
+        <motion.path
+          d="M 0 200 Q 300 180 600 200 Q 700 220 800 200"
+          stroke="#fbbf24"
+          strokeWidth="0.3"
+          fill="none"
+          opacity="0.2"
+          animate={{ 
+            d: [
+              "M 0 200 Q 300 180 600 200 Q 700 220 800 200",
+              "M 0 200 Q 300 220 600 200 Q 700 180 800 200",
+              "M 0 200 Q 300 200 600 180 Q 700 200 800 220",
+              "M 0 200 Q 300 180 600 200 Q 700 220 800 200"
+            ],
+            opacity: [0.1, 0.3, 0.5, 0.3, 0.1]
+          }}
+          transition={{ 
+            delay: 4,
+            duration: 15, 
+            repeat: Infinity,
+            ease: "easeInOut"
           }}
         />
         
