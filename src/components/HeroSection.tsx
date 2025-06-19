@@ -4,144 +4,222 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-// Custom animated logo component
-const ThreadlineLogo = () => {
+// General threading animation component
+const ThreadingAnimation = () => {
   return (
-    <div className="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <svg
-        viewBox="0 0 100 100"
-        className="w-full h-full"
+        viewBox="0 0 800 600"
+        className="w-full h-full opacity-30 sm:opacity-40"
         xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid slice"
       >
-        {/* Background circle */}
-        <motion.circle
-          cx="50"
-          cy="50"
-          r="45"
-          fill="url(#goldGradient)"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        />
-        
-        {/* Data points */}
+        {/* Data points scattered across the canvas */}
         {[
-          { cx: 25, cy: 30, delay: 1 },
-          { cx: 75, cy: 25, delay: 1.2 },
-          { cx: 20, cy: 70, delay: 1.4 },
-          { cx: 80, cy: 65, delay: 1.6 },
-          { cx: 50, cy: 50, delay: 1.8 }
+          { cx: 120, cy: 80, delay: 0.5, size: 2 },
+          { cx: 680, cy: 120, delay: 0.8, size: 3 },
+          { cx: 200, cy: 200, delay: 1.1, size: 2.5 },
+          { cx: 600, cy: 180, delay: 1.4, size: 2 },
+          { cx: 150, cy: 350, delay: 1.7, size: 3 },
+          { cx: 500, cy: 300, delay: 2.0, size: 2.5 },
+          { cx: 750, cy: 400, delay: 2.3, size: 2 },
+          { cx: 100, cy: 480, delay: 2.6, size: 2.5 },
+          { cx: 400, cy: 450, delay: 2.9, size: 3 },
+          { cx: 650, cy: 500, delay: 3.2, size: 2 },
+          { cx: 300, cy: 100, delay: 1.0, size: 2 },
+          { cx: 450, cy: 250, delay: 1.8, size: 2.5 }
         ].map((point, index) => (
           <motion.circle
             key={index}
             cx={point.cx}
             cy={point.cy}
-            r="3"
-            fill="#020617"
+            r={point.size}
+            fill="#fbbf24"
             initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: point.delay, duration: 0.4 }}
+            animate={{ 
+              scale: [0, 1, 1.2, 1],
+              opacity: [0, 1, 0.8, 0.6] 
+            }}
+            transition={{ 
+              delay: point.delay, 
+              duration: 1.2,
+              repeat: Infinity,
+              repeatDelay: 8,
+              ease: "easeInOut"
+            }}
           />
         ))}
         
-        {/* Connecting threads */}
+        {/* Threading lines connecting data points */}
         <motion.path
-          d="M 25 30 Q 40 20 75 25"
-          stroke="#020617"
-          strokeWidth="1.5"
+          d="M 120 80 Q 200 140 300 100"
+          stroke="#fbbf24"
+          strokeWidth="1"
           fill="none"
+          opacity="0.6"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ delay: 2, duration: 1.2, ease: "easeInOut" }}
+          transition={{ delay: 1.5, duration: 2, ease: "easeInOut" }}
         />
         <motion.path
-          d="M 75 25 Q 60 40 50 50"
-          stroke="#020617"
-          strokeWidth="1.5"
+          d="M 300 100 Q 400 150 500 300"
+          stroke="#fbbf24"
+          strokeWidth="1"
           fill="none"
+          opacity="0.6"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ delay: 2.3, duration: 1, ease: "easeInOut" }}
+          transition={{ delay: 2.2, duration: 2.5, ease: "easeInOut" }}
         />
         <motion.path
-          d="M 50 50 Q 35 60 20 70"
-          stroke="#020617"
-          strokeWidth="1.5"
+          d="M 200 200 Q 350 250 450 250"
+          stroke="#fbbf24"
+          strokeWidth="1"
           fill="none"
+          opacity="0.6"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ delay: 2.6, duration: 1, ease: "easeInOut" }}
+          transition={{ delay: 2.8, duration: 2, ease: "easeInOut" }}
         />
         <motion.path
-          d="M 20 70 Q 50 75 80 65"
-          stroke="#020617"
-          strokeWidth="1.5"
+          d="M 450 250 Q 550 200 650 500"
+          stroke="#fbbf24"
+          strokeWidth="1"
           fill="none"
+          opacity="0.6"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ delay: 2.9, duration: 1.2, ease: "easeInOut" }}
+          transition={{ delay: 3.5, duration: 2.8, ease: "easeInOut" }}
         />
         <motion.path
-          d="M 25 30 Q 22 50 20 70"
-          stroke="#020617"
-          strokeWidth="1.5"
+          d="M 150 350 Q 300 400 400 450"
+          stroke="#fbbf24"
+          strokeWidth="1"
           fill="none"
+          opacity="0.6"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ delay: 3.2, duration: 1, ease: "easeInOut" }}
+          transition={{ delay: 4, duration: 2.2, ease: "easeInOut" }}
+        />
+        <motion.path
+          d="M 500 300 Q 600 350 750 400"
+          stroke="#fbbf24"
+          strokeWidth="1"
+          fill="none"
+          opacity="0.6"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ delay: 4.5, duration: 2.5, ease: "easeInOut" }}
         />
         
-        {/* Presentation rectangles forming from connections */}
+        {/* Presentation elements forming from connections */}
         <motion.rect
-          x="15"
-          y="45"
-          width="18"
-          height="12"
+          x="180"
+          y="180"
+          width="60"
+          height="40"
           fill="none"
-          stroke="#020617"
+          stroke="#fbbf24"
           strokeWidth="1.5"
-          rx="2"
+          rx="4"
+          opacity="0.7"
           initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 4, duration: 0.6 }}
+          animate={{ scale: 1, opacity: 0.7 }}
+          transition={{ delay: 5, duration: 1 }}
         />
         <motion.rect
-          x="67"
-          y="38"
-          width="18"
-          height="12"
+          x="420"
+          y="230"
+          width="80"
+          height="50"
           fill="none"
-          stroke="#020617"
+          stroke="#fbbf24"
           strokeWidth="1.5"
-          rx="2"
+          rx="4"
+          opacity="0.7"
           initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 4.3, duration: 0.6 }}
+          animate={{ scale: 1, opacity: 0.7 }}
+          transition={{ delay: 5.5, duration: 1 }}
+        />
+        <motion.rect
+          x="130"
+          y="430"
+          width="70"
+          height="45"
+          fill="none"
+          stroke="#fbbf24"
+          strokeWidth="1.5"
+          rx="4"
+          opacity="0.7"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 0.7 }}
+          transition={{ delay: 6, duration: 1 }}
         />
         
-        {/* Pulsing center point */}
+        {/* Smaller presentation elements (charts/data visualizations) */}
         <motion.circle
-          cx="50"
-          cy="50"
-          r="2"
-          fill="#020617"
+          cx="220"
+          cy="200"
+          r="8"
+          fill="none"
+          stroke="#fbbf24"
+          strokeWidth="1"
+          opacity="0.5"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 5.2, duration: 0.8 }}
+        />
+        <motion.rect
+          x="450"
+          y="245"
+          width="20"
+          height="15"
+          fill="#fbbf24"
+          opacity="0.3"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 5.7, duration: 0.6 }}
+        />
+        <motion.rect
+          x="475"
+          y="250"
+          width="15"
+          height="20"
+          fill="#fbbf24"
+          opacity="0.4"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 5.9, duration: 0.6 }}
+        />
+        
+        {/* Continuous flowing lines for atmosphere */}
+        <motion.path
+          d="M 0 300 Q 200 280 400 300 Q 600 320 800 300"
+          stroke="#fbbf24"
+          strokeWidth="0.5"
+          fill="none"
+          opacity="0.3"
           animate={{ 
-            scale: [1, 1.5, 1],
-            opacity: [1, 0.7, 1] 
+            d: [
+              "M 0 300 Q 200 280 400 300 Q 600 320 800 300",
+              "M 0 300 Q 200 320 400 300 Q 600 280 800 300",
+              "M 0 300 Q 200 280 400 300 Q 600 320 800 300"
+            ]
           }}
           transition={{ 
-            duration: 2, 
+            duration: 8, 
             repeat: Infinity,
-            delay: 5 
+            ease: "easeInOut",
+            delay: 3
           }}
         />
         
-        {/* Gradient definition */}
+        {/* Gradient definitions */}
         <defs>
-          <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#fbbf24" />
-            <stop offset="50%" stopColor="#f59e0b" />
-            <stop offset="100%" stopColor="#d97706" />
+          <linearGradient id="threadGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.8" />
+            <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#d97706" stopOpacity="0.4" />
           </linearGradient>
         </defs>
       </svg>
@@ -188,21 +266,24 @@ const HeroSection = () => {
       {/* Background gradient overlay */}
       <div className="absolute inset-0 hero-gradient" />
       
-      {/* Animated background elements - threading theme */}
-      <div className="absolute inset-0">
-        {[...Array(15)].map((_, i) => (
+      {/* Threading Animation */}
+      <ThreadingAnimation />
+      
+      {/* Animated background elements - reduced complexity */}
+      <div className="absolute inset-0 hidden sm:block">
+        {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-px h-12 sm:h-16 md:h-20 bg-gold-400/10 origin-center"
+            className="absolute w-px h-12 md:h-16 bg-gold-400/5 origin-center"
             animate={{
               scaleY: [0, 1, 0],
-              opacity: [0, 0.6, 0],
+              opacity: [0, 0.3, 0],
               rotate: [0, 180, 360],
             }}
             transition={{
-              duration: 4,
+              duration: 6,
               repeat: Infinity,
-              delay: i * 0.3,
+              delay: i * 0.5,
               ease: "easeInOut"
             }}
             style={{
@@ -215,15 +296,14 @@ const HeroSection = () => {
 
       <div className="container mx-auto text-center relative z-10 max-w-4xl">
         <div className="max-w-4xl mx-auto">
-          {/* Animated Logo */}
+          {/* Brand name with animation */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="mb-6 sm:mb-8"
           >
-            <ThreadlineLogo />
-            <h3 className="text-lg sm:text-xl md:text-2xl font-display font-semibold text-gold-400 mb-4 mt-4">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-display font-semibold text-gold-400 mb-4">
               Threadline
             </h3>
           </motion.div>
