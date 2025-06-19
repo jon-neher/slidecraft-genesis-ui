@@ -4,6 +4,151 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+// Custom animated logo component
+const ThreadlineLogo = () => {
+  return (
+    <div className="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto">
+      <svg
+        viewBox="0 0 100 100"
+        className="w-full h-full"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Background circle */}
+        <motion.circle
+          cx="50"
+          cy="50"
+          r="45"
+          fill="url(#goldGradient)"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        />
+        
+        {/* Data points */}
+        {[
+          { cx: 25, cy: 30, delay: 1 },
+          { cx: 75, cy: 25, delay: 1.2 },
+          { cx: 20, cy: 70, delay: 1.4 },
+          { cx: 80, cy: 65, delay: 1.6 },
+          { cx: 50, cy: 50, delay: 1.8 }
+        ].map((point, index) => (
+          <motion.circle
+            key={index}
+            cx={point.cx}
+            cy={point.cy}
+            r="3"
+            fill="#020617"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: point.delay, duration: 0.4 }}
+          />
+        ))}
+        
+        {/* Connecting threads */}
+        <motion.path
+          d="M 25 30 Q 40 20 75 25"
+          stroke="#020617"
+          strokeWidth="1.5"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ delay: 2, duration: 1.2, ease: "easeInOut" }}
+        />
+        <motion.path
+          d="M 75 25 Q 60 40 50 50"
+          stroke="#020617"
+          strokeWidth="1.5"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ delay: 2.3, duration: 1, ease: "easeInOut" }}
+        />
+        <motion.path
+          d="M 50 50 Q 35 60 20 70"
+          stroke="#020617"
+          strokeWidth="1.5"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ delay: 2.6, duration: 1, ease: "easeInOut" }}
+        />
+        <motion.path
+          d="M 20 70 Q 50 75 80 65"
+          stroke="#020617"
+          strokeWidth="1.5"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ delay: 2.9, duration: 1.2, ease: "easeInOut" }}
+        />
+        <motion.path
+          d="M 25 30 Q 22 50 20 70"
+          stroke="#020617"
+          strokeWidth="1.5"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ delay: 3.2, duration: 1, ease: "easeInOut" }}
+        />
+        
+        {/* Presentation rectangles forming from connections */}
+        <motion.rect
+          x="15"
+          y="45"
+          width="18"
+          height="12"
+          fill="none"
+          stroke="#020617"
+          strokeWidth="1.5"
+          rx="2"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 4, duration: 0.6 }}
+        />
+        <motion.rect
+          x="67"
+          y="38"
+          width="18"
+          height="12"
+          fill="none"
+          stroke="#020617"
+          strokeWidth="1.5"
+          rx="2"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 4.3, duration: 0.6 }}
+        />
+        
+        {/* Pulsing center point */}
+        <motion.circle
+          cx="50"
+          cy="50"
+          r="2"
+          fill="#020617"
+          animate={{ 
+            scale: [1, 1.5, 1],
+            opacity: [1, 0.7, 1] 
+          }}
+          transition={{ 
+            duration: 2, 
+            repeat: Infinity,
+            delay: 5 
+          }}
+        />
+        
+        {/* Gradient definition */}
+        <defs>
+          <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#fbbf24" />
+            <stop offset="50%" stopColor="#f59e0b" />
+            <stop offset="100%" stopColor="#d97706" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+};
+
 const HeroSection = () => {
   const [email, setEmail] = useState('');
   const [isShaking, setIsShaking] = useState(false);
@@ -70,17 +215,15 @@ const HeroSection = () => {
 
       <div className="container mx-auto text-center relative z-10 max-w-4xl">
         <div className="max-w-4xl mx-auto">
-          {/* Brand Logo */}
+          {/* Animated Logo */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
             className="mb-6 sm:mb-8"
           >
-            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 gold-gradient rounded-xl flex items-center justify-center shadow-2xl">
-              <span className="text-navy-950 font-bold text-lg sm:text-xl md:text-2xl">TL</span>
-            </div>
-            <h3 className="text-lg sm:text-xl md:text-2xl font-display font-semibold text-gold-400 mb-4">
+            <ThreadlineLogo />
+            <h3 className="text-lg sm:text-xl md:text-2xl font-display font-semibold text-gold-400 mb-4 mt-4">
               Threadline
             </h3>
           </motion.div>
