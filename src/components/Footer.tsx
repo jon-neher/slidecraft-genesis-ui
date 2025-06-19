@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -24,12 +25,7 @@ const itemVariants = {
   visible: { 
     opacity: 1, 
     y: 0,
-    scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15
-    }
+    scale: 1
   }
 };
 
@@ -65,6 +61,11 @@ const Footer = () => {
           {/* Newsletter Section */}
           <motion.div
             variants={itemVariants}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 15
+            }}
             className="mb-12 sm:mb-16"
           >
             <motion.h3 
@@ -144,6 +145,11 @@ const Footer = () => {
           {/* Social Links */}
           <motion.div
             variants={itemVariants}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 15
+            }}
             className="flex justify-center space-x-4 sm:space-x-6 mb-10 sm:mb-12"
           >
             {socialIcons.map((social, index) => {
@@ -180,6 +186,11 @@ const Footer = () => {
           {/* Company Info */}
           <motion.div
             variants={itemVariants}
+            transition={{
+              type: "spring",
+              stiffness: 100,
+              damping: 15
+            }}
             className="border-t border-slate-800 pt-6 sm:pt-8"
           >
             <motion.div 

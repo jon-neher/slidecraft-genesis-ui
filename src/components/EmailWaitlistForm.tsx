@@ -15,7 +15,7 @@ const formVariants = {
     y: 0,
     scale: 1,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 100,
       damping: 15,
       duration: 0.6
@@ -32,13 +32,7 @@ const successVariants = {
   visible: { 
     opacity: 1, 
     scale: 1,
-    rotateY: 0,
-    transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 15,
-      duration: 0.8
-    }
+    rotateY: 0
   }
 };
 
@@ -66,6 +60,12 @@ const EmailWaitlistForm = () => {
         variants={successVariants}
         initial="hidden"
         animate="visible"
+        transition={{
+          type: "spring",
+          stiffness: 200,
+          damping: 15,
+          duration: 0.8
+        }}
         className="text-center px-4"
       >
         <motion.div 

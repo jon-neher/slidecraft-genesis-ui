@@ -49,13 +49,7 @@ const cardVariants = {
     opacity: 1, 
     y: 0,
     rotateY: 0,
-    scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15,
-      duration: 0.8
-    }
+    scale: 1
   }
 };
 
@@ -63,21 +57,11 @@ const iconVariants = {
   hidden: { scale: 0, rotate: -180 },
   visible: { 
     scale: 1, 
-    rotate: 0,
-    transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 15,
-      delay: 0.3
-    }
+    rotate: 0
   },
   hover: { 
     scale: 1.2, 
-    rotate: 10,
-    transition: {
-      type: "spring",
-      stiffness: 300
-    }
+    rotate: 10
   }
 };
 
@@ -132,6 +116,12 @@ const FeaturesSection = () => {
               <motion.div
                 key={index}
                 variants={cardVariants}
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15,
+                  duration: 0.8
+                }}
                 className="card-gradient rounded-2xl p-6 sm:p-8 relative group cursor-pointer"
                 whileHover={{ 
                   scale: 1.05,
@@ -160,6 +150,12 @@ const FeaturesSection = () => {
                   className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br ${feature.gradient} p-2 sm:p-3 mb-4 sm:mb-6 mx-auto`}
                   variants={iconVariants}
                   whileHover="hover"
+                  transition={{
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 15,
+                    delay: 0.3
+                  }}
                 >
                   <IconComponent className="w-full h-full text-white" />
                 </motion.div>
