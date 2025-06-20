@@ -68,10 +68,7 @@ const ClerkWaitlistForm = () => {
           >
             <SignUpButton mode="modal">
               <Button 
-                className="w-full h-12 text-base font-semibold text-white transition-all duration-200 hover:opacity-90"
-                style={{ 
-                  backgroundColor: '#3A3D4D'
-                }}
+                className="w-full h-12 text-base font-semibold transition-all duration-200 hover:opacity-90"
               >
                 <span className="flex items-center justify-center gap-2">
                   Join Waitlist
