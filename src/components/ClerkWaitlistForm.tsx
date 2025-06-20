@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react';
@@ -76,7 +77,7 @@ const ClerkWaitlistForm = () => {
           scale: 0.95
         }}>
             <SignInButton mode="modal">
-              <Button variant="outline" className="bg-slate-800/80 border-slate-600 text-white hover:bg-slate-700/80 backdrop-blur-sm h-11 sm:h-12 text-sm sm:text-base w-full">
+              <Button variant="outline" className="bg-slate-200/20 border-slate-400/30 text-slate-600 hover:bg-slate-200/30 hover:text-slate-700 backdrop-blur-sm h-11 sm:h-12 text-sm sm:text-base w-full">
                 Already have an account? Sign In
               </Button>
             </SignInButton>
