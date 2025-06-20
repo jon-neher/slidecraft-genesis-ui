@@ -128,20 +128,8 @@ src/
 
 ## 🎯 Customization Guide
 
-### Replacing Lottie Animation
-Replace the simulated slide assembly in `ModernHero.tsx`:
-
-```jsx
-// Replace this section with actual Lottie Player
-<motion.div className="mb-12">
-  <Player
-    autoplay
-    loop
-    src="/path/to/your/lottie.json"
-    style={{ height: '300px', width: '400px' }}
-  />
-</motion.div>
-```
+### Customizing Hero Content
+Edit `ModernHero.tsx` to tweak the hero text or integrate your preferred animation.
 
 ### Adding Real Logos
 Update the `testimonials` array in `ModernTestimonials.tsx`:
