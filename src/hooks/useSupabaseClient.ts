@@ -15,12 +15,7 @@ export const useSupabaseClient = () => {
       SUPABASE_URL,
       SUPABASE_PUBLISHABLE_KEY,
       {
-        global: {
-          headers: async () => {
-            const token = await session?.getToken();
-            return token ? { Authorization: `Bearer ${token}` } : {};
-          },
-        },
+        accessToken: () => session?.getToken(),
         auth: {
           persistSession: false,
         },
