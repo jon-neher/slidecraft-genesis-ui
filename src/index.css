@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import our modern design system */
+/* Import our consolidated design system */
 @import './styles/design-system.css';
 
 /* Updated design system with modern aesthetics */
@@ -79,11 +79,16 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
 }
 
-/* Spacing utilities */
+/* Consolidated spacing utilities */
 .section-padding {
   @apply py-16 sm:py-20 lg:py-24;
 }
 
 .container-padding {
   @apply px-4 sm:px-6 lg:px-8;
+}
+
+/* Global focus styles for accessibility */
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-electric-indigo focus-visible:ring-offset-2;
 }
