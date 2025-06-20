@@ -9,7 +9,7 @@ import ClerkSupabaseDemo from '@/components/ClerkSupabaseDemo';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-ice-white">
+    <div className="min-h-screen bg-background">
       <ModernHero />
       <SignedIn>
         <ClerkSupabaseDemo />

@@ -34,7 +34,7 @@ const testimonials = [
 const ModernTestimonials = () => {
 
   return (
-    <section className="section-padding bg-gray-50">
+    <section className="section-padding bg-muted">
       <div className="container mx-auto container-padding">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -43,12 +43,12 @@ const ModernTestimonials = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="display-lg text-slate-gray mb-6">
+          <h2 className="display-lg text-foreground mb-6">
             Loved by teams at
             <br />
             <span className="text-gradient">forward-thinking companies</span>
           </h2>
-          <p className="text-xl text-slate-gray/70 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             See what professionals are saying about Threadline
           </p>
         </motion.div>
@@ -79,7 +79,7 @@ const ModernTestimonials = () => {
               </div>
 
               {/* Testimonial content */}
-              <p className="text-slate-gray/80 leading-relaxed mb-6">
+              <p className="text-muted-foreground leading-relaxed mb-6">
                 "{testimonial.content}"
               </p>
 
@@ -89,10 +89,10 @@ const ModernTestimonials = () => {
                   {testimonial.avatar}
                 </div>
                 <div>
-                  <div className="font-semibold text-slate-gray">
+                  <div className="font-semibold text-foreground">
                     {testimonial.name}
                   </div>
-                  <div className="text-sm text-slate-gray/60">
+                  <div className="text-sm text-muted-foreground">
                     {testimonial.role} at {testimonial.company}
                   </div>
                 </div>

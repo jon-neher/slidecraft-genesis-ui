@@ -7,6 +7,6 @@ if (!('IntersectionObserver' in window)) {
     unobserve() {}
     disconnect() {}
   }
-  // @ts-ignore
+  // @ts-expect-error jsdom lacks IntersectionObserver
   window.IntersectionObserver = IntersectionObserver;
 }

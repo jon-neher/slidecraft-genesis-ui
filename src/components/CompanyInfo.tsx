@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const CompanyInfo = () => {
   return (
-    <div className="border-t border-slate-800 pt-6 sm:pt-8">
+    <div className="border-t border-border pt-6 sm:pt-8">
       <motion.div 
         className="flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6"
         initial={{ opacity: 0 }}
@@ -32,7 +32,7 @@ const CompanyInfo = () => {
             <motion.a 
               key={item}
               href="#" 
-              className="text-slate-400 hover:text-gold-400 transition-colors relative"
+              className="text-muted-foreground hover:text-gold-400 transition-colors relative"
               whileHover={{ y: -2 }}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ 
@@ -54,7 +54,7 @@ const CompanyInfo = () => {
       </motion.div>
       
       <motion.div 
-        className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-slate-800 text-slate-500 text-xs sm:text-sm"
+        className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-border text-muted-foreground text-xs sm:text-sm"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7, duration: 0.6 }}
