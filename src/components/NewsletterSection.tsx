@@ -62,18 +62,18 @@ const NewsletterSection = () => {
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               className={`bg-navy-800/50 border-slate-600 text-white placeholder:text-slate-400 transition-all duration-300 h-12 text-base ${
-                isFocused ? 'border-gold-400 shadow-lg shadow-gold-400/20' : ''
+                isFocused ? 'border-neon-mint shadow-lg shadow-neon-mint/20' : ''
               }`}
             />
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               type="submit"
-              className="gold-gradient text-navy-950 font-semibold px-6 h-12 relative overflow-hidden group"
+              className="electric-gradient text-navy-950 font-semibold px-6 h-12 relative overflow-hidden group"
             >
               <span className="relative z-10">Subscribe</span>
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-gold-500 to-gold-600 opacity-0 group-hover:opacity-100"
+                className="absolute inset-0 bg-gradient-to-r from-electric-indigo to-neon-mint opacity-0 group-hover:opacity-100"
                 initial={{ x: "-100%" }}
                 whileHover={{ x: "0%" }}
                 transition={{ duration: 0.3 }}
@@ -85,7 +85,7 @@ const NewsletterSection = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-gold-400 font-semibold text-base sm:text-lg"
+          className="text-neon-mint font-semibold text-base sm:text-lg"
           transition={{ type: "spring", stiffness: 200 }}
         >
           ✓ You'll be the first to know when we launch!

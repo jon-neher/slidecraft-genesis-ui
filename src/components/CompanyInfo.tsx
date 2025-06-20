@@ -17,8 +17,8 @@ const CompanyInfo = () => {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <motion.div 
-            className="w-8 h-8 gold-gradient rounded-lg flex items-center justify-center"
+          <motion.div
+            className="w-8 h-8 electric-gradient rounded-lg flex items-center justify-center"
             whileHover={{ rotate: 360 }}
             transition={{ duration: 0.6 }}
           >
@@ -32,7 +32,7 @@ const CompanyInfo = () => {
             <motion.a 
               key={item}
               href="#" 
-              className="text-slate-400 hover:text-gold-400 transition-colors relative"
+              className="text-slate-400 hover:text-neon-mint transition-colors relative"
               whileHover={{ y: -2 }}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ 
@@ -44,7 +44,7 @@ const CompanyInfo = () => {
             >
               {item}
               <motion.div
-                className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold-400"
+                className="absolute bottom-0 left-0 w-0 h-0.5 bg-neon-mint"
                 whileHover={{ width: "100%" }}
                 transition={{ duration: 0.3 }}
               />

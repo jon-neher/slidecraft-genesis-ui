@@ -19,12 +19,12 @@ const SocialLinks = () => {
           <motion.a
             key={index}
             href={social.href}
-            className="w-10 h-10 sm:w-12 sm:h-12 card-gradient rounded-full flex items-center justify-center group"
-            whileHover={{ 
-              rotate: 15,
-              scale: 1.2,
-              borderColor: "rgb(251 191 36)"
-            }}
+          className="w-10 h-10 sm:w-12 sm:h-12 card-gradient rounded-full flex items-center justify-center group"
+          whileHover={{
+            rotate: 15,
+            scale: 1.2,
+            borderColor: "#30F2B3"
+          }}
             whileTap={{ scale: 0.9 }}
             transition={{ type: "spring", stiffness: 300 }}
             aria-label={social.label}
@@ -37,7 +37,7 @@ const SocialLinks = () => {
             }}
             viewport={{ once: true }}
           >
-            <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 text-gold-400 group-hover:text-gold-300 transition-colors" />
+            <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 text-neon-mint group-hover:text-neon-mint/80 transition-colors" />
           </motion.a>
         );
       })}

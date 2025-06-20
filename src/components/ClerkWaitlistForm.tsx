@@ -46,7 +46,7 @@ const ClerkWaitlistForm = () => {
           scale: 0.95
         }}>
             <SignUpButton mode="modal">
-              <Button className="gold-gradient text-navy-950 font-semibold px-6 sm:px-8 py-3 h-11 sm:h-12 text-sm sm:text-base w-full relative overflow-hidden group">
+              <Button className="electric-gradient text-navy-950 font-semibold px-6 sm:px-8 py-3 h-11 sm:h-12 text-sm sm:text-base w-full relative overflow-hidden group">
                 <motion.span className="relative z-10 flex items-center justify-center gap-2" initial={{
                 y: 0
               }} whileHover={{
@@ -60,7 +60,7 @@ const ClerkWaitlistForm = () => {
                 </motion.span>
                 
                 {/* Animated background effect */}
-                <motion.div className="absolute inset-0 bg-gradient-to-r from-gold-500 to-gold-600 opacity-0 group-hover:opacity-100" initial={{
+                <motion.div className="absolute inset-0 bg-gradient-to-r from-electric-indigo to-neon-mint opacity-0 group-hover:opacity-100" initial={{
                 x: "-100%"
               }} whileHover={{
                 x: "0%"
@@ -92,7 +92,7 @@ const ClerkWaitlistForm = () => {
         damping: 15,
         duration: 0.8
       }} className="text-center">
-          <motion.div className="text-lg sm:text-xl md:text-2xl text-gold-400 mb-2 flex items-center justify-center gap-2" animate={{
+          <motion.div className="text-lg sm:text-xl md:text-2xl text-neon-mint mb-2 flex items-center justify-center gap-2" animate={{
           rotate: [0, 10, -10, 0],
           scale: [1, 1.1, 1]
         }} transition={{
@@ -117,7 +117,7 @@ const ClerkWaitlistForm = () => {
           <div className="flex justify-center">
             <UserButton appearance={{
             elements: {
-              avatarBox: "w-10 h-10 rounded-full border-2 border-gold-400"
+              avatarBox: "w-10 h-10 rounded-full border-2 border-neon-mint"
             }
           }} />
           </div>
