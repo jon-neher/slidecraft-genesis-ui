@@ -90,25 +90,14 @@ A premium, responsive landing page for SlideCraft AI, an AI-powered presentation
 ## 🛠 Animation Details
 
 ### Framer Motion Configuration
-```jsx
-// Staggered children animation
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.2 }
-  }
-};
+```ts
+// src/lib/variants.ts
+export const containerVariants = { /* ... */ };
+export const itemVariants = { /* ... */ };
+export const cardVariants = { /* ... */ };
 
-// Individual card animation
-const cardVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
-  }
-};
+// Import these in your components
+import { containerVariants, itemVariants, cardVariants } from "@/lib/variants";
 ```
 
 ### Performance Optimizations
