@@ -63,23 +63,29 @@ A premium, responsive landing page for SlideCraft AI, an AI-powered presentation
 ### ModernHero
 - Typewriter effect headline animation
 - Simulated Lottie-style slide assembly
-- Email capture with shake animation on invalid input
-- Floating background particles
+- Clerk waitlist form with shake validation
+- Threading animation weaving between slides
+- Floating background particles and trust indicators
 
 ### ModernFeatures
-- Three feature cards with staggered entrance
+- Four feature cards with staggered entrance
 - Icon pop animations on hover
-- Gradient backgrounds per feature
+- Gradient backgrounds on each card
 
 ### ModernTestimonials
+- Testimonial cards featuring star ratings
 - Animated counters that trigger on scroll
 - Infinite marquee logo rail
-- Trust indicators and social proof
 
 ### ModernCTA
-- Newsletter subscription with focus animations
+- Clerk sign-up / sign-in for early access
 - Social icons with rotation on hover
 - Pulsing border effects on form focus
+
+### Footer
+- Newsletter form for updates
+- Social links for major platforms
+- Company information in the footer bar
 
 ## 🛠 Animation Details
 
