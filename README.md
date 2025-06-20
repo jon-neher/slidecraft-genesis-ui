@@ -1,4 +1,4 @@
-# SlideCraft AI - Landing Page
+# Threadline Landing Page
 
 A premium, responsive landing page for SlideCraft AI, an AI-powered presentation generation tool. Built with React, Framer Motion, and Tailwind CSS. **Threadline: Turn your data into decks that speak volumes.**
 
