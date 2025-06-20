@@ -4,29 +4,10 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import ThreadingAnimation from './ThreadingAnimation';
 import ClerkWaitlistForm from './ClerkWaitlistForm';
 import { Button } from './ui/button';
+import { containerVariants, itemVariants } from '../lib/variants';
 
 const ModernHero = () => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1
-      }
-    }
-  };
 
-  const itemVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 30
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0
-    }
-  };
 
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-ice-white">
