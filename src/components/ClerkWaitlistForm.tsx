@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, ArrowRight } from 'lucide-react';
+
 const formVariants = {
   hidden: {
     opacity: 0,
@@ -33,6 +34,7 @@ const successVariants = {
     rotateY: 0
   }
 };
+
 const ClerkWaitlistForm = () => {
   return <motion.div variants={formVariants} initial="hidden" animate="visible" className="max-w-md mx-auto px-4">
       <SignedOut>
@@ -73,7 +75,7 @@ const ClerkWaitlistForm = () => {
         }} whileTap={{
           scale: 0.95
         }}>
-            <SignInButton mode="modal" className="font-normal bg-slate-900 hover:bg-slate-800">
+            <SignInButton mode="modal">
               <Button variant="outline" className="bg-navy-800/50 border-slate-600 text-white hover:bg-navy-700/50 h-11 sm:h-12 text-sm sm:text-base w-full">
                 Already have an account? Sign In
               </Button>
@@ -122,4 +124,5 @@ const ClerkWaitlistForm = () => {
       </SignedIn>
     </motion.div>;
 };
+
 export default ClerkWaitlistForm;
