@@ -11,12 +11,14 @@ const ClerkSupabaseDemo = () => {
   const testSupabaseConnection = async () => {
     try {
       console.log('Testing Supabase connection with Clerk token...');
-      const { data, error } = await supabase.from('profiles').select('*').limit(1);
+      
+      // Test the connection by making a simple query to get the current user info
+      const { data, error } = await supabase.auth.getUser();
       
       if (error) {
-        console.log('Supabase query error (expected if no profiles table):', error);
+        console.log('Supabase auth error:', error);
       } else {
-        console.log('Supabase query successful:', data);
+        console.log('Supabase connection successful! Auth user data:', data);
       }
       
       console.log('User from Clerk:', {
