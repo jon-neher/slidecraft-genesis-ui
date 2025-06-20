@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from '@clerk/clerk-react';
@@ -69,12 +68,9 @@ const ClerkWaitlistForm = () => {
           >
             <SignUpButton mode="modal">
               <Button 
-                className="w-full h-12 text-base font-semibold text-white transition-all duration-200"
+                className="w-full h-12 text-base font-semibold text-white transition-all duration-200 hover:opacity-90"
                 style={{ 
-                  backgroundColor: '#3A3D4D',
-                  '&:hover': {
-                    backgroundColor: 'rgba(58, 61, 77, 0.9)'
-                  }
+                  backgroundColor: '#3A3D4D'
                 }}
               >
                 <span className="flex items-center justify-center gap-2">
@@ -92,14 +88,10 @@ const ClerkWaitlistForm = () => {
             <SignInButton mode="modal">
               <Button 
                 variant="outline" 
-                className="w-full h-12 text-base font-medium border-2 transition-all duration-200"
+                className="w-full h-12 text-base font-medium border-2 transition-all duration-200 hover:border-slate-gray hover:bg-slate-gray/5"
                 style={{
                   borderColor: 'rgba(58, 61, 77, 0.2)',
-                  color: '#3A3D4D',
-                  '&:hover': {
-                    borderColor: '#3A3D4D',
-                    backgroundColor: 'rgba(58, 61, 77, 0.05)'
-                  }
+                  color: '#3A3D4D'
                 }}
               >
                 Already have an account? Sign In
