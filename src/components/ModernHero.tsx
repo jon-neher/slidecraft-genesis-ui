@@ -1,13 +1,23 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { useUser } from '@clerk/clerk-react';
+import { useNavigate } from 'react-router-dom';
 import ThreadingAnimation from './ThreadingAnimation';
 import ClerkWaitlistForm from './ClerkWaitlistForm';
 import { Button } from './ui/button';
 import { containerVariants, itemVariants } from '../lib/variants';
 
 const ModernHero = () => {
+  const { isSignedIn } = useUser();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      navigate('/dashboard');
+    }
+  }, [isSignedIn, navigate]);
+
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-ice-white">
       {/* Background gradient */}
