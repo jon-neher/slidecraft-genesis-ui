@@ -3,8 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Updated design system with Framer-inspired aesthetics */
+/* Import our modern design system */
+@import './styles/design-system.css';
 
+/* Updated design system with modern aesthetics */
 @layer base {
   :root {
     --background: 250 250 251;
@@ -51,43 +53,6 @@
     line-height: 1.6;
   }
 
-  .hero-gradient {
-    background: linear-gradient(135deg, 
-      rgba(250, 250, 251, 1) 0%, 
-      rgba(245, 245, 247, 0.8) 100%);
-  }
-
-  .card-modern {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(229, 231, 235, 0.5);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
-  }
-
-  .electric-gradient {
-    background: linear-gradient(135deg, #5A2EFF 0%, #30F2B3 100%);
-  }
-
-  .text-gradient {
-    background: linear-gradient(135deg, #5A2EFF 0%, #30F2B3 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .subtle-shadow {
-    box-shadow: 0 4px 24px rgba(90, 46, 255, 0.08);
-  }
-
-  /* Performance optimizations for animations */
-  .will-change-transform {
-    will-change: transform;
-  }
-
-  .will-change-opacity {
-    will-change: opacity;
-  }
-
   /* Modern scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
@@ -98,12 +63,12 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(90, 46, 255, 0.3);
+    background: rgba(58, 61, 77, 0.3);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(90, 46, 255, 0.5);
+    background: rgba(58, 61, 77, 0.5);
   }
 }
 
@@ -114,31 +79,6 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
 }
 
-.display-xl {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-}
-
-.display-lg {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.03em;
-}
-
-/* Button styles */
-.btn-primary {
-  @apply bg-electric-indigo text-ice-white px-8 py-4 rounded-xl font-medium transition-all duration-200;
-  @apply hover:shadow-lg hover:scale-105 active:scale-95;
-}
-
-.btn-secondary {
-  @apply bg-ice-white text-slate-gray border border-gray-200 px-8 py-4 rounded-xl font-medium transition-all duration-200;
-  @apply hover:shadow-md hover:border-electric-indigo hover:text-electric-indigo;
-}
-
 /* Spacing utilities */
 .section-padding {
   @apply py-16 sm:py-20 lg:py-24;
@@ -146,35 +86,4 @@ h1, h2, h3, h4, h5, h6 {
 
 .container-padding {
   @apply px-4 sm:px-6 lg:px-8;
-}
-
-/* Animations */
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.animate-fade-up {
-  animation: fade-up 0.6s ease-out forwards;
-}
-
-.animate-scale-in {
-  animation: scale-in 0.4s ease-out forwards;
 }

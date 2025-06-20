@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from '@clerk/clerk-react';
@@ -68,7 +69,7 @@ const ClerkWaitlistForm = () => {
           >
             <SignUpButton mode="modal">
               <Button 
-                className="w-full h-12 text-base font-semibold transition-all duration-200 hover:opacity-90"
+                className="btn-primary-modern w-full h-12 text-base font-semibold"
               >
                 <span className="flex items-center justify-center gap-2">
                   Join Waitlist
@@ -85,11 +86,7 @@ const ClerkWaitlistForm = () => {
             <SignInButton mode="modal">
               <Button 
                 variant="outline" 
-                className="w-full h-12 text-base font-medium border-2 transition-all duration-200 hover:border-slate-gray hover:bg-slate-gray/5"
-                style={{
-                  borderColor: 'rgba(58, 61, 77, 0.2)',
-                  color: '#3A3D4D'
-                }}
+                className="btn-outline-modern w-full h-12 text-base font-medium"
               >
                 Already have an account? Sign In
               </Button>
@@ -109,7 +106,7 @@ const ClerkWaitlistForm = () => {
             damping: 15,
             duration: 0.8
           }}
-          className="text-center bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl border-2 border-green-200 shadow-lg"
+          className="text-center card-modern-enhanced p-8 border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50"
         >
           <motion.div 
             className="text-2xl sm:text-3xl md:text-4xl text-green-600 mb-4 flex items-center justify-center gap-3"
