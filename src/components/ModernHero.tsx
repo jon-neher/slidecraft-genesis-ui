@@ -9,7 +9,7 @@ import { containerVariants, itemVariants } from '../lib/variants';
 
 const ModernHero = () => {
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-background">
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-ice-white">
       {/* Background gradient */}
       <div className="absolute inset-0 hero-gradient" />
       
@@ -28,16 +28,16 @@ const ModernHero = () => {
             variants={itemVariants}
             className="mb-8"
           >
-            <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-gray/70 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200 dark:border-border">
+            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200">
               <Sparkles className="w-4 h-4 text-electric-indigo" />
-              <span className="text-sm font-medium text-foreground">Threadline</span>
+              <span className="text-sm font-medium text-slate-gray">Threadline</span>
             </div>
           </motion.div>
 
           {/* Main headline */}
           <motion.h1 
             variants={itemVariants}
-            className="display-xl text-foreground mb-6 leading-tight"
+            className="display-xl text-slate-gray mb-6 leading-tight"
           >
             Turn your data into{' '}
             <span className="text-gradient">decks that speak volumes</span>
@@ -46,7 +46,7 @@ const ModernHero = () => {
           {/* Subheading */}
           <motion.p
             variants={itemVariants}
-            className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed"
+            className="text-xl text-slate-gray/70 mb-12 max-w-2xl mx-auto leading-relaxed"
           >
             Thread together your data, ideas, and insights into compelling presentations with AI-powered design intelligence.
           </motion.p>

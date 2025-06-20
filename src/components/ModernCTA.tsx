@@ -7,7 +7,7 @@ import { Button } from './ui/button';
 
 const ModernCTA = () => {
   return (
-    <section className="section-padding bg-background">
+    <section className="section-padding bg-ice-white">
       <div className="container mx-auto container-padding">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -22,13 +22,13 @@ const ModernCTA = () => {
             
             <div className="relative z-10">
               <SignedOut>
-                <h2 className="display-lg text-foreground mb-6">
+                <h2 className="display-lg text-slate-gray mb-6">
                   Ready to transform your
                   <br />
                   <span className="text-gradient">presentation workflow?</span>
                 </h2>
                 
-                <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+                <p className="text-xl text-slate-gray/70 mb-12 max-w-2xl mx-auto">
                   Join thousands of professionals who are already on the waitlist for early access to Threadline.
                 </p>
 
@@ -42,7 +42,7 @@ const ModernCTA = () => {
                   </SignUpButton>
                 </div>
 
-                <p className="text-sm text-muted-foreground mt-6">
+                <p className="text-sm text-slate-gray/60 mt-6">
                   Secure authentication powered by Clerk. No spam, unsubscribe at any time.
                 </p>
               </SignedOut>
@@ -54,10 +54,10 @@ const ModernCTA = () => {
                   transition={{ duration: 0.6 }}
                 >
                   <CheckCircle className="w-16 h-16 text-neon-mint mx-auto mb-6" />
-                  <h2 className="text-3xl font-semibold text-foreground mb-4">
+                  <h2 className="text-3xl font-semibold text-slate-gray mb-4">
                     You're already on the list! 🎉
                   </h2>
-                  <p className="text-xl text-muted-foreground">
+                  <p className="text-xl text-slate-gray/70">
                     We'll notify you as soon as Threadline is ready for early access.
                   </p>
                 </motion.div>

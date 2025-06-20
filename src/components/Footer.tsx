@@ -10,7 +10,7 @@ import { containerVariants, itemVariants } from '../lib/variants';
 
 const Footer = () => {
   return (
-    <footer className="py-16 sm:py-20 px-4 sm:px-6 border-t border-border">
+    <footer className="py-16 sm:py-20 px-4 sm:px-6 border-t border-slate-800">
       <div className="container mx-auto">
         <motion.div 
           className="max-w-4xl mx-auto text-center"

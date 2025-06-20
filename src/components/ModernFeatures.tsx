@@ -34,7 +34,7 @@ const features = [
 const ModernFeatures = () => {
 
   return (
-    <section className="section-padding bg-background">
+    <section className="section-padding bg-ice-white">
       <div className="container mx-auto container-padding">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -43,12 +43,12 @@ const ModernFeatures = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="display-lg text-foreground mb-6">
+          <h2 className="display-lg text-slate-gray mb-6">
             Everything you need to create
             <br />
             <span className="text-gradient">professional presentations</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-slate-gray/70 max-w-2xl mx-auto">
             Powerful features designed to transform how you create and share your ideas
           </p>
         </motion.div>
@@ -75,11 +75,11 @@ const ModernFeatures = () => {
                   <IconComponent className="w-full h-full text-white" />
                 </div>
                 
-                <h3 className="text-2xl font-semibold text-foreground mb-4">
+                <h3 className="text-2xl font-semibold text-slate-gray mb-4">
                   {feature.title}
                 </h3>
                 
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-slate-gray/70 leading-relaxed">
                   {feature.description}
                 </p>
 
