@@ -1,25 +1,27 @@
 # SlideCraft AI - Landing Page
 
-A premium, responsive landing page for SlideCraft AI, an AI-powered presentation generation tool. Built with React, Framer Motion, and Tailwind CSS.
+A premium, responsive landing page for SlideCraft AI, an AI-powered presentation generation tool. Built with React, Framer Motion, and Tailwind CSS. **Threadline: Turn your data into decks that speak volumes.**
 
 ## 🚀 Features
 
-- **Premium Design**: Dark navy theme with gold accents and subtle gradients
-- **Smooth Animations**: Framer Motion powered interactions and micro-animations
-- **Responsive Layout**: Mobile-first design that works on all devices
+- **High-End Look**: Bold headlines, modular layout sections, and generous white space
+- **Smooth Animations**: Framer Motion interactions with the existing hero animation
+- **Responsive Layout**: Mobile-first design that adapts cleanly across breakpoints
 - **Performance Optimized**: Uses `will-change` and transform-only animations
 
 ## 🎨 Design System
 
 ### Colors
-- **Primary Background**: Navy (#020617 to #1e293b gradient)
-- **Accent Color**: Gold (#fbbf24 to #d97706 gradient)
-- **Text**: High contrast white/gray scale
-- **Cards**: Semi-transparent with backdrop blur
+- **Electric Indigo** `#5A2EFF` – Primary brand, buttons
+- **Slate Gray** `#3A3D4D` – Headings and body text
+- **Ice White** `#FAFAFB` – Page backgrounds
+- **Neon Mint** `#30F2B3` – Highlights and gradients
+- **Soft Coral** `#FF6B6B` – Error states or contrast
+- *Gradient:* Indigo → Mint for a tech-forward polish
 
 ### Typography
-- **Display Font**: Montserrat (headlines)
-- **Body Font**: Inter (content)
+- **Primary Font**: Inter or Space Grotesk – modern and highly readable
+- **Accent Font**: JetBrains Mono or IBM Plex Mono for code/data references
 - **Weights**: 300, 400, 500, 600, 700, 800
 
 ### Animation Principles
@@ -28,25 +30,53 @@ A premium, responsive landing page for SlideCraft AI, an AI-powered presentation
 - **Focus**: Pulsing borders and gentle scaling
 - **Performance**: Transform-only animations with `will-change`
 
+## 🌟 Brand Guidelines
+
+### Design Principles
+- Data-first layouts with clear hierarchy
+- Modular sections that can expand or collapse like slides
+- Motion guides attention without distracting
+- Slide-native metaphors and subtle hero animation
+
+### Iconography & UI Elements
+- Rounded, geometric icons reminiscent of Material Symbols
+- Simple metaphors: threads, slides, data nodes, spark
+- Soft shadows and layering for depth without noise
+
+### Brand Personality
+- Intelligent yet approachable
+- Sleek, modern, and trustworthy
+- Slightly playful while remaining professional
+
+### Brand Voice
+- Confident and conversational
+- Active voice with short sentences
+- Avoid jargon and robotic language
+
+### Brand Imagery
+- Abstract illustrations of threads weaving data into slides
+- Motion demos from raw spreadsheet to polished deck
+- Collages of diverse presentation styles (tech, sales, academic)
+
 ## 🧩 Components
 
-### HeroSection
+### ModernHero
 - Typewriter effect headline animation
 - Simulated Lottie-style slide assembly
 - Email capture with shake animation on invalid input
 - Floating background particles
 
-### FeaturesSection
+### ModernFeatures
 - Three feature cards with staggered entrance
 - Icon pop animations on hover
 - Gradient backgrounds per feature
 
-### MetricsSection
+### ModernTestimonials
 - Animated counters that trigger on scroll
 - Infinite marquee logo rail
 - Trust indicators and social proof
 
-### Footer
+### ModernCTA
 - Newsletter subscription with focus animations
 - Social icons with rotation on hover
 - Pulsing border effects on form focus
@@ -86,9 +116,10 @@ const cardVariants = {
 ```
 src/
 ├── components/
-│   ├── HeroSection.tsx      # Main hero with typewriter effect
-│   ├── FeaturesSection.tsx  # Feature cards with staggered animation
-│   ├── MetricsSection.tsx   # Animated counters and logo marquee
+│   ├── ModernHero.tsx       # Main hero with waitlist form
+│   ├── ModernFeatures.tsx   # Feature cards with staggered animation
+│   ├── ModernTestimonials.tsx # Testimonials and social proof
+│   ├── ModernCTA.tsx        # Final call-to-action section
 │   └── Footer.tsx           # Newsletter and social links
 ├── pages/
 │   └── Index.tsx            # Main landing page assembly
@@ -98,7 +129,7 @@ src/
 ## 🎯 Customization Guide
 
 ### Replacing Lottie Animation
-Replace the simulated slide assembly in `HeroSection.tsx`:
+Replace the simulated slide assembly in `ModernHero.tsx`:
 
 ```jsx
 // Replace this section with actual Lottie Player
@@ -113,13 +144,19 @@ Replace the simulated slide assembly in `HeroSection.tsx`:
 ```
 
 ### Adding Real Logos
-Update the `partnerLogos` array in `MetricsSection.tsx`:
+Update the `testimonials` array in `ModernTestimonials.tsx`:
 
 ```jsx
-const partnerLogos = [
-  { name: "Microsoft", logo: "/logos/microsoft.svg" },
-  { name: "Google", logo: "/logos/google.svg" },
-  // Add your actual partner logos
+const testimonials = [
+  {
+    name: "Sarah Chen",
+    role: "VP of Marketing",
+    company: "TechFlow",
+    avatar: "SC",
+    content: "Threadline transformed how our team creates presentations.",
+    rating: 5
+  },
+  // Add your own testimonials
 ];
 ```
 
@@ -128,12 +165,12 @@ Modify the theme in `tailwind.config.ts`:
 
 ```js
 colors: {
-  navy: {
-    950: '#your-custom-dark',
+  indigo: {
+    500: '#5A2EFF',
     // ... other shades
   },
-  gold: {
-    400: '#your-custom-gold',
+  mint: {
+    400: '#30F2B3',
     // ... other shades
   }
 }
