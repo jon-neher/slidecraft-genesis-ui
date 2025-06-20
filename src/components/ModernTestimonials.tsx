@@ -65,12 +65,12 @@ const ModernTestimonials = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="display-lg text-slate-gray mb-6">
+          <h2 className="heading-lg text-slate-gray mb-6">
             Loved by teams at
             <br />
-            <span className="text-gradient">forward-thinking companies</span>
+            <span className="gradient-text">forward-thinking companies</span>
           </h2>
-          <p className="text-xl text-slate-gray/70 max-w-2xl mx-auto">
+          <p className="body-lg max-w-2xl mx-auto">
             See what professionals are saying about Threadline
           </p>
         </motion.div>
@@ -87,7 +87,7 @@ const ModernTestimonials = () => {
               key={index}
               variants={cardVariants}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="card-modern rounded-2xl p-8 relative group hover:subtle-shadow transition-all duration-300"
+              className="card-modern-enhanced p-8 relative group hover:shadow-xl transition-all duration-300"
               whileHover={{ y: -4 }}
             >
               {/* Quote icon */}
@@ -101,7 +101,7 @@ const ModernTestimonials = () => {
               </div>
 
               {/* Testimonial content */}
-              <p className="text-slate-gray/80 leading-relaxed mb-6">
+              <p className="body-md mb-6">
                 "{testimonial.content}"
               </p>
 
