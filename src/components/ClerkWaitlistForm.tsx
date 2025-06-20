@@ -76,7 +76,7 @@ const ClerkWaitlistForm = () => {
           scale: 0.95
         }}>
             <SignInButton mode="modal">
-              <Button variant="outline" className="bg-navy-800/50 border-slate-600 text-white hover:bg-navy-700/50 h-11 sm:h-12 text-sm sm:text-base w-full">
+              <Button variant="outline" className="bg-slate-800/80 border-slate-600 text-white hover:bg-slate-700/80 backdrop-blur-sm h-11 sm:h-12 text-sm sm:text-base w-full">
                 Already have an account? Sign In
               </Button>
             </SignInButton>
