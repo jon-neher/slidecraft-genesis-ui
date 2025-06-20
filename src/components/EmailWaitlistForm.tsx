@@ -68,8 +68,8 @@ const EmailWaitlistForm = () => {
         }}
         className="text-center px-4"
       >
-        <motion.div 
-          className="text-lg sm:text-xl md:text-2xl text-gold-400 mb-2"
+        <motion.div
+          className="text-lg sm:text-xl md:text-2xl text-neon-mint mb-2"
           animate={{ 
             rotate: [0, 10, -10, 0],
             scale: [1, 1.1, 1]
@@ -115,7 +115,7 @@ const EmailWaitlistForm = () => {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           className={`bg-navy-800/50 border-slate-600 text-white placeholder:text-slate-400 transition-all duration-300 h-11 sm:h-12 text-sm sm:text-base ${
-            isFocused ? 'border-gold-400 shadow-lg shadow-gold-400/20' : ''
+            isFocused ? 'border-neon-mint shadow-lg shadow-neon-mint/20' : ''
           }`}
         />
       </motion.div>
@@ -126,7 +126,7 @@ const EmailWaitlistForm = () => {
       >
         <Button
           type="submit"
-          className="gold-gradient text-navy-950 font-semibold px-6 sm:px-8 py-3 h-11 sm:h-12 text-sm sm:text-base w-full relative overflow-hidden group"
+          className="electric-gradient text-navy-950 font-semibold px-6 sm:px-8 py-3 h-11 sm:h-12 text-sm sm:text-base w-full relative overflow-hidden group"
         >
           <motion.span
             className="relative z-10"
@@ -139,7 +139,7 @@ const EmailWaitlistForm = () => {
           
           {/* Animated background effect */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-gold-500 to-gold-600 opacity-0 group-hover:opacity-100"
+            className="absolute inset-0 bg-gradient-to-r from-electric-indigo to-neon-mint opacity-0 group-hover:opacity-100"
             initial={{ x: "-100%" }}
             whileHover={{ x: "0%" }}
             transition={{ duration: 0.3 }}

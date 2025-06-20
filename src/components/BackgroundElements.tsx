@@ -8,7 +8,7 @@ const BackgroundElements = () => {
       {[...Array(8)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-px h-12 md:h-16 bg-gold-400/5 origin-center"
+          className="absolute w-px h-12 md:h-16 bg-neon-mint/5 origin-center"
           animate={{
             scaleY: [0, 1, 0],
             opacity: [0, 0.3, 0],
