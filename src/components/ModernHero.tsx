@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
@@ -7,8 +8,6 @@ import { Button } from './ui/button';
 import { containerVariants, itemVariants } from '../lib/variants';
 
 const ModernHero = () => {
-
-
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-ice-white">
       {/* Background gradient */}
@@ -69,6 +68,8 @@ const ModernHero = () => {
               Watch Demo
             </Button>
           </motion.div>
+        </div>
+      </motion.div>
     </section>
   );
 };
