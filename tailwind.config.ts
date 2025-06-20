@@ -63,31 +63,12 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Consolidated brand colors from design system
-				'electric-indigo': {
-					DEFAULT: 'rgb(90 46 255)',
-					50: 'rgb(240 237 255)',
-					100: 'rgb(224 218 255)',
-					500: 'rgb(90 46 255)',
-					600: 'rgb(72 37 204)',
-					700: 'rgb(54 28 153)',
-				},
-				'slate-gray': {
-					DEFAULT: 'rgb(58 61 77)',
-					50: 'rgb(248 249 250)',
-					100: 'rgb(241 243 245)',
-					200: 'rgb(229 231 235)',
-					300: 'rgb(209 213 219)',
-					400: 'rgb(156 163 175)',
-					500: 'rgb(107 114 142)',
-					600: 'rgb(58 61 77)',
-					700: 'rgb(47 50 62)',
-					800: 'rgb(36 39 49)',
-					900: 'rgb(25 28 35)',
-				},
-				'ice-white': 'rgb(250 250 251)',
-				'neon-mint': 'rgb(48 242 179)',
-				'soft-coral': 'rgb(255 107 107)',
+				// Brand colors
+				'electric-indigo': '#5A2EFF',
+				'slate-gray': '#3A3D4D',
+				'ice-white': '#FAFAFB',
+				'neon-mint': '#30F2B3',
+				'soft-coral': '#FF6B6B',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

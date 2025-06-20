@@ -1,50 +1,43 @@
-
 import React from 'react';
-import { motion, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import ThreadingAnimation from './ThreadingAnimation';
 import ClerkWaitlistForm from './ClerkWaitlistForm';
 import { Button } from './ui/button';
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.1
+const ModernHero = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.1
+      }
     }
-  }
-};
+  };
 
-const itemVariants: Variants = {
-  hidden: { 
-    opacity: 0, 
-    y: 30
-  },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 15,
-      duration: 0.6
+  const itemVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 30
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0
     }
-  }
-};
+  };
 
-const UnifiedHero = () => {
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-ice-white">
       {/* Background gradient */}
-      <div className="absolute inset-0 gradient-subtle" />
+      <div className="absolute inset-0 hero-gradient" />
       
-      {/* Threading Animation */}
+      {/* Threading Animation - keeping the existing one */}
       <ThreadingAnimation />
 
       <motion.div 
-        className="container mx-auto text-center relative z-10 px-4 sm:px-6 lg:px-8"
+        className="container mx-auto text-center relative z-10 container-padding"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -55,7 +48,7 @@ const UnifiedHero = () => {
             variants={itemVariants}
             className="mb-8"
           >
-            <div className="inline-flex items-center gap-2 card-modern-enhanced px-4 py-2">
+            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200">
               <Sparkles className="w-4 h-4 text-electric-indigo" />
               <span className="text-sm font-medium text-slate-gray">Threadline</span>
             </div>
@@ -64,16 +57,16 @@ const UnifiedHero = () => {
           {/* Main headline */}
           <motion.h1 
             variants={itemVariants}
-            className="heading-xl mb-6"
+            className="display-xl text-slate-gray mb-6 leading-tight"
           >
             Turn your data into{' '}
-            <span className="gradient-text">decks that speak volumes</span>
+            <span className="text-gradient">decks that speak volumes</span>
           </motion.h1>
 
           {/* Subheading */}
           <motion.p
             variants={itemVariants}
-            className="body-lg mb-12 max-w-2xl mx-auto"
+            className="text-xl text-slate-gray/70 mb-12 max-w-2xl mx-auto leading-relaxed"
           >
             Thread together your data, ideas, and insights into compelling presentations with AI-powered design intelligence.
           </motion.p>
@@ -91,7 +84,7 @@ const UnifiedHero = () => {
             variants={itemVariants}
             className="flex justify-center mb-16"
           >
-            <Button variant="outline" className="btn-outline-modern">
+            <Button variant="outline" className="btn-secondary">
               Watch Demo
             </Button>
           </motion.div>
@@ -103,11 +96,10 @@ const UnifiedHero = () => {
           >
             <div className="flex items-center justify-center gap-6 flex-wrap">
               <span className="flex items-center gap-2">
-                🚀 Launching Q1 2024
+                ✨ Secure authentication with Clerk
               </span>
-              <span className="hidden sm:block">•</span>
               <span className="flex items-center gap-2">
-                ✨ No spam, just early access
+                🚀 Launching Q1 2024
               </span>
             </div>
           </motion.div>
@@ -117,4 +109,4 @@ const UnifiedHero = () => {
   );
 };
 
-export default UnifiedHero;
+export default ModernHero;
