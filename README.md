@@ -179,20 +179,30 @@ transition={{
 - Touch-friendly button sizes (min 44px)
 - Reduced animation intensity on mobile for performance
 
+
 ## 🔧 Installation & Setup
 
 1. Install dependencies:
 ```bash
-npm install framer-motion
+npm install
 ```
 
-2. Update fonts in `index.html`:
+2. Start the Vite dev server:
+```bash
+npm run dev
+```
+
+3. Run tests:
+```bash
+npm run test
+```
+
+4. Update fonts in `index.html`:
 ```html
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 ```
 
-3. The components are ready to use with the existing shadcn/ui setup.
-
+5. The components are ready to use with the existing shadcn/ui setup.
 ## 🎪 Animation Showcase
 
 - **Typewriter Effect**: Letter-by-letter headline reveal
