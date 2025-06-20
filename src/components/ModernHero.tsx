@@ -69,20 +69,6 @@ const ModernHero = () => {
               Watch Demo
             </Button>
           </motion.div>
-
-          {/* Trust indicators */}
-          <motion.div
-            variants={itemVariants}
-            className="text-sm text-slate-gray/60"
-          >
-            <div className="flex items-center justify-center gap-6 flex-wrap">
-              <span className="flex items-center gap-2">
-                🚀 Launching Q1 2024
-              </span>
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
     </section>
   );
 };
