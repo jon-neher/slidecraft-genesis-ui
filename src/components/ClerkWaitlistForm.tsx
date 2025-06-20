@@ -62,30 +62,17 @@ const ClerkWaitlistForm = () => {
       className="max-w-md mx-auto px-4"
     >
       <SignedOut>
-        <div className="flex flex-col gap-3 sm:gap-4">
+        <div className="flex flex-col gap-4">
           <motion.div
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.95 }}
           >
             <SignUpButton mode="modal">
-              <Button className="gold-gradient text-navy-950 font-semibold px-6 sm:px-8 py-3 h-11 sm:h-12 text-sm sm:text-base w-full relative overflow-hidden group">
-                <motion.span
-                  className="relative z-10 flex items-center justify-center gap-2"
-                  initial={{ y: 0 }}
-                  whileHover={{ y: -2 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
+              <Button className="w-full h-12 text-base font-semibold bg-slate-gray text-white hover:bg-slate-gray/90 transition-all duration-200">
+                <span className="flex items-center justify-center gap-2">
                   Join Waitlist
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </motion.span>
-                
-                {/* Animated background effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-gold-500 to-gold-600 opacity-0 group-hover:opacity-100"
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: "0%" }}
-                  transition={{ duration: 0.3 }}
-                />
+                  <ArrowRight className="w-4 h-4" />
+                </span>
               </Button>
             </SignUpButton>
           </motion.div>
@@ -97,7 +84,7 @@ const ClerkWaitlistForm = () => {
             <SignInButton mode="modal">
               <Button 
                 variant="outline" 
-                className="bg-navy-800/50 border-slate-600 text-white hover:bg-navy-700/50 h-11 sm:h-12 text-sm sm:text-base w-full"
+                className="w-full h-12 text-base font-medium border-2 border-slate-gray/20 text-slate-gray hover:border-slate-gray hover:bg-slate-gray/5 transition-all duration-200"
               >
                 Already have an account? Sign In
               </Button>

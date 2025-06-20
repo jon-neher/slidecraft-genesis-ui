@@ -96,9 +96,6 @@ const ModernHero = () => {
           >
             <div className="flex items-center justify-center gap-6 flex-wrap">
               <span className="flex items-center gap-2">
-                ✨ Secure authentication with Clerk
-              </span>
-              <span className="flex items-center gap-2">
                 🚀 Launching Q1 2024
               </span>
             </div>
