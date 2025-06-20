@@ -1,9 +1,9 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react';
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
 
 const formVariants = {
   hidden: { 
@@ -38,6 +38,22 @@ const successVariants = {
 };
 
 const ClerkWaitlistForm = () => {
+  const { user } = useUser();
+
+  // Log user data for debugging
+  React.useEffect(() => {
+    if (user) {
+      console.log('Clerk user data:', {
+        id: user.id,
+        email: user.primaryEmailAddress?.emailAddress,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        createdAt: user.createdAt,
+        lastSignInAt: user.lastSignInAt
+      });
+    }
+  }, [user]);
+
   return (
     <motion.div
       variants={formVariants}
@@ -101,10 +117,10 @@ const ClerkWaitlistForm = () => {
             damping: 15,
             duration: 0.8
           }}
-          className="text-center"
+          className="text-center bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl border-2 border-green-200 shadow-lg"
         >
           <motion.div 
-            className="text-lg sm:text-xl md:text-2xl text-gold-400 mb-2 flex items-center justify-center gap-2"
+            className="text-2xl sm:text-3xl md:text-4xl text-green-600 mb-4 flex items-center justify-center gap-3"
             animate={{ 
               rotate: [0, 10, -10, 0],
               scale: [1, 1.1, 1]
@@ -114,26 +130,58 @@ const ClerkWaitlistForm = () => {
               repeat: 1
             }}
           >
-            <CheckCircle className="w-6 h-6" />
-            You're on the list!
+            <CheckCircle className="w-8 h-8" />
+            <span className="font-bold">You're on the list!</span>
           </motion.div>
+          
+          <motion.div
+            className="flex items-center justify-center gap-2 mb-4"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <Sparkles className="w-5 h-5 text-green-500" />
+            <p className="text-green-700 text-lg font-medium">
+              Welcome to Threadline Early Access
+            </p>
+            <Sparkles className="w-5 h-5 text-green-500" />
+          </motion.div>
+          
           <motion.p 
-            className="text-slate-300 text-sm sm:text-base md:text-lg mb-4"
+            className="text-green-600 text-base sm:text-lg mb-6 leading-relaxed"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            We'll notify you when Threadline launches
+            We'll notify you as soon as Threadline launches.<br />
+            <span className="text-sm text-green-500">
+              {user?.primaryEmailAddress?.emailAddress && `Notifications will be sent to ${user.primaryEmailAddress.emailAddress}`}
+            </span>
           </motion.p>
-          <div className="flex justify-center">
+          
+          <motion.div 
+            className="flex justify-center mb-4"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
             <UserButton 
               appearance={{
                 elements: {
-                  avatarBox: "w-10 h-10 rounded-full border-2 border-gold-400"
+                  avatarBox: "w-12 h-12 rounded-full border-3 border-green-400 shadow-lg"
                 }
               }}
             />
-          </div>
+          </motion.div>
+          
+          <motion.div
+            className="text-xs text-green-500 italic"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
+            User ID: {user?.id}
+          </motion.div>
         </motion.div>
       </SignedIn>
     </motion.div>
