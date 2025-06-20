@@ -68,7 +68,15 @@ const ClerkWaitlistForm = () => {
             whileTap={{ scale: 0.95 }}
           >
             <SignUpButton mode="modal">
-              <Button className="w-full h-12 text-base font-semibold bg-slate-gray text-white hover:bg-slate-gray/90 transition-all duration-200">
+              <Button 
+                className="w-full h-12 text-base font-semibold text-white transition-all duration-200"
+                style={{ 
+                  backgroundColor: '#3A3D4D',
+                  '&:hover': {
+                    backgroundColor: 'rgba(58, 61, 77, 0.9)'
+                  }
+                }}
+              >
                 <span className="flex items-center justify-center gap-2">
                   Join Waitlist
                   <ArrowRight className="w-4 h-4" />
@@ -84,7 +92,15 @@ const ClerkWaitlistForm = () => {
             <SignInButton mode="modal">
               <Button 
                 variant="outline" 
-                className="w-full h-12 text-base font-medium border-2 border-slate-gray/20 text-slate-gray hover:border-slate-gray hover:bg-slate-gray/5 transition-all duration-200"
+                className="w-full h-12 text-base font-medium border-2 transition-all duration-200"
+                style={{
+                  borderColor: 'rgba(58, 61, 77, 0.2)',
+                  color: '#3A3D4D',
+                  '&:hover': {
+                    borderColor: '#3A3D4D',
+                    backgroundColor: 'rgba(58, 61, 77, 0.05)'
+                  }
+                }}
               >
                 Already have an account? Sign In
               </Button>
