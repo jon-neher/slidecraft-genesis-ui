@@ -39,7 +39,7 @@ const ContextPane = () => {
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <h2 className="text-lg font-semibold text-slate-gray">{mockEntity.name}</h2>
-                <Button variant="ghost" size="sm" className="text-electric-indigo hover:bg-electric-indigo/10">
+                <Button variant="ghost" size="sm" className="text-electric-indigo hover:bg-electric-indigo/10 hover:text-electric-indigo transition-colors">
                   <Edit className="w-4 h-4 mr-1" />
                   Change
                 </Button>

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, Grid } from 'lucide-react';
@@ -51,17 +52,17 @@ const DeckGallery = () => {
           className="min-w-64"
         />
         
-        <Button variant="outline" className="gap-2 h-10 border-gray-200 bg-white text-slate-gray hover:bg-gray-50 hover:border-electric-indigo hover:text-electric-indigo">
+        <Button variant="outline" className="gap-2 h-10 border-gray-200 bg-white text-slate-gray hover:bg-electric-indigo/5 hover:border-electric-indigo hover:text-electric-indigo transition-colors">
           Team: {selectedTeam}
           <ChevronDown className="w-4 h-4" />
         </Button>
         
-        <Button variant="outline" className="gap-2 h-10 border-gray-200 bg-white text-slate-gray hover:bg-gray-50 hover:border-electric-indigo hover:text-electric-indigo">
+        <Button variant="outline" className="gap-2 h-10 border-gray-200 bg-white text-slate-gray hover:bg-electric-indigo/5 hover:border-electric-indigo hover:text-electric-indigo transition-colors">
           Sort: {sortBy}
           <ChevronDown className="w-4 h-4" />
         </Button>
         
-        <Button variant="outline" size="icon" className="h-10 w-10 border-gray-200 bg-white text-slate-gray hover:bg-gray-50 hover:border-electric-indigo hover:text-electric-indigo">
+        <Button variant="outline" size="icon" className="h-10 w-10 border-gray-200 bg-white text-slate-gray hover:bg-electric-indigo/5 hover:border-electric-indigo hover:text-electric-indigo transition-colors">
           <Grid className="w-4 h-4" />
         </Button>
       </motion.div>
@@ -85,7 +86,7 @@ const DeckGallery = () => {
             className="will-change-transform"
             data-tl-deck-template-selected={deckType.id}
           >
-            <Card className="card-modern border-gray-200 hover:shadow-lg cursor-pointer transition-all duration-200 group bg-white">
+            <Card className="card-modern border-gray-200 hover:shadow-lg hover:border-electric-indigo/30 cursor-pointer transition-all duration-200 group bg-white">
               <CardContent className="p-0">
                 <div className="aspect-video bg-gradient-to-br from-electric-indigo/10 to-neon-mint/10 rounded-t-xl flex items-center justify-center">
                   <div className="w-20 h-20 bg-gradient-to-br from-electric-indigo to-neon-mint rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">

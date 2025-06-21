@@ -18,7 +18,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
         <Input
           className={cn(
-            "pl-10 h-12 text-base border-gray-200 focus:border-electric-indigo focus:ring-electric-indigo bg-white text-slate-gray placeholder:text-gray-500",
+            "pl-10 h-12 text-base border-gray-200 focus:border-electric-indigo focus:ring-electric-indigo/20 bg-white text-slate-gray placeholder:text-gray-500",
             showKeyboardShortcut && "pr-12",
             className
           )}
