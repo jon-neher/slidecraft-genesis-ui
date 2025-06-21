@@ -5,6 +5,7 @@ import {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
 } from './config'
+
 import { ensureAccessToken } from './hubspot_tokens'
 
 export interface ContactRecord {
@@ -36,7 +37,7 @@ async function searchRemote(
   sb: SupabaseClient<Database> = supabase,
   fetchFn: typeof fetch = fetch
 ): Promise<ContactRecord[]> {
-  const accessToken = await ensureAccessToken(portal_id, sb)
+  const accessToken = await getAccessToken(portal_id, sb)
   await rateLimiter.take(portal_id)
   const response = await fetchFn('https://api.hubapi.com/crm/v3/objects/contacts/search', {
     method: 'POST',

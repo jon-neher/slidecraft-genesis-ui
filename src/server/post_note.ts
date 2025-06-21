@@ -5,6 +5,7 @@ import {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
 } from './config';
+
 import { ensureAccessToken } from './hubspot_tokens';
 
 const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -57,7 +58,7 @@ export async function postNote({
   app_record_url,
 }: PostNoteInput): Promise<{ noteId: string } | { error: any }> {
   try {
-    const accessToken = await ensureAccessToken(portal_id);
+    const accessToken = await getAccessToken(portal_id);
     const limiter = limiterFor(accessToken);
     const response = await limiter.schedule(() =>
       fetch('https://api.hubapi.com/crm/v3/objects/notes', {
