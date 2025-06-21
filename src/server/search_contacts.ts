@@ -15,12 +15,11 @@ export interface ContactRecord {
 
 const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
-
 export async function searchLocal(
   portal_id: string,
   q: string,
   limit: number,
-  sb: SupabaseClient<Database> = supabase
+  sb: SupabaseClient<Database> = supabase,
 ): Promise<ContactRecord[]> {
   const { data } = await sb
     .from('hubspot_contacts_cache')
@@ -28,6 +27,7 @@ export async function searchLocal(
     .eq('portal_id', portal_id)
     .textSearch('search_vector', q, { config: 'simple' })
     .limit(limit)
+
   return (data as ContactRecord[]) || []
 }
 
@@ -36,17 +36,15 @@ async function searchRemote(
   q: string,
   limit: number,
   sb: SupabaseClient<Database> = supabase,
-  fetchFn: typeof fetch = fetch
+  fetchFn: typeof fetch = fetch,
 ): Promise<ContactRecord[]> {
-
   const rows = await hubspotSearch(portal_id, q, limit, sb, fetchFn)
-  const rows: ContactRecord[] = json.results || []
 
   const now = new Date().toISOString()
   if (rows.length) {
-    await sb.from('hubspot_contacts_cache').upsert(
-      rows.map(r => ({ portal_id, id: r.id, properties: r.properties, updated_at: now }))
-    )
+    await sb
+      .from('hubspot_contacts_cache')
+      .upsert(rows.map(r => ({ portal_id, id: r.id, properties: r.properties, updated_at: now })))
   }
   return rows.slice(0, limit)
 }
@@ -56,7 +54,7 @@ export async function searchContacts(
   q: string,
   limit: number,
   sb: SupabaseClient<Database> = supabase,
-  fetchFn: typeof fetch = fetch
+  fetchFn: typeof fetch = fetch,
 ): Promise<ContactRecord[]> {
   const local = await searchLocal(portal_id, q, limit, sb)
   const seen = new Set(local.map(r => r.id))
@@ -80,7 +78,7 @@ export async function handleRequest(req: Request): Promise<Response> {
   const limit = parseInt(url.searchParams.get('limit') || '10', 10)
 
   const auth = req.headers.get('Authorization') || ''
-  const client = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  const client = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     global: { headers: { Authorization: auth } },
   })
   const {
@@ -95,4 +93,3 @@ export async function handleRequest(req: Request): Promise<Response> {
 }
 
 export default { searchContacts, handleRequest }
-
