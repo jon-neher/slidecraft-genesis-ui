@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import type { Database } from '../integrations/supabase/types';
 import crypto from 'crypto';
 import {
   SUPABASE_URL,
@@ -7,7 +8,7 @@ import {
   HUBSPOT_CLIENT_SECRET,
 } from './config';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 export interface PostNoteInput {
   portal_id: string;
