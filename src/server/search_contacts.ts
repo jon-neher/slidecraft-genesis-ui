@@ -1,4 +1,5 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '../integrations/supabase/types'
 import rateLimiter from './rate_limiter_memory'
 
 const SUPABASE_URL = process.env.SUPABASE_URL || ''
@@ -11,9 +12,9 @@ export interface ContactRecord {
   properties: Record<string, any>
 }
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
-async function ensureAccessToken(portal_id: string, sb: SupabaseClient = supabase): Promise<string> {
+async function ensureAccessToken(portal_id: string, sb: SupabaseClient<Database> = supabase): Promise<string> {
   const { data, error } = await sb
     .from('hubspot_tokens')
     .select('access_token, refresh_token, expires_at')
@@ -58,7 +59,7 @@ export async function searchLocal(
   portal_id: string,
   q: string,
   limit: number,
-  sb: SupabaseClient = supabase
+  sb: SupabaseClient<Database> = supabase
 ): Promise<ContactRecord[]> {
   const { data } = await sb
     .from('hubspot_contacts_cache')
@@ -73,7 +74,7 @@ async function searchRemote(
   portal_id: string,
   q: string,
   limit: number,
-  sb: SupabaseClient = supabase,
+  sb: SupabaseClient<Database> = supabase,
   fetchFn: typeof fetch = fetch
 ): Promise<ContactRecord[]> {
   const accessToken = await ensureAccessToken(portal_id, sb)
@@ -114,7 +115,7 @@ export async function searchContacts(
   portal_id: string,
   q: string,
   limit: number,
-  sb: SupabaseClient = supabase,
+  sb: SupabaseClient<Database> = supabase,
   fetchFn: typeof fetch = fetch
 ): Promise<ContactRecord[]> {
   const local = await searchLocal(portal_id, q, limit, sb)
