@@ -1,0 +1,22 @@
+name: Auto-merge non-main PRs
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    # Skip PRs whose base branch is exactly "main"
+    branches-ignore:
+      - main
+
+permissions:
+  pull-requests: write   # allow toggling the auto-merge switch
+  contents: write        # required for squash/rebase merges
+
+jobs:
+  enable_auto_merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge for this PR
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          pull-request-number: ${{ github.event.pull_request.number }}
+          merge-method: squash    # change to "merge" or "rebase" if you prefer
