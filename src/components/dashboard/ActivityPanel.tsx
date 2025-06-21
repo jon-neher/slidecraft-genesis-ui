@@ -2,20 +2,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Clock, Lightbulb, TrendingUp } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-
-const mockActivity = [
-  { id: '1', action: 'Generated Sales Pitch for Acme Corp', time: '2 minutes ago', type: 'generation' },
-  { id: '2', action: 'Updated Investor Deck template', time: '1 hour ago', type: 'update' },
-  { id: '3', action: 'Shared Q4 Review with team', time: '3 hours ago', type: 'share' },
-];
-
-const mockTips = [
-  { id: '1', title: 'Pro Tip: Use Data Storytelling', content: 'Structure your deck to tell a compelling story with your data points.' },
-  { id: '2', title: 'Quick Win: Consistent Branding', content: 'Ensure all slides follow your company brand guidelines for professional impact.' },
-  { id: '3', title: 'Best Practice: Less is More', content: 'Limit each slide to one key message for maximum audience retention.' },
-];
+import { mockActivity, mockTips } from '@/data/mockData';
 
 const ActivityPanel = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -140,7 +129,7 @@ const ActivityPanel = () => {
               </Card>
             </div>
 
-            {/* Nudge Cards */}
+            {/* Performance Nudges */}
             <div>
               <h3 className="text-sm font-medium text-slate-gray mb-3 flex items-center gap-2">
                 <TrendingUp className="w-4 h-4" />
