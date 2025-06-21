@@ -1,11 +1,11 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../integrations/supabase/types'
-import rateLimiter from './rate_limiter_memory'
 import {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
 } from './config'
-import { getAccessToken } from '../integrations/hubspot/token'
+
+import { searchContacts as hubspotSearch } from '../integrations/hubspot/client'
 
 export interface ContactRecord {
   id: string
@@ -37,31 +37,10 @@ async function searchRemote(
   sb: SupabaseClient<Database> = supabase,
   fetchFn: typeof fetch = fetch
 ): Promise<ContactRecord[]> {
-  const accessToken = await getAccessToken(portal_id, sb)
-  await rateLimiter.take(portal_id)
-  const response = await fetchFn('https://api.hubapi.com/crm/v3/objects/contacts/search', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      filterGroups: [
-        {
-          filters: [
-            { propertyName: 'firstname', operator: 'CONTAINS_TOKEN', value: q },
-            { propertyName: 'lastname', operator: 'CONTAINS_TOKEN', value: q },
-            { propertyName: 'email', operator: 'CONTAINS_TOKEN', value: q },
-          ],
-        },
-      ],
-      limit: 20,
-    }),
-  })
 
-  if (!response.ok) throw new Error('HubSpot search failed')
-  const json: any = await response.json()
+  const rows = await hubspotSearch(portal_id, q, limit, sb, fetchFn)
   const rows: ContactRecord[] = json.results || []
+
   const now = new Date().toISOString()
   if (rows.length) {
     await sb.from('hubspot_contacts_cache').upsert(
