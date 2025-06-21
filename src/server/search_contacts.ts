@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../integrations/supabase/types'
-import rateLimiter from './rate_limiter_memory'
+import rateLimiter from '../integrations/hubspot/rateLimiter'
 import {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,

@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../integrations/supabase/types';
 import crypto from 'crypto';
+import hubspotLimiter from '../integrations/hubspot/rateLimiter';
 import {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
@@ -16,41 +17,6 @@ export interface PostNoteInput {
   app_record_url: string;
 }
 
-class SimpleLimiter {
-  private queue: (() => void)[] = [];
-  private active = false;
-  constructor(private intervalMs: number) {}
-
-  private next() {
-    if (this.queue.length === 0) {
-      this.active = false;
-      return;
-    }
-    this.active = true;
-    const fn = this.queue.shift()!;
-    fn();
-    setTimeout(() => this.next(), this.intervalMs);
-  }
-
-  schedule<T>(task: () => Promise<T>): Promise<T> {
-    return new Promise((resolve, reject) => {
-      const run = () => task().then(resolve, reject);
-      this.queue.push(run);
-      if (!this.active) {
-        this.next();
-      }
-    });
-  }
-}
-
-const limiters = new Map<string, SimpleLimiter>();
-
-function limiterFor(token: string) {
-  if (!limiters.has(token)) {
-    limiters.set(token, new SimpleLimiter(250));
-  }
-  return limiters.get(token)!;
-}
 
 async function ensureAccessToken(portal_id: string): Promise<string> {
   const { data, error } = await supabase
@@ -100,9 +66,8 @@ export async function postNote({
 }: PostNoteInput): Promise<{ noteId: string } | { error: any }> {
   try {
     const accessToken = await ensureAccessToken(portal_id);
-    const limiter = limiterFor(accessToken);
-    const response = await limiter.schedule(() =>
-      fetch('https://api.hubapi.com/crm/v3/objects/notes', {
+    await hubspotLimiter.take(portal_id);
+    const response = await fetch('https://api.hubapi.com/crm/v3/objects/notes', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -116,8 +81,7 @@ export async function postNote({
           },
           associations: [{ to: { id: hubspot_object_id, type: 'contact' } }],
         }),
-      })
-    );
+      });
 
     const json = await response.json();
     if (!response.ok) {
