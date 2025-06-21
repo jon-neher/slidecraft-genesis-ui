@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { containerVariants } from '@/lib/animations';
 import { cn } from '@/lib/utils';
 
 interface AnimatedContainerProps {
   children: React.ReactNode;
   className?: string;
-  variants?: object;
+  variants?: Variants;
 }
 
 const AnimatedContainer = ({ 
