@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Search, Plus, Command } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Command as CommandComponent, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 
 const mockEntities = [
   { id: '1', name: 'Acme Corp', type: 'company', avatar: '/placeholder.svg' },
