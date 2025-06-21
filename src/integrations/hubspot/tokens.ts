@@ -9,6 +9,13 @@ import {
 
 const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
+export interface HubSpotTokenResponse {
+  access_token: string
+  refresh_token?: string
+  expires_in: number
+  scope?: string
+}
+
 export async function ensureAccessToken(
   portal_id: string,
   sb: SupabaseClient<Database> = supabase,
@@ -40,7 +47,7 @@ export async function ensureAccessToken(
   })
 
   if (!resp.ok) throw new Error('Refresh failed')
-  const json: any = await resp.json()
+  const json: HubSpotTokenResponse = await resp.json()
 
   await sb
     .from('hubspot_tokens')
