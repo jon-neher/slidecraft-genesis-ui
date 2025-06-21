@@ -4,6 +4,7 @@ import {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
 } from './config'
+
 import { searchContacts as hubspotSearch } from '../integrations/hubspot/client'
 
 export interface ContactRecord {
@@ -36,7 +37,10 @@ async function searchRemote(
   sb: SupabaseClient<Database> = supabase,
   fetchFn: typeof fetch = fetch
 ): Promise<ContactRecord[]> {
+
   const rows = await hubspotSearch(portal_id, q, limit, sb, fetchFn)
+  const rows: ContactRecord[] = json.results || []
+
   const now = new Date().toISOString()
   if (rows.length) {
     await sb.from('hubspot_contacts_cache').upsert(
