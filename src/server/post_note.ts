@@ -4,9 +4,8 @@ import crypto from 'crypto';
 import {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
-  HUBSPOT_CLIENT_ID,
-  HUBSPOT_CLIENT_SECRET,
 } from './config';
+import { ensureAccessToken } from './hubspot_tokens';
 
 const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -50,47 +49,6 @@ function limiterFor(token: string) {
     limiters.set(token, new SimpleLimiter(250));
   }
   return limiters.get(token)!;
-}
-
-async function ensureAccessToken(portal_id: string): Promise<string> {
-  const { data, error } = await supabase
-    .from('hubspot_tokens')
-    .select('access_token, refresh_token, expires_at')
-    .eq('portal_id', portal_id)
-    .maybeSingle();
-
-  if (error || !data) {
-    throw new Error('Token fetch failed');
-  }
-
-  if (data.expires_at && new Date(data.expires_at).getTime() > Date.now() + 60_000) {
-    return data.access_token;
-  }
-
-  const resp = await fetch('https://api.hubapi.com/oauth/v1/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: data.refresh_token,
-      client_id: HUBSPOT_CLIENT_ID,
-      client_secret: HUBSPOT_CLIENT_SECRET,
-    }).toString(),
-  });
-
-  if (!resp.ok) throw new Error('Refresh failed');
-  const json: any = await resp.json();
-
-  await supabase
-    .from('hubspot_tokens')
-    .update({
-      access_token: json.access_token,
-      refresh_token: json.refresh_token ?? data.refresh_token,
-      expires_at: new Date(Date.now() + json.expires_in * 1000).toISOString(),
-    })
-    .eq('portal_id', portal_id);
-
-  return json.access_token;
 }
 
 export async function postNote({
