@@ -221,3 +221,7 @@ npm run test
 - CSS-based marquee for smooth logo scrolling
 
 This landing page showcases modern web animation techniques while maintaining excellent performance and accessibility standards.
+
+## API Documentation
+
+See `docs/openapi.yaml` for the HubSpot integration endpoints and `docs/SECURITY_CHECKLIST.md` for security requirements.
