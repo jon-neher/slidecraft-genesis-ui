@@ -1,6 +1,6 @@
 export interface BucketState {
-  tokens: number;
-  resetAt: number;
+  tokens: number
+  resetAt: number
 }
 
 function delay(ms: number) {
@@ -8,7 +8,7 @@ function delay(ms: number) {
 }
 
 export class RateLimiterMemory {
-  private buckets: Map<string, BucketState> = new Map();
+  private buckets: Map<string, BucketState> = new Map()
 
   constructor(private maxBurst = 100, private windowMs = 10_000) {}
 
@@ -37,6 +37,18 @@ export class RateLimiterMemory {
     return this.take(id, cost);
   }
 }
+const portalLimiters = new Map<string, RateLimiterMemory>()
 
-const rateLimiterMemory = new RateLimiterMemory();
-export default rateLimiterMemory;
+export function getLimiter(
+  id: string,
+  maxBurst = 100,
+  windowMs = 10_000
+) {
+  if (!portalLimiters.has(id)) {
+    portalLimiters.set(id, new RateLimiterMemory(maxBurst, windowMs))
+  }
+  return portalLimiters.get(id)!
+}
+
+const rateLimiterMemory = getLimiter('default', 4, 1_000)
+export default rateLimiterMemory

@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { postNote } from './post_note';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { postNote } from './post_note'
+import rateLimiter from './rate_limiter_memory'
 
 const fromMock = vi.fn();
 const selectMock = vi.fn();
@@ -22,6 +23,11 @@ beforeEach(() => {
   vi.stubGlobal('fetch', fetchMock);
   selectMock.mockReset();
   updateMock.mockReset();
+  (rateLimiter as any).buckets?.clear?.();
+});
+
+afterEach(() => {
+  vi.useRealTimers();
 });
 
 describe('postNote', () => {
@@ -66,5 +72,40 @@ describe('postNote', () => {
     expect(updateMock).toHaveBeenCalled();
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(result).toEqual({ noteId: 'note2' });
+  });
+
+  it('throttles multiple requests per portal', async () => {
+    vi.useFakeTimers();
+    selectMock.mockReturnValue({
+      eq: () => ({
+        maybeSingle: () =>
+          Promise.resolve({
+            data: {
+              access_token: 'tok',
+              refresh_token: 'ref',
+              expires_at: new Date(Date.now() + 3600e3).toISOString(),
+            },
+            error: null,
+          }),
+      }),
+    });
+
+    fetchMock.mockResolvedValue({ ok: true, json: async () => ({ id: 'n' }) });
+
+    const times: number[] = [];
+    const start = Date.now();
+    const promises = Array.from({ length: 5 }, () =>
+      postNote({ portal_id: 'p1', hubspot_object_id: '1', app_record_url: 'u' }).then(
+        () => times.push(Date.now() - start)
+      )
+    );
+
+    await vi.runAllTicks();
+    await vi.advanceTimersByTimeAsync(1000);
+    await vi.runAllTicks();
+    await Promise.all(promises);
+
+    expect(times.filter(t => t < 1000).length).toBe(4);
+    expect(times.filter(t => t >= 1000).length).toBe(1);
   });
 });

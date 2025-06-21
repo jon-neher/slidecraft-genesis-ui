@@ -1,5 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
-import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js'
+import crypto from 'crypto'
+import rateLimiter from './rate_limiter_memory'
 
 const SUPABASE_URL = process.env.SUPABASE_URL || '';
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -14,41 +15,6 @@ export interface PostNoteInput {
   app_record_url: string;
 }
 
-class SimpleLimiter {
-  private queue: (() => void)[] = [];
-  private active = false;
-  constructor(private intervalMs: number) {}
-
-  private next() {
-    if (this.queue.length === 0) {
-      this.active = false;
-      return;
-    }
-    this.active = true;
-    const fn = this.queue.shift()!;
-    fn();
-    setTimeout(() => this.next(), this.intervalMs);
-  }
-
-  schedule<T>(task: () => Promise<T>): Promise<T> {
-    return new Promise((resolve, reject) => {
-      const run = () => task().then(resolve, reject);
-      this.queue.push(run);
-      if (!this.active) {
-        this.next();
-      }
-    });
-  }
-}
-
-const limiters = new Map<string, SimpleLimiter>();
-
-function limiterFor(token: string) {
-  if (!limiters.has(token)) {
-    limiters.set(token, new SimpleLimiter(250));
-  }
-  return limiters.get(token)!;
-}
 
 async function ensureAccessToken(portal_id: string): Promise<string> {
   const { data, error } = await supabase
@@ -97,10 +63,9 @@ export async function postNote({
   app_record_url,
 }: PostNoteInput): Promise<{ noteId: string } | { error: any }> {
   try {
-    const accessToken = await ensureAccessToken(portal_id);
-    const limiter = limiterFor(accessToken);
-    const response = await limiter.schedule(() =>
-      fetch('https://api.hubapi.com/crm/v3/objects/notes', {
+    const accessToken = await ensureAccessToken(portal_id)
+    await rateLimiter.take(portal_id)
+    const response = await fetch('https://api.hubapi.com/crm/v3/objects/notes', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -115,7 +80,6 @@ export async function postNote({
           associations: [{ to: { id: hubspot_object_id, type: 'contact' } }],
         }),
       })
-    );
 
     const json = await response.json();
     if (!response.ok) {
