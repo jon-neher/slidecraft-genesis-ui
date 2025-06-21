@@ -25,14 +25,14 @@ const QuickSelectHeader = () => {
     >
       <div className="flex items-center gap-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-gray" />
           <Input
             placeholder="Search companies or contacts..."
-            className="pl-10 h-12 text-base border-gray-200 focus:border-electric-indigo focus:ring-electric-indigo bg-white"
+            className="pl-10 h-12 text-base border-gray-200 focus:border-electric-indigo focus:ring-electric-indigo bg-white text-slate-gray placeholder:text-gray-400"
             onFocus={() => setSearchOpen(true)}
             data-tl-search-focus
           />
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-1 text-xs text-gray-400">
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-1 text-xs text-slate-gray">
             <Command className="w-3 h-3" />
             <span>K</span>
           </div>
