@@ -4,6 +4,10 @@ jest.mock('./rate_limiter_memory', () => {
   const { RateLimiterMemory } = jest.requireActual('./rate_limiter_memory')
   return { __esModule: true, default: new RateLimiterMemory(100, 1000), RateLimiterMemory }
 })
+jest.mock('./hubspot_tokens.ts', () => ({
+  __esModule: true,
+  ensureAccessToken: jest.fn(() => Promise.resolve('tok')),
+}))
 import { RateLimiterMemory } from './rate_limiter_memory'
 let searchContacts: typeof import('./search_contacts').searchContacts
 beforeAll(async () => {

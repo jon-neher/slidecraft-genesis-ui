@@ -1,4 +1,5 @@
 // Centralized environment configuration for both Node and Deno runtimes
+declare const Deno: undefined | { env: { toObject(): Record<string, string> } }
 
 const env: Record<string, string | undefined> =
   typeof Deno !== 'undefined'

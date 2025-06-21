@@ -5,6 +5,13 @@ import {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
 } from './config'
+import { ensureAccessToken as getAccessToken } from './hubspot_tokens'
+async function ensureAccessToken(
+  portal_id: string,
+  sb: SupabaseClient<Database> = supabase
+): Promise<string> {
+  return getAccessToken(portal_id, sb)
+}
 
 import { ensureAccessToken } from './hubspot_tokens'
 
