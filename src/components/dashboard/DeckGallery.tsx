@@ -52,22 +52,22 @@ const DeckGallery = () => {
               placeholder="Search deck types..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-10 border-gray-200"
+              className="pl-10 h-10 border-gray-200 bg-white focus:border-electric-indigo focus:ring-electric-indigo"
             />
           </div>
         </div>
         
-        <Button variant="outline" className="gap-2 h-10">
+        <Button variant="outline" className="gap-2 h-10 border-gray-200 bg-white text-slate-gray hover:bg-gray-50 hover:border-electric-indigo hover:text-electric-indigo">
           Team: {selectedTeam}
           <ChevronDown className="w-4 h-4" />
         </Button>
         
-        <Button variant="outline" className="gap-2 h-10">
+        <Button variant="outline" className="gap-2 h-10 border-gray-200 bg-white text-slate-gray hover:bg-gray-50 hover:border-electric-indigo hover:text-electric-indigo">
           Sort: {sortBy}
           <ChevronDown className="w-4 h-4" />
         </Button>
         
-        <Button variant="outline" size="icon" className="h-10 w-10">
+        <Button variant="outline" size="icon" className="h-10 w-10 border-gray-200 bg-white text-slate-gray hover:bg-gray-50 hover:border-electric-indigo hover:text-electric-indigo">
           <Grid className="w-4 h-4" />
         </Button>
       </motion.div>
@@ -91,10 +91,10 @@ const DeckGallery = () => {
             className="will-change-transform"
             data-tl-deck-template-selected={deckType.id}
           >
-            <Card className="card-modern border-gray-200 hover:shadow-lg cursor-pointer transition-all duration-200 group">
+            <Card className="card-modern border-gray-200 hover:shadow-lg cursor-pointer transition-all duration-200 group bg-white">
               <CardContent className="p-0">
                 <div className="aspect-video bg-gradient-to-br from-electric-indigo/10 to-neon-mint/10 rounded-t-xl flex items-center justify-center">
-                  <div className="w-20 h-20 bg-electric-gradient rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                  <div className="w-20 h-20 bg-gradient-to-br from-electric-indigo to-neon-mint rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
                     <span className="text-white font-semibold text-lg">
                       {deckType.name.split(' ').map(word => word[0]).join('')}
                     </span>

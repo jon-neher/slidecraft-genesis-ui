@@ -29,7 +29,7 @@ const ContextPane = () => {
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      <Card className="card-modern border-gray-200">
+      <Card className="card-modern border-gray-200 bg-white">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
             <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-electric-indigo to-neon-mint flex items-center justify-center">

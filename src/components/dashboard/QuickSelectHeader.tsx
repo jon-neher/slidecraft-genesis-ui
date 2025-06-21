@@ -28,7 +28,7 @@ const QuickSelectHeader = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
           <Input
             placeholder="Search companies or contacts..."
-            className="pl-10 h-12 text-base border-gray-200 focus:border-electric-indigo focus:ring-electric-indigo"
+            className="pl-10 h-12 text-base border-gray-200 focus:border-electric-indigo focus:ring-electric-indigo bg-white"
             onFocus={() => setSearchOpen(true)}
             data-tl-search-focus
           />
