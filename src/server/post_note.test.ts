@@ -15,7 +15,7 @@ vi.mock('@supabase/supabase-js', () => ({
   })),
 }));
 
-let fetchMock: any;
+let fetchMock: ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
   fetchMock = vi.fn();

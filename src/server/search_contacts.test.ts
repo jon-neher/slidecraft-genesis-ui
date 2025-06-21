@@ -5,6 +5,7 @@ jest.mock('./rate_limiter_memory', () => {
   return { __esModule: true, default: new RateLimiterMemory(100, 1000), RateLimiterMemory }
 })
 import { RateLimiterMemory } from './rate_limiter_memory'
+import type { SupabaseClient } from '@supabase/supabase-js'
 let searchContacts: typeof import('./search_contacts').searchContacts
 beforeAll(async () => {
   ;({ searchContacts } = await import('./search_contacts'))
@@ -32,9 +33,9 @@ const mockClient = {
     upsert: upsertMock
   }),
   auth: authMock
-} as any
+} as unknown as SupabaseClient
 
-function makeFetch(results: any[]) {
+function makeFetch(results: unknown[]) {
   return jest.fn().mockResolvedValue({ ok: true, json: async () => ({ results }) })
 }
 
@@ -50,7 +51,7 @@ describe('searchContacts', () => {
   it('hits local only', async () => {
     limitMock.mockResolvedValue({ data: Array.from({ length: 6 }, (_, i) => ({ id: `${i}`, properties: {} })), error: null })
     const fetch = makeFetch([])
-    const res = await searchContacts('p1', 'foo', 10, mockClient as any, fetch)
+    const res = await searchContacts('p1', 'foo', 10, mockClient, fetch)
     expect(fetch).not.toHaveBeenCalled()
     expect(res.length).toBe(6)
   })
@@ -58,19 +59,20 @@ describe('searchContacts', () => {
   it('hits remote when local < 5', async () => {
     limitMock.mockResolvedValueOnce({ data: [{ id: '1', properties: {} }], error: null })
     const fetch = makeFetch([{ id: '1', properties: {} }, { id: '2', properties: {} }])
-    const res = await searchContacts('p1', 'foo', 2, mockClient as any, fetch)
+    const res = await searchContacts('p1', 'foo', 2, mockClient, fetch)
     expect(fetch).toHaveBeenCalled()
     expect(res.map(r => r.id)).toEqual(['1', '2'])
   })
 
   it('rate-limiter blocks >5 rps in test harness', async () => {
     const limiter = new RateLimiterMemory(5, 1000)
-    Object.assign(require('./rate_limiter_memory'), { default: limiter })
+    const mod = await import('./rate_limiter_memory')
+    Object.assign(mod, { default: limiter })
 
     limitMock.mockResolvedValue({ data: [], error: null })
     const fetch = makeFetch([])
     const start = Date.now()
-    const promises = Array.from({ length: 6 }, () => searchContacts('p1', 'a', 1, mockClient as any, fetch))
+    const promises = Array.from({ length: 6 }, () => searchContacts('p1', 'a', 1, mockClient, fetch))
     await jest.advanceTimersByTimeAsync(1000)
     await Promise.all(promises)
     expect(Date.now() - start).toBeGreaterThanOrEqual(1000)

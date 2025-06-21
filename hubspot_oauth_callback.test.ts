@@ -10,7 +10,7 @@ vi.mock('@supabase/supabase-js', () => ({
 }));
 
 const fetchMock = vi.fn();
-// @ts-ignore
+// @ts-expect-error test environment does not provide fetch typing
 global.fetch = fetchMock;
 
 describe('hubspotOAuthCallback', () => {
