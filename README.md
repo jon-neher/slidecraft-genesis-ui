@@ -192,7 +192,7 @@ npm install
 npm run dev
 ```
 
-3. Run tests:
+3. Run tests once:
 ```bash
 npm run test
 ```
