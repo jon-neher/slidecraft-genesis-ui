@@ -2,10 +2,11 @@ import express, { RequestHandler, Request, Response } from 'express';
 import { requireAuth } from '@clerk/express';
 import { createClient } from '@supabase/supabase-js';
 import { createHmac } from 'crypto';
-
-const HUBSPOT_SECRET = process.env.HUBSPOT_APP_SECRET || 'test_secret';
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+import {
+  HUBSPOT_APP_SECRET as HUBSPOT_SECRET,
+  SUPABASE_URL,
+  SUPABASE_SERVICE_ROLE_KEY,
+} from './config';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 

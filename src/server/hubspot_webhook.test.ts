@@ -18,13 +18,16 @@ vi.mock('@supabase/supabase-js', () => ({
   })),
 }));
 
-import { hubspotWebhookHandler, jsonWithRaw } from './hubspot_webhook';
+let hubspotWebhookHandler: typeof import('./hubspot_webhook').hubspotWebhookHandler;
+let jsonWithRaw: typeof import('./hubspot_webhook').jsonWithRaw;
 
 const secret = 'test_secret';
 
-beforeEach(() => {
+beforeEach(async () => {
   insertMock.mockClear();
   process.env.HUBSPOT_APP_SECRET = secret;
+  vi.resetModules();
+  ({ hubspotWebhookHandler, jsonWithRaw } = await import('./hubspot_webhook'));
 });
 
 describe('hubspotWebhookHandler', () => {

@@ -1,14 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../src/integrations/supabase/types';
-
-// Resolve environment variables for both Node and Deno environments
-const env: Record<string, string | undefined> =
-  typeof Deno !== 'undefined' ? (Deno.env.toObject() as Record<string, string>) : process.env;
-
-const HUBSPOT_CLIENT_ID = env.HUBSPOT_CLIENT_ID ?? '';
-const HUBSPOT_CLIENT_SECRET = env.HUBSPOT_CLIENT_SECRET ?? '';
-const SUPABASE_URL = env.SUPABASE_URL ?? '';
-const SUPABASE_SERVICE_ROLE_KEY = env.SUPABASE_SERVICE_ROLE_KEY ?? env.SUPABASE_SERVICE_KEY ?? '';
+import {
+  HUBSPOT_CLIENT_ID,
+  HUBSPOT_CLIENT_SECRET,
+  SUPABASE_URL,
+  SUPABASE_SERVICE_ROLE_KEY,
+} from '../src/server/config.ts';
 
 const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 

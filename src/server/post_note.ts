@@ -1,10 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
-
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-const HUBSPOT_CLIENT_ID = process.env.HUBSPOT_CLIENT_ID || '';
-const HUBSPOT_CLIENT_SECRET = process.env.HUBSPOT_CLIENT_SECRET || '';
+import {
+  SUPABASE_URL,
+  SUPABASE_SERVICE_ROLE_KEY,
+  HUBSPOT_CLIENT_ID,
+  HUBSPOT_CLIENT_SECRET,
+} from './config';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
