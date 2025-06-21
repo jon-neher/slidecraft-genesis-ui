@@ -1,10 +1,10 @@
 process.env.SUPABASE_URL = 'http://localhost'
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'key'
-jest.mock('./rate_limiter_memory', () => {
-  const { RateLimiterMemory } = jest.requireActual('./rate_limiter_memory')
+jest.mock('../integrations/hubspot/rateLimiter', () => {
+  const { RateLimiterMemory } = jest.requireActual('../integrations/hubspot/rateLimiter')
   return { __esModule: true, default: new RateLimiterMemory(100, 1000), RateLimiterMemory }
 })
-import { RateLimiterMemory } from './rate_limiter_memory'
+import { RateLimiterMemory } from '../integrations/hubspot/rateLimiter'
 let searchContacts: typeof import('./search_contacts').searchContacts
 beforeAll(async () => {
   ;({ searchContacts } = await import('./search_contacts'))
@@ -65,7 +65,7 @@ describe('searchContacts', () => {
 
   it('rate-limiter blocks >5 rps in test harness', async () => {
     const limiter = new RateLimiterMemory(5, 1000)
-    Object.assign(require('./rate_limiter_memory'), { default: limiter })
+    Object.assign(require('../integrations/hubspot/rateLimiter'), { default: limiter })
 
     limitMock.mockResolvedValue({ data: [], error: null })
     const fetch = makeFetch([])

@@ -1,5 +1,6 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../integrations/supabase/types'
+
 import {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
