@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, ChevronDown, Grid } from 'lucide-react';
+import { ChevronDown, Grid } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { SearchInput } from '@/components/ui/search-input';
 
 const mockDeckTypes = [
   { id: '1', name: 'Sales Pitch', description: 'Compelling presentations for prospects', thumbnail: '/placeholder.svg', category: 'Sales' },
@@ -45,17 +44,12 @@ const DeckGallery = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
       >
-        <div className="flex-1 min-w-64">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input
-              placeholder="Search deck types..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-10 border-gray-200 bg-white focus:border-electric-indigo focus:ring-electric-indigo"
-            />
-          </div>
-        </div>
+        <SearchInput
+          placeholder="Search deck types..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="min-w-64"
+        />
         
         <Button variant="outline" className="gap-2 h-10 border-gray-200 bg-white text-slate-gray hover:bg-gray-50 hover:border-electric-indigo hover:text-electric-indigo">
           Team: {selectedTeam}

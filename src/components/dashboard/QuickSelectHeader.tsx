@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Plus, Command } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { SearchInput } from '@/components/ui/search-input';
 
 const mockEntities = [
   { id: '1', name: 'Acme Corp', type: 'company', avatar: '/placeholder.svg' },
@@ -24,19 +23,12 @@ const QuickSelectHeader = () => {
       transition={{ duration: 0.3 }}
     >
       <div className="flex items-center gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-gray" />
-          <Input
-            placeholder="Search companies or contacts..."
-            className="pl-10 h-12 text-base border-gray-200 focus:border-electric-indigo focus:ring-electric-indigo bg-white text-slate-gray placeholder:text-gray-400"
-            onFocus={() => setSearchOpen(true)}
-            data-tl-search-focus
-          />
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-1 text-xs text-slate-gray">
-            <Command className="w-3 h-3" />
-            <span>K</span>
-          </div>
-        </div>
+        <SearchInput
+          placeholder="Search companies or contacts..."
+          showKeyboardShortcut={true}
+          onFocus={() => setSearchOpen(true)}
+          data-tl-search-focus
+        />
         
         <Button 
           className={`h-12 px-6 gap-2 transition-all duration-200 ${
