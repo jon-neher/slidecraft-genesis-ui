@@ -24,6 +24,6 @@ export default defineConfig(({ mode }) => ({
     globals: true,
     setupFiles: "./src/setupTests.ts",
     include: ["src/**/*.{test,spec}.{js,ts,jsx,tsx}"],
-    exclude: ["node_modules/**", "src/server/search_contacts.test.ts"],
+    exclude: ["node_modules/**"],
   },
 }));
