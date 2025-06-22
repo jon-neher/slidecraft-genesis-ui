@@ -9,6 +9,89 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      presentation_plans: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          plan_id: string
+          plan_json: Json | null
+          presentation_id: string
+          status: Database["public"]["Enums"]["plan_status_enum"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          plan_id?: string
+          plan_json?: Json | null
+          presentation_id: string
+          status?: Database["public"]["Enums"]["plan_status_enum"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          plan_id?: string
+          plan_json?: Json | null
+          presentation_id?: string
+          status?: Database["public"]["Enums"]["plan_status_enum"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "presentation_plans_presentation_id_fkey"
+            columns: ["presentation_id"]
+            isOneToOne: false
+            referencedRelation: "presentations"
+            referencedColumns: ["presentation_id"]
+          },
+        ]
+      }
+      presentations: {
+        Row: {
+          completed_at: string | null
+          context: Json | null
+          created_at: string
+          generated_file_url: string | null
+          generation_status: Database["public"]["Enums"]["presentation_status_enum"]
+          presentation_id: string
+          requested_at: string
+          started_at: string | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          context?: Json | null
+          created_at?: string
+          generated_file_url?: string | null
+          generation_status?: Database["public"]["Enums"]["presentation_status_enum"]
+          presentation_id?: string
+          requested_at?: string
+          started_at?: string | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          context?: Json | null
+          created_at?: string
+          generated_file_url?: string | null
+          generation_status?: Database["public"]["Enums"]["presentation_status_enum"]
+          presentation_id?: string
+          requested_at?: string
+          started_at?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -36,88 +119,90 @@ export type Database = {
         }
         Relationships: []
       }
-      hubspot_tokens: {
+      slide_generations: {
         Row: {
-          portal_id: string
-          access_token: string | null
-          refresh_token: string | null
-          expires_at: string | null
-          scope: string[] | null
+          created_at: string
+          error_message: string | null
+          generation_id: string
+          generation_status: Database["public"]["Enums"]["slide_status_enum"]
+          md_rendered: string | null
+          parsed_content: Json | null
+          presentation_id: string
+          raw_output: Json | null
+          slide_index: number
+          template_id: string
+          updated_at: string
         }
         Insert: {
-          portal_id: string
-          access_token?: string | null
-          refresh_token?: string | null
-          expires_at?: string | null
-          scope?: string[] | null
+          created_at?: string
+          error_message?: string | null
+          generation_id?: string
+          generation_status?: Database["public"]["Enums"]["slide_status_enum"]
+          md_rendered?: string | null
+          parsed_content?: Json | null
+          presentation_id: string
+          raw_output?: Json | null
+          slide_index: number
+          template_id: string
+          updated_at?: string
         }
         Update: {
-          portal_id?: string
-          access_token?: string | null
-          refresh_token?: string | null
-          expires_at?: string | null
-          scope?: string[] | null
+          created_at?: string
+          error_message?: string | null
+          generation_id?: string
+          generation_status?: Database["public"]["Enums"]["slide_status_enum"]
+          md_rendered?: string | null
+          parsed_content?: Json | null
+          presentation_id?: string
+          raw_output?: Json | null
+          slide_index?: number
+          template_id?: string
+          updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "slide_generations_presentation_id_fkey"
+            columns: ["presentation_id"]
+            isOneToOne: false
+            referencedRelation: "presentations"
+            referencedColumns: ["presentation_id"]
+          },
+          {
+            foreignKeyName: "slide_generations_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "slide_templates"
+            referencedColumns: ["template_id"]
+          },
+        ]
       }
-      hubspot_events_raw: {
+      slide_templates: {
         Row: {
-          id: number
-          portal_id: string | null
-          raw: Json | null
-          received_at: string | null
+          created_at: string
+          md_template: string
+          name: string
+          output_schema: Json
+          prompt_template: string
+          template_id: string
+          updated_at: string
         }
         Insert: {
-          id?: number
-          portal_id?: string | null
-          raw?: Json | null
-          received_at?: string | null
+          created_at?: string
+          md_template: string
+          name: string
+          output_schema: Json
+          prompt_template: string
+          template_id?: string
+          updated_at?: string
         }
         Update: {
-          id?: number
-          portal_id?: string | null
-          raw?: Json | null
-          received_at?: string | null
-        }
-        Relationships: []
-      }
-      hubspot_contacts_cache: {
-        Row: {
-          portal_id: string
-          id: string
-          properties: Json | null
-          updated_at: string | null
-          search_vector: unknown | null
-        }
-        Insert: {
-          portal_id: string
-          id: string
-          properties?: Json | null
-          updated_at?: string | null
-        }
-        Update: {
-          portal_id?: string
-          id?: string
-          properties?: Json | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      hubspot_sync_cursors: {
-        Row: {
-          portal_id: string
-          object_type: string
-          hs_timestamp: string | null
-        }
-        Insert: {
-          portal_id: string
-          object_type: string
-          hs_timestamp?: string | null
-        }
-        Update: {
-          portal_id?: string
-          object_type?: string
-          hs_timestamp?: string | null
+          created_at?: string
+          md_template?: string
+          name?: string
+          output_schema?: Json
+          prompt_template?: string
+          template_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -129,7 +214,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      plan_status_enum: "pending" | "complete" | "failed"
+      presentation_status_enum:
+        | "pending"
+        | "in_progress"
+        | "complete"
+        | "failed"
+      slide_status_enum: "pending" | "in_progress" | "complete" | "failed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -244,6 +335,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      plan_status_enum: ["pending", "complete", "failed"],
+      presentation_status_enum: [
+        "pending",
+        "in_progress",
+        "complete",
+        "failed",
+      ],
+      slide_status_enum: ["pending", "in_progress", "complete", "failed"],
+    },
   },
 } as const
