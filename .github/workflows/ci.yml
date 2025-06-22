@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  pull_request:
+    # you can narrow this to only non-main branches if you like
+    branches-ignore:
+      - main
+
+jobs:
+  npm-test:
+    name: npm test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm test
