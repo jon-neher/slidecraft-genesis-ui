@@ -1,13 +1,11 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../supabase/types'
+import supabase from '../../server/supabaseClient'
 import {
-  SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY,
   HUBSPOT_CLIENT_ID,
   HUBSPOT_CLIENT_SECRET,
 } from '../../server/config'
 
-const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 export async function ensureAccessToken(
   portal_id: string,
