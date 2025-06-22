@@ -11,10 +11,23 @@ vi.mock('@clerk/express', () => ({
 }));
 
 const insertMock = vi.fn().mockResolvedValue({});
+const deleteTokensMock = vi.fn().mockResolvedValue({});
+const deleteCacheMock = vi.fn().mockResolvedValue({});
+const deleteCursorsMock = vi.fn().mockResolvedValue({});
 
 vi.mock('@supabase/supabase-js', () => ({
   createClient: vi.fn(() => ({
-    from: () => ({ insert: insertMock }),
+    from: (table: string) => ({
+      insert: table === 'hubspot_events_raw' ? insertMock : undefined,
+      delete: () => ({
+        eq: (field: string, val: string) => {
+          if (table === 'hubspot_tokens') return deleteTokensMock(field, val);
+          if (table === 'hubspot_contacts_cache') return deleteCacheMock(field, val);
+          if (table === 'hubspot_sync_cursors') return deleteCursorsMock(field, val);
+          return undefined as any;
+        },
+      }),
+    }),
   })),
 }));
 
@@ -25,6 +38,9 @@ const secret = 'test_secret';
 
 beforeEach(async () => {
   insertMock.mockClear();
+  deleteTokensMock.mockClear();
+  deleteCacheMock.mockClear();
+  deleteCursorsMock.mockClear();
   process.env.HUBSPOT_APP_SECRET = secret;
   vi.resetModules();
   ({ hubspotWebhookHandler, jsonWithRaw } = await import('./hubspot_webhook'));
@@ -63,5 +79,26 @@ describe('hubspotWebhookHandler', () => {
 
     expect(res.status).toBe(401);
     expect(insertMock).not.toHaveBeenCalled();
+  });
+
+  it('purges data on uninstall event', async () => {
+    const payload = [{ subscriptionType: 'app.uninstalled' }];
+    const sig = createHmac('sha256', secret)
+      .update(JSON.stringify(payload))
+      .digest('base64');
+
+    const app = express();
+    app.use(jsonWithRaw);
+    app.post('/', ...hubspotWebhookHandler);
+
+    const res = await request(app)
+      .post('/')
+      .set('X-HubSpot-Signature-V3', sig)
+      .send(payload);
+
+    expect(res.status).toBe(204);
+    expect(deleteTokensMock).toHaveBeenCalledWith('portal_id', 'user_123');
+    expect(deleteCacheMock).toHaveBeenCalledWith('portal_id', 'user_123');
+    expect(deleteCursorsMock).toHaveBeenCalledWith('portal_id', 'user_123');
   });
 });

@@ -39,6 +39,29 @@ export const hubspotWebhookHandler: RequestHandler[] = [
     const portalId = authedReq.auth.userId;
     const payload = req.body;
 
+    const events = Array.isArray(payload) ? payload : [payload];
+    const uninstall = events.some((e: any) => e.subscriptionType === 'app.uninstalled');
+
+    if (uninstall) {
+      supabase
+        .from('hubspot_tokens')
+        .delete()
+        .eq('portal_id', portalId)
+        .catch((err) => console.error('uninstall delete tokens error', err));
+
+      supabase
+        .from('hubspot_contacts_cache')
+        .delete()
+        .eq('portal_id', portalId)
+        .catch((err) => console.error('uninstall delete cache error', err));
+
+      supabase
+        .from('hubspot_sync_cursors')
+        .delete()
+        .eq('portal_id', portalId)
+        .catch((err) => console.error('uninstall delete cursors error', err));
+    }
+
     // insert asynchronously
     supabase
       .from('hubspot_events_raw')
