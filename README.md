@@ -1,13 +1,15 @@
-# Threadline Landing Page
+# Threadline Web App
 
-A premium, responsive landing page for SlideCraft AI, an AI-powered presentation generation tool. Built with React, Framer Motion, and Tailwind CSS. **Threadline: Turn your data into decks that speak volumes.**
+Threadline is an AI-powered presentation builder. This repository contains both the marketing site and the signed‑in dashboard, along with the Supabase/HubSpot integration code. The UI is built with React, Vite and Tailwind CSS using the shadcn/ui component library.
 
 ## 🚀 Features
 
-- **High-End Look**: Bold headlines, modular layout sections, and generous white space
-- **Smooth Animations**: Framer Motion interactions with the existing hero animation
-- **Responsive Layout**: Mobile-first design that adapts cleanly across breakpoints
-- **Performance Optimized**: Uses `will-change` and transform-only animations
+- **Modern Landing Page** with hero animations and waitlist forms
+- **Dashboard** for browsing deck templates and viewing recent activity
+- **Supabase & HubSpot integration** powering OAuth and contact search
+- **Smooth Animations** using Framer Motion
+- **Performance Optimized** with transform-only animations
+- **Responsive Layout** that adapts cleanly across breakpoints
 
 ## 🎨 Design System
 
@@ -74,8 +76,7 @@ A premium, responsive landing page for SlideCraft AI, an AI-powered presentation
 
 ### ModernTestimonials
 - Testimonial cards featuring star ratings
-- Animated counters that trigger on scroll
-- Infinite marquee logo rail
+- Smooth entrance animations
 
 ### ModernCTA
 - Clerk sign-up / sign-in for early access
@@ -86,6 +87,11 @@ A premium, responsive landing page for SlideCraft AI, an AI-powered presentation
 - Newsletter form for updates
 - Social links for major platforms
 - Company information in the footer bar
+
+### Dashboard
+- Left navigation with team switcher
+- Context pane and activity feed
+- Deck gallery with animated cards
 
 ## 🛠 Animation Details
 
@@ -104,21 +110,26 @@ import { containerVariants, itemVariants, cardVariants } from "@/lib/variants";
 - Uses `whileInView` with `viewport={{ once: true }}` for scroll-triggered animations
 - Transform-only animations for 60fps performance
 - `will-change` CSS property for optimized rendering
-- Efficient counter animations with controlled intervals
 
 ## 📁 Project Structure
 
 ```
 src/
 ├── components/
-│   ├── ModernHero.tsx       # Main hero with waitlist form
-│   ├── ModernFeatures.tsx   # Feature cards with staggered animation
-│   ├── ModernTestimonials.tsx # Testimonials and social proof
-│   ├── ModernCTA.tsx        # Final call-to-action section
-│   └── Footer.tsx           # Newsletter and social links
+│   ├── ModernHero.tsx       # Landing page hero
+│   ├── ModernFeatures.tsx   # Feature highlights
+│   ├── ModernTestimonials.tsx # Social proof section
+│   ├── ModernCTA.tsx        # Final call-to-action
+│   ├── Footer.tsx           # Newsletter and social links
+│   └── dashboard/           # Signed‑in dashboard components
 ├── pages/
-│   └── Index.tsx            # Main landing page assembly
+│   ├── Index.tsx            # Marketing landing page
+│   └── Dashboard.tsx        # Main application interface
+├── server/                  # HubSpot handlers and utilities
 └── index.css                # Custom theme and animation styles
+supabase/
+├── functions/               # Edge functions for production
+└── migrations/              # Database schema
 ```
 
 ## 🎯 Customization Guide
@@ -207,8 +218,6 @@ npm run test
 
 - **Typewriter Effect**: Letter-by-letter headline reveal
 - **Staggered Cards**: Sequential feature card entrance
-- **Animated Counters**: Number counting on scroll trigger
-- **Infinite Marquee**: Seamless logo carousel
 - **Micro-interactions**: Hover states, focus effects, and button feedback
 - **Particle System**: Floating background elements
 
@@ -217,8 +226,7 @@ npm run test
 - All animations use `transform` and `opacity` only
 - Leverages hardware acceleration with `will-change`
 - Scroll-triggered animations use `once: true` to prevent re-triggering
-- Efficient counter animations with proper cleanup
-- CSS-based marquee for smooth logo scrolling
+- Clean React hooks to avoid memory leaks
 
 This landing page showcases modern web animation techniques while maintaining excellent performance and accessibility standards.
 
