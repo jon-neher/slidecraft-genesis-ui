@@ -36,6 +36,91 @@ export type Database = {
         }
         Relationships: []
       }
+      hubspot_tokens: {
+        Row: {
+          portal_id: string
+          access_token: string | null
+          refresh_token: string | null
+          expires_at: string | null
+          scope: string[] | null
+        }
+        Insert: {
+          portal_id: string
+          access_token?: string | null
+          refresh_token?: string | null
+          expires_at?: string | null
+          scope?: string[] | null
+        }
+        Update: {
+          portal_id?: string
+          access_token?: string | null
+          refresh_token?: string | null
+          expires_at?: string | null
+          scope?: string[] | null
+        }
+        Relationships: []
+      }
+      hubspot_events_raw: {
+        Row: {
+          id: number
+          portal_id: string | null
+          raw: Json | null
+          received_at: string | null
+        }
+        Insert: {
+          id?: number
+          portal_id?: string | null
+          raw?: Json | null
+          received_at?: string | null
+        }
+        Update: {
+          id?: number
+          portal_id?: string | null
+          raw?: Json | null
+          received_at?: string | null
+        }
+        Relationships: []
+      }
+      hubspot_contacts_cache: {
+        Row: {
+          portal_id: string
+          id: string
+          properties: Json | null
+          updated_at: string | null
+          search_vector: unknown | null
+        }
+        Insert: {
+          portal_id: string
+          id: string
+          properties?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          portal_id?: string
+          id?: string
+          properties?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      hubspot_sync_cursors: {
+        Row: {
+          portal_id: string
+          object_type: string
+          hs_timestamp: string | null
+        }
+        Insert: {
+          portal_id: string
+          object_type: string
+          hs_timestamp?: string | null
+        }
+        Update: {
+          portal_id?: string
+          object_type?: string
+          hs_timestamp?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

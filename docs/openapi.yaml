@@ -55,3 +55,25 @@ paths:
       responses:
         "200":
           description: Authorization successful
+  /hubspot_fetch_contacts:
+    get:
+      description: Fetch contacts from HubSpot and populate the cache
+      parameters:
+        - in: query
+          name: portal_id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: after
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Sync completed
+  /hubspot_webhook:
+    post:
+      description: Receive HubSpot webhook events
+      responses:
+        "204":
+          description: Event processed

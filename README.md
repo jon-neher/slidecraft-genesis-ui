@@ -225,3 +225,6 @@ This landing page showcases modern web animation techniques while maintaining ex
 ## API Documentation
 
 See `docs/openapi.yaml` for the HubSpot integration endpoints and `docs/SECURITY_CHECKLIST.md` for security requirements.
+
+
+See `docs/INTEGRATION_STRUCTURE.md` for an overview of the integration architecture.

@@ -1,25 +1,25 @@
 process.env.SUPABASE_URL = 'http://localhost'
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'key'
-jest.mock('./rate_limiter_memory', () => {
-  const { RateLimiterMemory } = jest.requireActual('./rate_limiter_memory')
-  return { __esModule: true, default: new RateLimiterMemory(100, 1000), RateLimiterMemory }
+vi.mock('../integrations/hubspot/rateLimiter', async () => {
+  const mod = await vi.importActual<typeof import('../integrations/hubspot/rateLimiter')>('../integrations/hubspot/rateLimiter')
+  return { __esModule: true, default: new mod.RateLimiterMemory(100, 1000), RateLimiterMemory: mod.RateLimiterMemory }
 })
-import { RateLimiterMemory } from './rate_limiter_memory'
+import { RateLimiterMemory } from '../integrations/hubspot/rateLimiter'
 let searchContacts: typeof import('./search_contacts').searchContacts
 beforeAll(async () => {
   ;({ searchContacts } = await import('./search_contacts'))
 })
 
-jest.useFakeTimers()
+vi.useFakeTimers()
 
-const fromMock = jest.fn()
-const textSearchMock = jest.fn()
-const eqMock = jest.fn()
-const limitMock = jest.fn()
-const maybeSingleMock = jest.fn()
-const upsertMock = jest.fn()
+const fromMock = vi.fn()
+const textSearchMock = vi.fn()
+const eqMock = vi.fn()
+const limitMock = vi.fn()
+const maybeSingleMock = vi.fn()
+const upsertMock = vi.fn()
 const authMock = {
-  getUser: jest.fn(() => Promise.resolve({ data: { user: { id: 'p1' } } }))
+  getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'p1' } } }))
 }
 
 const mockClient = {
@@ -35,7 +35,7 @@ const mockClient = {
 } as any
 
 function makeFetch(results: any[]) {
-  return jest.fn().mockResolvedValue({ ok: true, json: async () => ({ results }) })
+  return vi.fn().mockResolvedValue({ ok: true, json: async () => ({ results }) })
 }
 
 describe('searchContacts', () => {
@@ -65,13 +65,14 @@ describe('searchContacts', () => {
 
   it('rate-limiter blocks >5 rps in test harness', async () => {
     const limiter = new RateLimiterMemory(5, 1000)
-    Object.assign(require('./rate_limiter_memory'), { default: limiter })
+    const mod = await import('../integrations/hubspot/rateLimiter')
+    Object.assign(mod, { default: limiter })
 
     limitMock.mockResolvedValue({ data: [], error: null })
     const fetch = makeFetch([])
     const start = Date.now()
     const promises = Array.from({ length: 6 }, () => searchContacts('p1', 'a', 1, mockClient as any, fetch))
-    await jest.advanceTimersByTimeAsync(1000)
+    await vi.advanceTimersByTimeAsync(1000)
     await Promise.all(promises)
     expect(Date.now() - start).toBeGreaterThanOrEqual(1000)
   })

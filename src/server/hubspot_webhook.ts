@@ -2,10 +2,11 @@ import express, { RequestHandler, Request, Response } from 'express';
 import { requireAuth } from '@clerk/express';
 import { createClient } from '@supabase/supabase-js';
 import { createHmac } from 'crypto';
-
-const HUBSPOT_SECRET = process.env.HUBSPOT_APP_SECRET || 'test_secret';
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+import {
+  HUBSPOT_APP_SECRET as HUBSPOT_SECRET,
+  SUPABASE_URL,
+  SUPABASE_SERVICE_ROLE_KEY,
+} from './config';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -37,6 +38,29 @@ export const hubspotWebhookHandler: RequestHandler[] = [
 
     const portalId = authedReq.auth.userId;
     const payload = req.body;
+
+    const events = Array.isArray(payload) ? payload : [payload];
+    const uninstall = events.some((e: any) => e.subscriptionType === 'app.uninstalled');
+
+    if (uninstall) {
+      supabase
+        .from('hubspot_tokens')
+        .delete()
+        .eq('portal_id', portalId)
+        .catch((err) => console.error('uninstall delete tokens error', err));
+
+      supabase
+        .from('hubspot_contacts_cache')
+        .delete()
+        .eq('portal_id', portalId)
+        .catch((err) => console.error('uninstall delete cache error', err));
+
+      supabase
+        .from('hubspot_sync_cursors')
+        .delete()
+        .eq('portal_id', portalId)
+        .catch((err) => console.error('uninstall delete cursors error', err));
+    }
 
     // insert asynchronously
     supabase

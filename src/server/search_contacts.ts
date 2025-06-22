@@ -1,64 +1,25 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import rateLimiter from './rate_limiter_memory'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '../integrations/supabase/types'
 
-const SUPABASE_URL = process.env.SUPABASE_URL || ''
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-const HUBSPOT_CLIENT_ID = process.env.HUBSPOT_CLIENT_ID || ''
-const HUBSPOT_CLIENT_SECRET = process.env.HUBSPOT_CLIENT_SECRET || ''
+import {
+  SUPABASE_URL,
+  SUPABASE_SERVICE_ROLE_KEY,
+} from './config'
+import supabase from './supabaseClient'
+
+import { searchContacts as hubspotSearch } from '../integrations/hubspot/client'
 
 export interface ContactRecord {
   id: string
   properties: Record<string, any>
 }
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
-
-async function ensureAccessToken(portal_id: string, sb: SupabaseClient = supabase): Promise<string> {
-  const { data, error } = await sb
-    .from('hubspot_tokens')
-    .select('access_token, refresh_token, expires_at')
-    .eq('portal_id', portal_id)
-    .maybeSingle()
-
-  if (error || !data) {
-    throw new Error('Token fetch failed')
-  }
-
-  if (data.expires_at && new Date(data.expires_at).getTime() > Date.now() + 60_000) {
-    return data.access_token
-  }
-
-  const resp = await fetch('https://api.hubapi.com/oauth/v1/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: data.refresh_token,
-      client_id: HUBSPOT_CLIENT_ID,
-      client_secret: HUBSPOT_CLIENT_SECRET,
-    }).toString(),
-  })
-
-  if (!resp.ok) throw new Error('Refresh failed')
-  const json: any = await resp.json()
-
-  await sb
-    .from('hubspot_tokens')
-    .update({
-      access_token: json.access_token,
-      refresh_token: json.refresh_token ?? data.refresh_token,
-      expires_at: new Date(Date.now() + json.expires_in * 1000).toISOString(),
-    })
-    .eq('portal_id', portal_id)
-
-  return json.access_token
-}
 
 export async function searchLocal(
   portal_id: string,
   q: string,
   limit: number,
-  sb: SupabaseClient = supabase
+  sb: SupabaseClient<Database> = supabase,
 ): Promise<ContactRecord[]> {
   const { data } = await sb
     .from('hubspot_contacts_cache')
@@ -66,6 +27,7 @@ export async function searchLocal(
     .eq('portal_id', portal_id)
     .textSearch('search_vector', q, { config: 'simple' })
     .limit(limit)
+
   return (data as ContactRecord[]) || []
 }
 
@@ -73,39 +35,16 @@ async function searchRemote(
   portal_id: string,
   q: string,
   limit: number,
-  sb: SupabaseClient = supabase,
-  fetchFn: typeof fetch = fetch
+  sb: SupabaseClient<Database> = supabase,
+  fetchFn: typeof fetch = fetch,
 ): Promise<ContactRecord[]> {
-  const accessToken = await ensureAccessToken(portal_id, sb)
-  await rateLimiter.take(portal_id)
-  const response = await fetchFn('https://api.hubapi.com/crm/v3/objects/contacts/search', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      filterGroups: [
-        {
-          filters: [
-            { propertyName: 'firstname', operator: 'CONTAINS_TOKEN', value: q },
-            { propertyName: 'lastname', operator: 'CONTAINS_TOKEN', value: q },
-            { propertyName: 'email', operator: 'CONTAINS_TOKEN', value: q },
-          ],
-        },
-      ],
-      limit: 20,
-    }),
-  })
+  const rows = await hubspotSearch(portal_id, q, limit, sb, fetchFn)
 
-  if (!response.ok) throw new Error('HubSpot search failed')
-  const json: any = await response.json()
-  const rows: ContactRecord[] = json.results || []
   const now = new Date().toISOString()
   if (rows.length) {
-    await sb.from('hubspot_contacts_cache').upsert(
-      rows.map(r => ({ portal_id, id: r.id, properties: r.properties, updated_at: now }))
-    )
+    await sb
+      .from('hubspot_contacts_cache')
+      .upsert(rows.map(r => ({ portal_id, id: r.id, properties: r.properties, updated_at: now })))
   }
   return rows.slice(0, limit)
 }
@@ -114,8 +53,8 @@ export async function searchContacts(
   portal_id: string,
   q: string,
   limit: number,
-  sb: SupabaseClient = supabase,
-  fetchFn: typeof fetch = fetch
+  sb: SupabaseClient<Database> = supabase,
+  fetchFn: typeof fetch = fetch,
 ): Promise<ContactRecord[]> {
   const local = await searchLocal(portal_id, q, limit, sb)
   const seen = new Set(local.map(r => r.id))
@@ -139,7 +78,7 @@ export async function handleRequest(req: Request): Promise<Response> {
   const limit = parseInt(url.searchParams.get('limit') || '10', 10)
 
   const auth = req.headers.get('Authorization') || ''
-  const client = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  const client = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     global: { headers: { Authorization: auth } },
   })
   const {
@@ -154,4 +93,3 @@ export async function handleRequest(req: Request): Promise<Response> {
 }
 
 export default { searchContacts, handleRequest }
-
