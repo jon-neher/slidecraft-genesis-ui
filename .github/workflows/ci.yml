@@ -3,8 +3,7 @@ name: CI
 on:
   pull_request:
     # you can narrow this to only non-main branches if you like
-    branches-ignore:
-      - main
+    
 
 jobs:
   npm-test:
