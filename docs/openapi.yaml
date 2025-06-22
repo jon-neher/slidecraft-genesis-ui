@@ -71,3 +71,9 @@ paths:
       responses:
         "204":
           description: Sync completed
+  /hubspot_webhook:
+    post:
+      description: Receive HubSpot webhook events
+      responses:
+        "204":
+          description: Event processed
