@@ -5,6 +5,7 @@ import {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
 } from './config'
+import supabase from './supabaseClient'
 
 import { searchContacts as hubspotSearch } from '../integrations/hubspot/client'
 
@@ -13,7 +14,6 @@ export interface ContactRecord {
   properties: Record<string, any>
 }
 
-const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 export async function searchLocal(
   portal_id: string,
