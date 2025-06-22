@@ -1,5 +1,3 @@
-Should this work in GitHub?
-
 name: Auto-merge non-main PRs
 
 on:
