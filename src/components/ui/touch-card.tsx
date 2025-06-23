@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { Card, CardProps } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-interface TouchCardProps extends CardProps {
+interface TouchCardProps extends React.HTMLAttributes<HTMLDivElement> {
   onTap?: () => void;
   onLongPress?: () => void;
   children: React.ReactNode;
