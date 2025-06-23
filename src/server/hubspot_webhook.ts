@@ -1,3 +1,4 @@
+
 import express, { RequestHandler, Request, Response } from 'express';
 import { requireAuth } from '@clerk/express';
 import { createClient } from '@supabase/supabase-js';
@@ -43,30 +44,43 @@ export const hubspotWebhookHandler: RequestHandler[] = [
     const uninstall = events.some((e: any) => e.subscriptionType === 'app.uninstalled');
 
     if (uninstall) {
-      supabase
-        .from('hubspot_tokens')
-        .delete()
-        .eq('portal_id', portalId)
-        .catch((err) => console.error('uninstall delete tokens error', err));
+      // Handle cleanup operations with proper async/await
+      try {
+        await supabase
+          .from('hubspot_tokens')
+          .delete()
+          .eq('portal_id', portalId);
+      } catch (err) {
+        console.error('uninstall delete tokens error', err);
+      }
 
-      supabase
-        .from('hubspot_contacts_cache')
-        .delete()
-        .eq('portal_id', portalId)
-        .catch((err) => console.error('uninstall delete cache error', err));
+      try {
+        await supabase
+          .from('hubspot_contacts_cache')
+          .delete()
+          .eq('portal_id', portalId);
+      } catch (err) {
+        console.error('uninstall delete cache error', err);
+      }
 
-      supabase
-        .from('hubspot_sync_cursors')
-        .delete()
-        .eq('portal_id', portalId)
-        .catch((err) => console.error('uninstall delete cursors error', err));
+      try {
+        await supabase
+          .from('hubspot_sync_cursors')
+          .delete()
+          .eq('portal_id', portalId);
+      } catch (err) {
+        console.error('uninstall delete cursors error', err);
+      }
     }
 
     // insert asynchronously
-    supabase
-      .from('hubspot_events_raw')
-      .insert({ portal_id: portalId, raw: payload })
-      .catch((err) => console.error('insert error', err));
+    try {
+      await supabase
+        .from('hubspot_events_raw')
+        .insert({ portal_id: portalId, raw: payload });
+    } catch (err) {
+      console.error('insert error', err);
+    }
 
     return res.status(204).end();
   },

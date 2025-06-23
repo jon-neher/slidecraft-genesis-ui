@@ -1,3 +1,6 @@
+
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
+
 process.env.SUPABASE_URL = 'http://localhost'
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'key'
 vi.mock('../integrations/hubspot/rateLimiter', async () => {
