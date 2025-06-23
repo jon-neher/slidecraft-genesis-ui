@@ -1,15 +1,96 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Clock, Lightbulb, TrendingUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, Lightbulb, TrendingUp, Activity } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { mockActivity, mockTips } from '@/data/mockData';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const ActivityPanel = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [currentTip, setCurrentTip] = useState(0);
+  const isMobile = useIsMobile();
 
+  // On mobile, always show expanded version in a card
+  if (isMobile) {
+    return (
+      <Card className="border-gray-200 bg-white">
+        <CardContent className="p-4 space-y-4">
+          <div className="flex items-center gap-2">
+            <Activity className="w-5 h-5 text-electric-indigo" />
+            <h2 className="font-semibold text-slate-gray">Activity & Tips</h2>
+          </div>
+
+          {/* Recent Activity - Condensed for mobile */}
+          <div>
+            <h3 className="text-sm font-medium text-slate-gray mb-2 flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Recent Activity
+            </h3>
+            <div className="space-y-2">
+              {mockActivity.slice(0, 2).map((activity) => (
+                <div key={activity.id} className="text-sm">
+                  <p className="text-gray-700 text-xs">{activity.action}</p>
+                  <p className="text-gray-400 text-xs">{activity.time}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Pro Tips Carousel - Simplified for mobile */}
+          <div>
+            <h3 className="text-sm font-medium text-slate-gray mb-2 flex items-center gap-2">
+              <Lightbulb className="w-4 h-4" />
+              Pro Tip
+            </h3>
+            <Card className="border-electric-indigo/20 bg-electric-indigo/5">
+              <CardContent className="p-3">
+                <h4 className="font-medium text-sm text-slate-gray mb-1">
+                  {mockTips[currentTip].title}
+                </h4>
+                <p className="text-xs text-gray-600 mb-2">
+                  {mockTips[currentTip].content}
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-1">
+                    {mockTips.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          index === currentTip ? 'bg-electric-indigo' : 'bg-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="w-5 h-5"
+                      onClick={() => setCurrentTip((prev) => (prev - 1 + mockTips.length) % mockTips.length)}
+                    >
+                      <ChevronLeft className="w-3 h-3" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="w-5 h-5"
+                      onClick={() => setCurrentTip((prev) => (prev + 1) % mockTips.length)}
+                    >
+                      <ChevronRight className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Desktop version with collapsible sidebar
   return (
     <motion.div
       className="relative"

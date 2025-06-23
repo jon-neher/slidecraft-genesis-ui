@@ -14,7 +14,7 @@ const ContextPane = () => {
       variants={slideInVariants}
     >
       <Card className="card-modern border-gray-200 bg-white">
-        <CardContent className="p-6">
+        <CardContent className="p-4 lg:p-6">
           <EntitySelector entity={mockSelectedEntity} />
         </CardContent>
       </Card>

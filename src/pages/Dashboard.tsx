@@ -19,14 +19,16 @@ const Dashboard = () => {
           <SidebarProvider>
             <div className="flex w-full min-h-screen">
               <LeftNav />
-              <main className="flex-1 flex flex-col max-w-[1440px] mx-auto">
+              <main className="flex-1 flex flex-col w-full">
                 <QuickSelectHeader />
-                <div className="flex-1 flex gap-6 p-6">
+                <div className="flex-1 flex flex-col lg:flex-row gap-6 p-4 lg:p-6">
                   <div className="flex-1 flex flex-col gap-6">
                     <ContextPane />
                     <DeckGallery />
                   </div>
-                  <ActivityPanel />
+                  <div className="lg:w-auto w-full">
+                    <ActivityPanel />
+                  </div>
                 </div>
               </main>
             </div>
