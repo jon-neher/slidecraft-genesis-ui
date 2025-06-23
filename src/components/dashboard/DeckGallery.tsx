@@ -38,7 +38,7 @@ const DeckGallery = () => {
             key={deckType.id}
             onTap={() => handleDeckSelect(deckType.id)}
             onLongPress={() => handleDeckLongPress(deckType.id)}
-            className="group cursor-pointer"
+            className="group cursor-pointer bg-white border border-gray-200 shadow-sm"
             data-tl-deck-template-selected={deckType.id}
           >
             <CardContent className="p-0">
@@ -50,7 +50,7 @@ const DeckGallery = () => {
                 </div>
               </div>
               
-              <div className={`mobile-padding ${isMobile ? 'p-3' : 'p-4'}`}>
+              <div className={`mobile-padding bg-white ${isMobile ? 'p-3' : 'p-4'}`}>
                 <div className="flex items-center gap-2 mb-2">
                   <h3 className={`font-semibold text-slate-gray group-hover:text-electric-indigo transition-colors ${isMobile ? 'text-sm' : ''}`}>
                     {deckType.name}

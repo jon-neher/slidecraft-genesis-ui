@@ -43,9 +43,10 @@ const TouchCard = ({
   return (
     <Card
       className={cn(
-        "touch-manipulation select-none",
+        "touch-manipulation select-none bg-white",
         "transition-all duration-150",
         "active:scale-[0.98] active:shadow-sm",
+        "border border-gray-200 shadow-sm",
         onTap && "cursor-pointer hover:shadow-md",
         className
       )}
