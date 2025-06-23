@@ -9,6 +9,90 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      hubspot_contacts_cache: {
+        Row: {
+          id: string
+          portal_id: string
+          properties: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          id: string
+          portal_id: string
+          properties?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          portal_id?: string
+          properties?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      hubspot_events_raw: {
+        Row: {
+          id: number
+          portal_id: string | null
+          raw: Json | null
+          received_at: string | null
+        }
+        Insert: {
+          id?: number
+          portal_id?: string | null
+          raw?: Json | null
+          received_at?: string | null
+        }
+        Update: {
+          id?: number
+          portal_id?: string | null
+          raw?: Json | null
+          received_at?: string | null
+        }
+        Relationships: []
+      }
+      hubspot_sync_cursors: {
+        Row: {
+          hs_timestamp: string | null
+          object_type: string
+          portal_id: string
+        }
+        Insert: {
+          hs_timestamp?: string | null
+          object_type: string
+          portal_id: string
+        }
+        Update: {
+          hs_timestamp?: string | null
+          object_type?: string
+          portal_id?: string
+        }
+        Relationships: []
+      }
+      hubspot_tokens: {
+        Row: {
+          access_token: string | null
+          expires_at: string | null
+          portal_id: string
+          refresh_token: string | null
+          scope: string[] | null
+        }
+        Insert: {
+          access_token?: string | null
+          expires_at?: string | null
+          portal_id: string
+          refresh_token?: string | null
+          scope?: string[] | null
+        }
+        Update: {
+          access_token?: string | null
+          expires_at?: string | null
+          portal_id?: string
+          refresh_token?: string | null
+          scope?: string[] | null
+        }
+        Relationships: []
+      }
       presentation_plans: {
         Row: {
           created_at: string
