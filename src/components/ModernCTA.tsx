@@ -29,7 +29,7 @@ const ModernCTA = () => {
                 </h2>
                 
                 <p className="text-xl text-slate-gray/70 mb-12 max-w-2xl mx-auto">
-                  Join thousands of professionals who are already on the waitlist for early access to Threadline.
+                  Be among the first to experience the future of data-driven presentations with early access to Threadline.
                 </p>
 
                 <div className="max-w-md mx-auto">
