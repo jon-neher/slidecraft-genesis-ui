@@ -4,14 +4,16 @@ import { motion } from 'framer-motion';
 import { Plus, Menu } from 'lucide-react';
 import { SearchInput } from '@/components/ui/search-input';
 import ActionButton from './shared/ActionButton';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { headerVariants } from '@/lib/animations';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Button } from '@/components/ui/button';
 
 const QuickSelectHeader = () => {
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { openMobile } = useSidebar();
 
   return (
     <motion.header 
@@ -21,7 +23,18 @@ const QuickSelectHeader = () => {
       variants={headerVariants}
     >
       <div className="flex items-center gap-2 lg:gap-4">
-        <SidebarTrigger className="lg:hidden" />
+        {isMobile && (
+          <SidebarTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-10 w-10"
+              aria-label={openMobile ? "Close navigation" : "Open navigation"}
+            >
+              <Menu className="w-5 h-5" />
+            </Button>
+          </SidebarTrigger>
+        )}
         
         <div className="flex-1">
           <SearchInput
