@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
@@ -60,7 +59,7 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
                 contentStyle={{ 
                   backgroundColor: '#FAFAFB', 
                   border: '1px solid #e2e8f0',
-                  border Radius: '8px'
+                  borderRadius: '8px'
                 }} 
               />
               <Line type="monotone" dataKey="conversions" stroke="#30F2B3" strokeWidth={3} dot={{ fill: '#30F2B3', strokeWidth: 2, r: 6 }} />
