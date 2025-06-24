@@ -2,6 +2,7 @@
 import React from 'react';
 import { SignedIn } from '@clerk/clerk-react';
 import ModernHero from '@/components/ModernHero';
+import InteractiveDemo from '@/components/InteractiveDemo';
 import ModernFeatures from '@/components/ModernFeatures';
 import ModernCTA from '@/components/ModernCTA';
 import ClerkSupabaseDemo from '@/components/ClerkSupabaseDemo';
@@ -13,6 +14,7 @@ const Index = () => {
       <SignedIn>
         <ClerkSupabaseDemo />
       </SignedIn>
+      <InteractiveDemo />
       <ModernFeatures />
       <ModernCTA />
     </div>
