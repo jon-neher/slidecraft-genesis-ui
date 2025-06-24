@@ -6,19 +6,23 @@ interface TouchGesturesOptions {
   onLongPress?: () => void;
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
+  onSwipeDown?: () => void;
+  onSwipeUp?: () => void;
   longPressDelay?: number;
   swipeThreshold?: number;
 }
 
-export const useTouchGestures = ({
+export const useTouchGestures = <T extends HTMLElement>({
   onTap,
   onLongPress,
   onSwipeLeft,
   onSwipeRight,
+  onSwipeDown,
+  onSwipeUp,
   longPressDelay = 500,
   swipeThreshold = 50
 }: TouchGesturesOptions) => {
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<T>(null);
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -59,11 +63,17 @@ export const useTouchGestures = ({
       const deltaTime = Date.now() - touchStart.time;
 
       // Check for swipe gestures
-      if (Math.abs(deltaX) > swipeThreshold && Math.abs(deltaY) < swipeThreshold) {
+      if (Math.abs(deltaX) > swipeThreshold && Math.abs(deltaX) > Math.abs(deltaY)) {
         if (deltaX > 0 && onSwipeRight) {
           onSwipeRight();
         } else if (deltaX < 0 && onSwipeLeft) {
           onSwipeLeft();
+        }
+      } else if (Math.abs(deltaY) > swipeThreshold && Math.abs(deltaY) > Math.abs(deltaX)) {
+        if (deltaY > 0 && onSwipeDown) {
+          onSwipeDown();
+        } else if (deltaY < 0 && onSwipeUp) {
+          onSwipeUp();
         }
       } else if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10 && deltaTime < 300) {
         // It's a tap
@@ -96,7 +106,7 @@ export const useTouchGestures = ({
         clearTimeout(longPressTimerRef.current);
       }
     };
-  }, [onTap, onLongPress, onSwipeLeft, onSwipeRight, longPressDelay, swipeThreshold]);
+  }, [onTap, onLongPress, onSwipeLeft, onSwipeRight, onSwipeDown, onSwipeUp, longPressDelay, swipeThreshold]);
 
   return ref;
 };

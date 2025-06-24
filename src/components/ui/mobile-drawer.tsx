@@ -13,7 +13,7 @@ interface MobileDrawerProps {
 }
 
 const MobileDrawer = ({ open, onClose, title, children }: MobileDrawerProps) => {
-  const swipeRef = useTouchGestures({
+  const swipeRef = useTouchGestures<HTMLDivElement>({
     onSwipeDown: onClose
   });
 

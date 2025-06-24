@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Home, FileText, Settings, Sparkles, X } from 'lucide-react';
@@ -19,7 +18,7 @@ const LeftNav = () => {
   const { openMobile, setOpenMobile } = useSidebar();
 
   // Add swipe-to-close gesture for mobile
-  const swipeRef = useTouchGestures({
+  const swipeRef = useTouchGestures<HTMLDivElement>({
     onSwipeLeft: () => {
       if (isMobile && openMobile) {
         setOpenMobile(false);
