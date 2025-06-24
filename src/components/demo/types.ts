@@ -9,6 +9,23 @@ export interface DataScenario {
   chartType: 'bar' | 'line' | 'pie' | 'area';
   insights: string[];
   templates: PresentationTemplate[];
+  dataSource?: DataSource;
+}
+
+export interface DataSource {
+  name: string;
+  type: string;
+  description: string;
+  recordCount: number;
+  lastUpdated: string;
+  fields: DataField[];
+}
+
+export interface DataField {
+  name: string;
+  type: 'string' | 'number' | 'date' | 'boolean';
+  description: string;
+  sampleValue: any;
 }
 
 export interface PresentationTemplate {

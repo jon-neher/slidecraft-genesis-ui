@@ -5,17 +5,22 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Play, Download, RefreshCw, ArrowRight } from 'lucide-react';
 import DataScenarioSelector from './demo/DataScenarioSelector';
+import DataPreviewStep from './demo/DataPreviewStep';
 import TransformationAnimation from './demo/TransformationAnimation';
 import PresentationPreview from './demo/PresentationPreview';
 import { DataScenario } from './demo/types';
 
 const InteractiveDemo = () => {
-  const [currentStep, setCurrentStep] = useState<'select' | 'processing' | 'preview'>('select');
+  const [currentStep, setCurrentStep] = useState<'select' | 'data-preview' | 'processing' | 'preview'>('select');
   const [selectedScenario, setSelectedScenario] = useState<DataScenario | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleStartDemo = (scenario: DataScenario) => {
     setSelectedScenario(scenario);
+    setCurrentStep('data-preview');
+  };
+
+  const handleContinueToProcessing = () => {
     setCurrentStep('processing');
     setIsProcessing(true);
     
@@ -75,6 +80,21 @@ const InteractiveDemo = () => {
                     transition={{ duration: 0.3 }}
                   >
                     <DataScenarioSelector onSelectScenario={handleStartDemo} />
+                  </motion.div>
+                )}
+
+                {currentStep === 'data-preview' && selectedScenario && (
+                  <motion.div
+                    key="data-preview"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <DataPreviewStep 
+                      scenario={selectedScenario} 
+                      onContinue={handleContinueToProcessing}
+                    />
                   </motion.div>
                 )}
 

@@ -30,7 +30,19 @@ const scenarios: DataScenario[] = [
       primaryColor: '#2563eb',
       secondaryColor: '#3b82f6',
       slides: []
-    }]
+    }],
+    dataSource: {
+      name: 'Salesforce CRM Export',
+      type: 'Sales Data',
+      description: 'Quarterly sales performance metrics',
+      recordCount: 1247,
+      lastUpdated: '2 hours ago',
+      fields: [
+        { name: 'month', type: 'string', description: 'Reporting month', sampleValue: 'Oct' },
+        { name: 'revenue', type: 'number', description: 'Monthly revenue ($)', sampleValue: 245000 },
+        { name: 'target', type: 'number', description: 'Revenue target ($)', sampleValue: 220000 }
+      ]
+    }
   },
   {
     id: 'marketing-analytics',
@@ -56,7 +68,20 @@ const scenarios: DataScenario[] = [
       primaryColor: '#10b981',
       secondaryColor: '#34d399',
       slides: []
-    }]
+    }],
+    dataSource: {
+      name: 'Google Analytics Dashboard',
+      type: 'Marketing Data',
+      description: 'Campaign performance metrics',
+      recordCount: 892,
+      lastUpdated: '1 hour ago',
+      fields: [
+        { name: 'week', type: 'string', description: 'Campaign week', sampleValue: 'Week 1' },
+        { name: 'impressions', type: 'number', description: 'Ad impressions', sampleValue: 125000 },
+        { name: 'clicks', type: 'number', description: 'Click count', sampleValue: 3400 },
+        { name: 'conversions', type: 'number', description: 'Conversion count', sampleValue: 89 }
+      ]
+    }
   },
   {
     id: 'financial-summary',
@@ -81,7 +106,20 @@ const scenarios: DataScenario[] = [
       primaryColor: '#7c3aed',
       secondaryColor: '#a855f7',
       slides: []
-    }]
+    }],
+    dataSource: {
+      name: 'QuickBooks Financial Report',
+      type: 'Financial Data',
+      description: 'Budget vs actual analysis',
+      recordCount: 156,
+      lastUpdated: '30 minutes ago',
+      fields: [
+        { name: 'category', type: 'string', description: 'Financial category', sampleValue: 'Revenue' },
+        { name: 'actual', type: 'number', description: 'Actual amount ($)', sampleValue: 2450000 },
+        { name: 'budget', type: 'number', description: 'Budget amount ($)', sampleValue: 2200000 },
+        { name: 'variance', type: 'number', description: 'Variance (%)', sampleValue: 11.4 }
+      ]
+    }
   }
 ];
 
