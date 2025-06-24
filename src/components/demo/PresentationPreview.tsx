@@ -3,7 +3,15 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ChevronLeft, ChevronRight, Download, RefreshCw, ExternalLink } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  RefreshCw,
+  ExternalLink,
+  CheckCircle,
+} from 'lucide-react';
+import { SignedIn, SignedOut, SignUpButton } from '@clerk/clerk-react';
 import { DataScenario } from './types';
 import SlideRenderer from './SlideRenderer';
 
@@ -168,10 +176,20 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
         <p className="text-sm sm:text-base text-slate-gray/70 mb-4">
           Join thousands of professionals already using Threadline
         </p>
-        <Button className="bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white touch-target">
-          Join the Waitlist
-          <ExternalLink className="w-4 h-4 ml-2" />
-        </Button>
+        <SignedOut>
+          <SignUpButton mode="modal">
+            <Button className="bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white touch-target">
+              Join the Waitlist
+              <ExternalLink className="w-4 h-4 ml-2" />
+            </Button>
+          </SignUpButton>
+        </SignedOut>
+        <SignedIn>
+          <div className="flex items-center justify-center gap-2 text-slate-gray">
+            <CheckCircle className="w-5 h-5 text-neon-mint" />
+            You're on the list!
+          </div>
+        </SignedIn>
       </motion.div>
     </div>
   );
