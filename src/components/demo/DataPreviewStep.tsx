@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Database, Calendar, Users, ArrowRight, FileText } from 'lucide-react';
+import { Database, ArrowRight, FileText } from 'lucide-react';
 import { DataScenario } from './types';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -22,12 +22,12 @@ const DataPreviewStep = ({ scenario, onContinue }: DataPreviewStepProps) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-6 lg:mb-8"
+        className="text-center mb-4 lg:mb-6"
       >
-        <h3 className="text-xl sm:text-2xl font-semibold text-slate-gray mb-2">
+        <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-slate-gray mb-2">
           Review Your Data
         </h3>
-        <p className="text-sm sm:text-base text-slate-gray/70">
+        <p className="text-sm text-slate-gray/70">
           Here's the sample data we'll transform into your presentation
         </p>
       </motion.div>
@@ -37,17 +37,17 @@ const DataPreviewStep = ({ scenario, onContinue }: DataPreviewStepProps) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="mb-6"
+        className="mb-4"
       >
         <Card className="border-slate-gray/10">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-              <Database className="w-5 h-5 text-electric-indigo" />
+          <CardHeader className="pb-2 sm:pb-3">
+            <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+              <Database className="w-4 h-4 text-electric-indigo" />
               Data Source
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+          <CardContent className="pt-0">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm">
               <div>
                 <div className="font-medium text-slate-gray">Source</div>
                 <div className="text-slate-gray/70">{scenario.dataSource?.name || 'Sample Dataset'}</div>
@@ -70,35 +70,35 @@ const DataPreviewStep = ({ scenario, onContinue }: DataPreviewStepProps) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="mb-6"
+        className="mb-4 lg:mb-6"
       >
         <Card className="border-slate-gray/10">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-              <FileText className="w-5 h-5 text-electric-indigo" />
+          <CardHeader className="pb-2 sm:pb-3">
+            <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+              <FileText className="w-4 h-4 text-electric-indigo" />
               Sample Data Preview
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             {isMobile ? (
-              // Mobile: Stacked cards for each data point
-              <div className="space-y-3">
-                {scenario.sampleData.slice(0, 3).map((item, index) => (
-                  <div key={index} className="p-3 bg-slate-50 rounded-lg">
-                    {Object.entries(item).map(([key, value]) => (
-                      <div key={key} className="flex justify-between items-center py-1">
-                        <span className="text-xs font-medium text-slate-gray capitalize">
+              // Mobile: Compact stacked cards
+              <div className="space-y-2">
+                {scenario.sampleData.slice(0, 2).map((item, index) => (
+                  <div key={index} className="p-2 bg-slate-50 rounded-lg">
+                    {Object.entries(item).slice(0, 3).map(([key, value]) => (
+                      <div key={key} className="flex justify-between items-center py-0.5">
+                        <span className="text-xs font-medium text-slate-gray capitalize truncate mr-2">
                           {key.replace(/([A-Z])/g, ' $1').trim()}
                         </span>
-                        <span className="text-xs text-slate-gray/70">
+                        <span className="text-xs text-slate-gray/70 truncate">
                           {typeof value === 'number' ? value.toLocaleString() : String(value)}
                         </span>
                       </div>
                     ))}
                   </div>
                 ))}
-                <div className="text-center text-xs text-slate-gray/60 pt-2">
-                  Showing 3 of {scenario.sampleData.length} records
+                <div className="text-center text-xs text-slate-gray/60 pt-1">
+                  Showing 2 of {scenario.sampleData.length} records
                 </div>
               </div>
             ) : (
@@ -115,7 +115,7 @@ const DataPreviewStep = ({ scenario, onContinue }: DataPreviewStepProps) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {scenario.sampleData.slice(0, 5).map((item, index) => (
+                    {scenario.sampleData.slice(0, 4).map((item, index) => (
                       <TableRow key={index}>
                         {Object.values(item).map((value, cellIndex) => (
                           <TableCell key={cellIndex} className="text-xs">
@@ -126,38 +126,11 @@ const DataPreviewStep = ({ scenario, onContinue }: DataPreviewStepProps) => {
                     ))}
                   </TableBody>
                 </Table>
-                <div className="text-center text-xs text-slate-gray/60 mt-3">
-                  Showing 5 of {scenario.sampleData.length} records
+                <div className="text-center text-xs text-slate-gray/60 mt-2">
+                  Showing 4 of {scenario.sampleData.length} records
                 </div>
               </div>
             )}
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Key Insights Preview */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="mb-6 lg:mb-8"
-      >
-        <Card className="border-slate-gray/10 bg-gradient-to-r from-electric-indigo/5 to-neon-mint/5">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-              <Users className="w-5 h-5 text-electric-indigo" />
-              What We'll Discover
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {scenario.insights.slice(0, 3).map((insight, index) => (
-                <div key={index} className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-electric-indigo mt-2 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm text-slate-gray/80">{insight}</span>
-                </div>
-              ))}
-            </div>
           </CardContent>
         </Card>
       </motion.div>
@@ -166,18 +139,18 @@ const DataPreviewStep = ({ scenario, onContinue }: DataPreviewStepProps) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
+        transition={{ delay: 0.3 }}
         className="text-center"
       >
         <Button 
           onClick={onContinue}
-          className="bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white px-6 py-3 sm:px-8 touch-target"
-          size="lg"
+          className="bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white px-6 py-2 sm:px-8 sm:py-3 touch-target"
+          size={isMobile ? "default" : "lg"}
         >
           Process This Data
           <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
-        <p className="text-xs text-slate-gray/60 mt-3">
+        <p className="text-xs text-slate-gray/60 mt-2">
           AI will analyze this data and create your presentation
         </p>
       </motion.div>
