@@ -23,21 +23,32 @@ const ModernCTA = () => {
             <div className="relative z-10">
               <SignedOut>
                 <h2 className="display-lg text-slate-gray mb-6">
-                  Ready to transform your
+                  Ready to create unlimited
                   <br />
-                  <span className="text-gradient">presentation workflow?</span>
+                  <span className="text-gradient">presentations?</span>
                 </h2>
                 
                 <p className="text-xl text-slate-gray/70 mb-12 max-w-2xl mx-auto">
-                  Be among the first to experience the future of data-driven presentations with early access to Threadline.
+                  Join thousands of professionals already using Threadline
                 </p>
 
                 <div className="max-w-md mx-auto">
                   <SignUpButton mode="modal">
                     <Button className="btn-primary h-14 px-8 group">
-                      <ArrowRight className="w-5 h-5 mr-2" />
-                      Get Early Access
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      Join the Waitlist
+                      <svg 
+                        className="w-4 h-4 ml-2" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={2} 
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" 
+                        />
+                      </svg>
                     </Button>
                   </SignUpButton>
                 </div>
