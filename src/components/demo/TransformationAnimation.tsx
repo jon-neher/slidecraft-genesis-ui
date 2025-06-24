@@ -63,26 +63,26 @@ const TransformationAnimation = ({ scenario }: TransformationAnimationProps) => 
   }, []);
 
   return (
-    <div className="p-12 text-center">
+    <div className="p-6 sm:p-8 lg:p-12 text-center">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-12"
+        className="mb-8 lg:mb-12"
       >
-        <h3 className="text-2xl font-semibold text-slate-gray mb-2">
+        <h3 className="text-xl sm:text-2xl font-semibold text-slate-gray mb-2">
           Creating Your Presentation
         </h3>
-        <p className="text-slate-gray/70">
+        <p className="text-sm sm:text-base text-slate-gray/70 px-4">
           Processing "{scenario.title}" with AI-powered intelligence
         </p>
       </motion.div>
 
       {/* Progress Steps */}
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="relative">
-          {/* Progress Line */}
-          <div className="absolute top-6 left-0 right-0 h-0.5 bg-gray-200">
+          {/* Progress Line - Hidden on mobile, shown on desktop */}
+          <div className="hidden md:block absolute top-6 left-0 right-0 h-0.5 bg-gray-200">
             <motion.div
               className="h-full bg-electric-indigo"
               initial={{ width: '0%' }}
@@ -94,7 +94,7 @@ const TransformationAnimation = ({ scenario }: TransformationAnimationProps) => 
           </div>
 
           {/* Steps */}
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-4">
             {processingSteps.map((step, index) => {
               const IconComponent = stepIcons[step.id as keyof typeof stepIcons];
               const isActive = index === currentStepIndex;
@@ -111,14 +111,14 @@ const TransformationAnimation = ({ scenario }: TransformationAnimationProps) => 
                   {/* Step Icon */}
                   <motion.div
                     className={`
-                      w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center
-                      ${isActive ? 'bg-electric-indigo text-white scale-110' : 
-                        isCompleted ? 'bg-neon-mint text-white' : 'bg-gray-200 text-gray-400'}
+                      w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 rounded-full flex items-center justify-center
+                      ${isActive ? 'bg-electric-indigo text-ice-white scale-110' : 
+                        isCompleted ? 'bg-neon-mint text-ice-white' : 'bg-gray-200 text-slate-gray/60'}
                     `}
                     animate={{
                       scale: isActive ? 1.1 : 1,
-                      backgroundColor: isActive ? '#4f46e5' : 
-                                     isCompleted ? '#10b981' : '#e5e7eb'
+                      backgroundColor: isActive ? '#5A2EFF' : 
+                                     isCompleted ? '#30F2B3' : '#e5e7eb'
                     }}
                     transition={{ duration: 0.3 }}
                   >
@@ -145,7 +145,7 @@ const TransformationAnimation = ({ scenario }: TransformationAnimationProps) => 
                             repeatType: 'reverse'
                           } : {}}
                         >
-                          <IconComponent className="w-5 h-5" />
+                          <IconComponent className="w-4 h-4 sm:w-5 sm:h-5" />
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -158,10 +158,10 @@ const TransformationAnimation = ({ scenario }: TransformationAnimationProps) => 
                       y: isActive ? -2 : 0
                     }}
                   >
-                    <h4 className="text-sm font-medium text-slate-gray mb-1">
+                    <h4 className="text-xs sm:text-sm font-medium text-slate-gray mb-1">
                       {step.title}
                     </h4>
-                    <p className="text-xs text-slate-gray/60">
+                    <p className="text-xs text-slate-gray/60 hidden sm:block">
                       {step.description}
                     </p>
                   </motion.div>
@@ -176,24 +176,24 @@ const TransformationAnimation = ({ scenario }: TransformationAnimationProps) => 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-12 p-4 bg-gradient-to-r from-electric-indigo/5 to-neon-mint/5 rounded-xl"
+          className="mt-8 lg:mt-12 p-4 bg-gradient-to-r from-electric-indigo/5 to-neon-mint/5 rounded-xl"
         >
-          <div className="flex justify-center items-center gap-8 text-sm">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 text-sm">
             <div className="text-center">
               <div className="font-semibold text-electric-indigo">
                 {scenario.sampleData.length}
               </div>
-              <div className="text-slate-gray/60">Data Points</div>
+              <div className="text-slate-gray/60 text-xs">Data Points</div>
             </div>
             <div className="text-center">
               <div className="font-semibold text-electric-indigo">
                 {scenario.insights.length}
               </div>
-              <div className="text-slate-gray/60">Key Insights</div>
+              <div className="text-slate-gray/60 text-xs">Key Insights</div>
             </div>
             <div className="text-center">
               <div className="font-semibold text-electric-indigo">5</div>
-              <div className="text-slate-gray/60">Slides Generated</div>
+              <div className="text-slate-gray/60 text-xs">Slides Generated</div>
             </div>
           </div>
         </motion.div>

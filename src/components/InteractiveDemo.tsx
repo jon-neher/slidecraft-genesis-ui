@@ -43,9 +43,9 @@ const InteractiveDemo = () => {
           className="max-w-6xl mx-auto"
         >
           {/* Header */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 lg:mb-12">
             <motion.h2 
-              className="display-lg text-slate-gray mb-6"
+              className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-gray mb-4 lg:mb-6"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -53,7 +53,7 @@ const InteractiveDemo = () => {
               See Threadline in Action
             </motion.h2>
             <motion.p
-              className="text-xl text-slate-gray/70 max-w-3xl mx-auto"
+              className="text-base sm:text-lg lg:text-xl text-slate-gray/70 max-w-3xl mx-auto px-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -63,7 +63,7 @@ const InteractiveDemo = () => {
           </div>
 
           {/* Demo Container */}
-          <Card className="bg-white/80 backdrop-blur-sm border border-gray-200 shadow-xl rounded-2xl overflow-hidden">
+          <Card className="bg-white/80 backdrop-blur-sm border border-gray-200 shadow-xl rounded-xl lg:rounded-2xl overflow-hidden">
             <CardContent className="p-0">
               <AnimatePresence mode="wait">
                 {currentStep === 'select' && (
@@ -114,13 +114,13 @@ const InteractiveDemo = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="flex justify-center items-center gap-8 mt-8 text-sm text-slate-gray/60"
+              className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 mt-6 lg:mt-8 text-xs sm:text-sm text-slate-gray/60 px-4"
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-neon-mint rounded-full animate-pulse" />
                 <span>12,453 presentations generated</span>
               </div>
-              <div className="w-1 h-4 bg-slate-gray/20" />
+              <div className="hidden sm:block w-1 h-4 bg-slate-gray/20" />
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-electric-indigo rounded-full animate-pulse" />
                 <span>Average time: 8 seconds</span>

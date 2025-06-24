@@ -60,36 +60,39 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 lg:mb-6 gap-4">
         <div>
-          <h3 className="text-2xl font-semibold text-slate-gray mb-1">
+          <h3 className="text-lg sm:text-2xl font-semibold text-slate-gray mb-1">
             Your Presentation is Ready! 🎉
           </h3>
-          <p className="text-slate-gray/70">
+          <p className="text-sm sm:text-base text-slate-gray/70">
             Navigate through your AI-generated slides
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={onRestart}>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button variant="outline" onClick={onRestart} className="flex-1 sm:flex-none touch-target">
             <RefreshCw className="w-4 h-4 mr-2" />
-            Try Another
+            <span className="hidden sm:inline">Try Another</span>
+            <span className="sm:hidden">Restart</span>
           </Button>
-          <Button onClick={handleDownload} className="btn-primary">
+          <Button onClick={handleDownload} className="flex-1 sm:flex-none bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white touch-target">
             <Download className="w-4 h-4 mr-2" />
-            Download PDF
+            <span className="hidden sm:inline">Download PDF</span>
+            <span className="sm:hidden">PDF</span>
           </Button>
         </div>
       </div>
 
       {/* Slide Navigation */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4 lg:mb-6">
         <Button
           variant="outline"
           size="sm"
           onClick={prevSlide}
           disabled={currentSlide === 0}
+          className="touch-target"
         >
           <ChevronLeft className="w-4 h-4" />
         </Button>
@@ -99,7 +102,7 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-colors ${
+              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-colors touch-target ${
                 index === currentSlide 
                   ? 'bg-electric-indigo' 
                   : 'bg-gray-300 hover:bg-gray-400'
@@ -113,13 +116,14 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
           size="sm"
           onClick={nextSlide}
           disabled={currentSlide === slides.length - 1}
+          className="touch-target"
         >
           <ChevronRight className="w-4 h-4" />
         </Button>
       </div>
 
       {/* Slide Preview */}
-      <Card className="bg-white shadow-lg rounded-xl overflow-hidden aspect-[16/9] max-w-4xl mx-auto">
+      <Card className="bg-ice-white shadow-lg rounded-xl overflow-hidden aspect-[4/3] sm:aspect-[16/9] max-w-5xl mx-auto">
         <CardContent className="p-0 h-full">
           <AnimatePresence mode="wait">
             <motion.div
@@ -140,7 +144,7 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
       </Card>
 
       {/* Slide Counter */}
-      <div className="text-center mt-4 text-sm text-slate-gray/60">
+      <div className="text-center mt-3 lg:mt-4 text-xs sm:text-sm text-slate-gray/60">
         Slide {currentSlide + 1} of {slides.length}
       </div>
 
@@ -149,15 +153,15 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="text-center mt-8 p-6 bg-gradient-to-r from-electric-indigo/5 to-neon-mint/5 rounded-xl"
+        className="text-center mt-6 lg:mt-8 p-4 sm:p-6 bg-gradient-to-r from-electric-indigo/5 to-neon-mint/5 rounded-xl"
       >
-        <h4 className="text-lg font-semibold text-slate-gray mb-2">
+        <h4 className="text-base sm:text-lg font-semibold text-slate-gray mb-2">
           Ready to create unlimited presentations?
         </h4>
-        <p className="text-slate-gray/70 mb-4">
+        <p className="text-sm sm:text-base text-slate-gray/70 mb-4">
           Join thousands of professionals already using Threadline
         </p>
-        <Button className="btn-primary">
+        <Button className="bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white touch-target">
           Join the Waitlist
           <ExternalLink className="w-4 h-4 ml-2" />
         </Button>

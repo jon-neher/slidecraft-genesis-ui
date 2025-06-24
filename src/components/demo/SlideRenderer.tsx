@@ -31,59 +31,59 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
     switch (scenario.chartType) {
       case 'bar':
         return (
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart {...commonProps}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="month" stroke="#64748b" />
-              <YAxis stroke="#64748b" />
+              <XAxis dataKey="month" stroke="#3A3D4D" fontSize={12} />
+              <YAxis stroke="#3A3D4D" fontSize={12} />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'white', 
+                  backgroundColor: '#FAFAFB', 
                   border: '1px solid #e2e8f0',
                   borderRadius: '8px'
                 }} 
               />
-              <Bar dataKey="revenue" fill="#4f46e5" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="target" fill="#10b981" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="revenue" fill="#5A2EFF" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="target" fill="#30F2B3" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         );
       
       case 'line':
         return (
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={200}>
             <LineChart {...commonProps}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="week" stroke="#64748b" />
-              <YAxis stroke="#64748b" />
+              <XAxis dataKey="week" stroke="#3A3D4D" fontSize={12} />
+              <YAxis stroke="#3A3D4D" fontSize={12} />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'white', 
+                  backgroundColor: '#FAFAFB', 
                   border: '1px solid #e2e8f0',
-                  borderRadius: '8px'
+                  border Radius: '8px'
                 }} 
               />
-              <Line type="monotone" dataKey="conversions" stroke="#10b981" strokeWidth={3} dot={{ fill: '#10b981', strokeWidth: 2, r: 6 }} />
-              <Line type="monotone" dataKey="clicks" stroke="#4f46e5" strokeWidth={2} dot={{ fill: '#4f46e5', strokeWidth: 2, r: 4 }} />
+              <Line type="monotone" dataKey="conversions" stroke="#30F2B3" strokeWidth={3} dot={{ fill: '#30F2B3', strokeWidth: 2, r: 6 }} />
+              <Line type="monotone" dataKey="clicks" stroke="#5A2EFF" strokeWidth={2} dot={{ fill: '#5A2EFF', strokeWidth: 2, r: 4 }} />
             </LineChart>
           </ResponsiveContainer>
         );
       
       case 'area':
         return (
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={200}>
             <AreaChart {...commonProps}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="category" stroke="#64748b" />
-              <YAxis stroke="#64748b" />
+              <XAxis dataKey="category" stroke="#3A3D4D" fontSize={12} />
+              <YAxis stroke="#3A3D4D" fontSize={12} />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'white', 
+                  backgroundColor: '#FAFAFB', 
                   border: '1px solid #e2e8f0',
                   borderRadius: '8px'
                 }} 
               />
-              <Area type="monotone" dataKey="actual" stackId="1" stroke="#7c3aed" fill="#7c3aed" fillOpacity={0.6} />
+              <Area type="monotone" dataKey="actual" stackId="1" stroke="#5A2EFF" fill="#5A2EFF" fillOpacity={0.6} />
             </AreaChart>
           </ResponsiveContainer>
         );
@@ -96,7 +96,7 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
   switch (slide.type) {
     case 'title':
       return (
-        <div className="h-full flex items-center justify-center bg-gradient-to-br from-electric-indigo/5 to-neon-mint/5 p-12">
+        <div className="h-full flex items-center justify-center bg-gradient-to-br from-electric-indigo/5 to-neon-mint/5 p-6 sm:p-8 lg:p-12">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -104,7 +104,7 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
             className="text-center"
           >
             <motion.h1 
-              className="text-4xl md:text-5xl font-bold text-slate-gray mb-6"
+              className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-slate-gray mb-4 lg:mb-6"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
@@ -112,7 +112,7 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
               {slide.title}
             </motion.h1>
             <motion.p 
-              className="text-xl text-slate-gray/70 max-w-2xl"
+              className="text-sm sm:text-base lg:text-xl text-slate-gray/70 max-w-2xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
@@ -123,7 +123,7 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6, type: 'spring' }}
-              className="mt-8 inline-block px-4 py-2 bg-electric-indigo/10 text-electric-indigo rounded-full text-sm font-medium"
+              className="mt-6 lg:mt-8 inline-block px-3 py-2 lg:px-4 lg:py-2 bg-electric-indigo/10 text-electric-indigo rounded-full text-xs sm:text-sm font-medium"
             >
               {scenario.category} Analysis
             </motion.div>
@@ -133,13 +133,13 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
 
     case 'chart':
       return (
-        <div className="h-full p-12 bg-white">
+        <div className="h-full p-6 sm:p-8 lg:p-12 bg-ice-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="h-full flex flex-col"
           >
-            <h2 className="text-3xl font-semibold text-slate-gray mb-8 text-center">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-slate-gray mb-6 lg:mb-8 text-center">
               {slide.title}
             </h2>
             <div className="flex-1 flex items-center justify-center">
@@ -158,28 +158,28 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
 
     case 'insights':
       return (
-        <div className="h-full p-12 bg-gradient-to-br from-slate-50 to-white">
+        <div className="h-full p-6 sm:p-8 lg:p-12 bg-gradient-to-br from-slate-50 to-ice-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="h-full flex flex-col justify-center"
           >
-            <h2 className="text-3xl font-semibold text-slate-gray mb-12 text-center">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-slate-gray mb-8 lg:mb-12 text-center">
               {slide.title}
             </h2>
-            <div className="grid gap-6 max-w-3xl mx-auto">
+            <div className="grid gap-4 lg:gap-6 max-w-3xl mx-auto">
               {scenario.insights.map((insight, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2 + index * 0.1 }}
-                  className="flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm border border-gray-100"
+                  className="flex items-start gap-3 lg:gap-4 p-4 lg:p-6 bg-ice-white rounded-xl shadow-sm border border-gray-100"
                 >
-                  <div className="w-8 h-8 bg-neon-mint/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <CheckCircle className="w-4 h-4 text-neon-mint" />
+                  <div className="w-6 h-6 lg:w-8 lg:h-8 bg-neon-mint/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <CheckCircle className="w-3 h-3 lg:w-4 lg:h-4 text-neon-mint" />
                   </div>
-                  <p className="text-slate-gray text-lg leading-relaxed">
+                  <p className="text-slate-gray text-sm sm:text-base lg:text-lg leading-relaxed">
                     {insight}
                   </p>
                 </motion.div>
@@ -191,7 +191,7 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
 
     case 'summary':
       return (
-        <div className="h-full p-12 bg-gradient-to-br from-electric-indigo/5 to-purple-50">
+        <div className="h-full p-6 sm:p-8 lg:p-12 bg-gradient-to-br from-electric-indigo/5 to-purple-50">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -201,17 +201,17 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, type: 'spring' }}
-              className="w-16 h-16 bg-electric-indigo/10 rounded-full flex items-center justify-center mx-auto mb-8"
+              className="w-12 h-12 lg:w-16 lg:h-16 bg-electric-indigo/10 rounded-full flex items-center justify-center mx-auto mb-6 lg:mb-8"
             >
-              <Award className="w-8 h-8 text-electric-indigo" />
+              <Award className="w-6 h-6 lg:w-8 lg:h-8 text-electric-indigo" />
             </motion.div>
             
-            <h2 className="text-3xl font-semibold text-slate-gray mb-6">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-slate-gray mb-4 lg:mb-6">
               {slide.title}
             </h2>
             
             <motion.p 
-              className="text-xl text-slate-gray/70 max-w-2xl mx-auto mb-8"
+              className="text-sm sm:text-base lg:text-xl text-slate-gray/70 max-w-2xl mx-auto mb-6 lg:mb-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
@@ -223,19 +223,19 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="flex justify-center gap-8"
+              className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8"
             >
               <div className="text-center">
-                <div className="text-2xl font-bold text-electric-indigo">+15%</div>
-                <div className="text-sm text-slate-gray/60">Growth</div>
+                <div className="text-xl lg:text-2xl font-bold text-electric-indigo">+15%</div>
+                <div className="text-xs lg:text-sm text-slate-gray/60">Growth</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-neon-mint">92%</div>
-                <div className="text-sm text-slate-gray/60">Accuracy</div>
+                <div className="text-xl lg:text-2xl font-bold text-neon-mint">92%</div>
+                <div className="text-xs lg:text-sm text-slate-gray/60">Accuracy</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">5min</div>
-                <div className="text-sm text-slate-gray/60">Time Saved</div>
+                <div className="text-xl lg:text-2xl font-bold text-purple-600">5min</div>
+                <div className="text-xs lg:text-sm text-slate-gray/60">Time Saved</div>
               </div>
             </motion.div>
           </motion.div>

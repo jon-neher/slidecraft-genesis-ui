@@ -98,17 +98,17 @@ interface DataScenarioSelectorProps {
 
 const DataScenarioSelector = ({ onSelectScenario }: DataScenarioSelectorProps) => {
   return (
-    <div className="p-8">
-      <div className="text-center mb-8">
-        <h3 className="text-2xl font-semibold text-slate-gray mb-2">
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="text-center mb-6 lg:mb-8">
+        <h3 className="text-xl sm:text-2xl font-semibold text-slate-gray mb-2">
           Choose Your Data Scenario
         </h3>
-        <p className="text-slate-gray/70">
+        <p className="text-sm sm:text-base text-slate-gray/70">
           Select a sample dataset to see how Threadline transforms it into a presentation
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
         {scenarios.map((scenario, index) => {
           const IconComponent = iconMap[scenario.icon as keyof typeof iconMap];
           
@@ -119,23 +119,23 @@ const DataScenarioSelector = ({ onSelectScenario }: DataScenarioSelectorProps) =
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer group">
-                <CardHeader className="text-center pb-4">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-electric-indigo/10 to-neon-mint/10 rounded-xl flex items-center justify-center">
-                    <IconComponent className="w-6 h-6 text-electric-indigo" />
+              <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer group touch-target">
+                <CardHeader className="text-center pb-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 bg-gradient-to-br from-electric-indigo/10 to-neon-mint/10 rounded-xl flex items-center justify-center">
+                    <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 text-electric-indigo" />
                   </div>
-                  <CardTitle className="text-lg">{scenario.title}</CardTitle>
-                  <div className="inline-block px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-full">
+                  <CardTitle className="text-base sm:text-lg">{scenario.title}</CardTitle>
+                  <div className="inline-block px-2 py-1 bg-slate-50 text-slate-gray/70 text-xs rounded-full">
                     {scenario.category}
                   </div>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <p className="text-sm text-slate-gray/70 mb-6">
+                  <p className="text-sm text-slate-gray/70 mb-4 lg:mb-6">
                     {scenario.description}
                   </p>
                   <Button 
                     onClick={() => onSelectScenario(scenario)}
-                    className="w-full btn-primary group-hover:scale-105 transition-transform"
+                    className="w-full bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white group-hover:scale-105 transition-transform touch-target"
                   >
                     <Play className="w-4 h-4 mr-2" />
                     Try This Dataset
@@ -147,8 +147,8 @@ const DataScenarioSelector = ({ onSelectScenario }: DataScenarioSelectorProps) =
         })}
       </div>
 
-      <div className="text-center mt-8">
-        <p className="text-sm text-slate-gray/60">
+      <div className="text-center mt-6 lg:mt-8">
+        <p className="text-xs sm:text-sm text-slate-gray/60">
           💡 Each demo uses real data patterns from actual business scenarios
         </p>
       </div>
