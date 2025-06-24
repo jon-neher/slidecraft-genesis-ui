@@ -1,10 +1,10 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, Users, DollarSign, BarChart3, Play } from 'lucide-react';
 import { DataScenario } from './types';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const scenarios: DataScenario[] = [
   {
@@ -97,6 +97,85 @@ interface DataScenarioSelectorProps {
 }
 
 const DataScenarioSelector = ({ onSelectScenario }: DataScenarioSelectorProps) => {
+  const isMobile = useIsMobile();
+  const [selectedScenarioId, setSelectedScenarioId] = useState(scenarios[0].id);
+  
+  const selectedScenario = scenarios.find(s => s.id === selectedScenarioId) || scenarios[0];
+  const IconComponent = iconMap[selectedScenario.icon as keyof typeof iconMap];
+
+  if (isMobile) {
+    return (
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="text-center mb-6">
+          <h3 className="text-xl font-semibold text-slate-gray mb-2">
+            Choose Your Data Scenario
+          </h3>
+          <p className="text-sm text-slate-gray/70">
+            Select a sample dataset to see how Threadline transforms it
+          </p>
+        </div>
+
+        {/* Mobile Tab Navigation */}
+        <div className="flex flex-col space-y-2 mb-6">
+          {scenarios.map((scenario) => {
+            const TabIcon = iconMap[scenario.icon as keyof typeof iconMap];
+            return (
+              <button
+                key={scenario.id}
+                onClick={() => setSelectedScenarioId(scenario.id)}
+                className={`flex items-center gap-3 p-3 rounded-lg border transition-all touch-target ${
+                  selectedScenarioId === scenario.id
+                    ? 'bg-electric-indigo/10 border-electric-indigo/30 text-electric-indigo'
+                    : 'bg-white border-slate-gray/10 text-slate-gray hover:bg-slate-50'
+                }`}
+              >
+                <div className="w-8 h-8 bg-gradient-to-br from-electric-indigo/10 to-neon-mint/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <TabIcon className="w-4 h-4" />
+                </div>
+                <div className="text-left flex-1">
+                  <div className="font-medium text-sm">{scenario.title}</div>
+                  <div className="text-xs opacity-70">{scenario.category}</div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Selected Scenario Details */}
+        <motion.div
+          key={selectedScenarioId}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="bg-gradient-to-br from-slate-50 to-ice-white rounded-xl p-4 border border-slate-gray/10"
+        >
+          <div className="text-center mb-4">
+            <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-electric-indigo/10 to-neon-mint/10 rounded-xl flex items-center justify-center">
+              <IconComponent className="w-6 h-6 text-electric-indigo" />
+            </div>
+            <h4 className="font-semibold text-slate-gray mb-1">{selectedScenario.title}</h4>
+            <p className="text-sm text-slate-gray/70 mb-3">{selectedScenario.description}</p>
+          </div>
+          
+          <Button 
+            onClick={() => onSelectScenario(selectedScenario)}
+            className="w-full bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white touch-target"
+          >
+            <Play className="w-4 h-4 mr-2" />
+            Try This Dataset
+          </Button>
+        </motion.div>
+
+        <div className="text-center mt-6">
+          <p className="text-xs text-slate-gray/60">
+            💡 Each demo uses real data patterns from actual business scenarios
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop layout (unchanged)
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="text-center mb-6 lg:mb-8">
