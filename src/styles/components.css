@@ -1,0 +1,50 @@
+
+/* Component-specific styles */
+
+.hero-gradient {
+  background: linear-gradient(135deg, 
+    rgba(250, 250, 251, 1) 0%, 
+    rgba(245, 245, 247, 0.8) 100%);
+}
+
+.card-modern {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(229, 231, 235, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+}
+
+.electric-gradient {
+  background: linear-gradient(135deg, #5A2EFF 0%, #30F2B3 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #5A2EFF 0%, #30F2B3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtle-shadow {
+  box-shadow: 0 4px 24px rgba(90, 46, 255, 0.08);
+}
+
+/* Button styles */
+.btn-primary {
+  @apply bg-electric-indigo text-ice-white px-8 py-4 rounded-xl font-medium transition-all duration-200;
+  @apply hover:shadow-lg hover:scale-105 active:scale-95;
+}
+
+.btn-secondary {
+  @apply bg-ice-white text-slate-gray border border-gray-200 px-8 py-4 rounded-xl font-medium transition-all duration-200;
+  @apply hover:shadow-md hover:border-electric-indigo hover:text-electric-indigo;
+}
+
+/* Performance optimizations for animations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
