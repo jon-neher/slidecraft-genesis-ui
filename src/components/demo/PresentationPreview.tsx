@@ -72,12 +72,19 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
           </p>
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-          <Button variant="outline" onClick={onRestart} className="flex-1 sm:flex-none touch-target">
+          <Button 
+            variant="outline" 
+            onClick={onRestart} 
+            className="flex-1 sm:flex-none touch-target border-slate-gray/20 text-slate-gray hover:bg-slate-gray/5"
+          >
             <RefreshCw className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline">Try Another</span>
             <span className="sm:hidden">Restart</span>
           </Button>
-          <Button onClick={handleDownload} className="flex-1 sm:flex-none bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white touch-target">
+          <Button 
+            onClick={handleDownload} 
+            className="flex-1 sm:flex-none bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white touch-target"
+          >
             <Download className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline">Download PDF</span>
             <span className="sm:hidden">PDF</span>
@@ -92,7 +99,7 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
           size="sm"
           onClick={prevSlide}
           disabled={currentSlide === 0}
-          className="touch-target"
+          className="touch-target border-slate-gray/20 text-slate-gray hover:bg-slate-gray/5 disabled:opacity-50"
         >
           <ChevronLeft className="w-4 h-4" />
         </Button>
@@ -105,7 +112,7 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
               className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-colors touch-target ${
                 index === currentSlide 
                   ? 'bg-electric-indigo' 
-                  : 'bg-gray-300 hover:bg-gray-400'
+                  : 'bg-slate-gray/30 hover:bg-slate-gray/50'
               }`}
             />
           ))}
@@ -116,14 +123,14 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
           size="sm"
           onClick={nextSlide}
           disabled={currentSlide === slides.length - 1}
-          className="touch-target"
+          className="touch-target border-slate-gray/20 text-slate-gray hover:bg-slate-gray/5 disabled:opacity-50"
         >
           <ChevronRight className="w-4 h-4" />
         </Button>
       </div>
 
       {/* Slide Preview */}
-      <Card className="bg-ice-white shadow-lg rounded-xl overflow-hidden aspect-[4/3] sm:aspect-[16/9] max-w-5xl mx-auto">
+      <Card className="bg-ice-white shadow-lg rounded-xl overflow-hidden aspect-[4/3] sm:aspect-[16/9] max-w-5xl mx-auto border-slate-gray/10">
         <CardContent className="p-0 h-full">
           <AnimatePresence mode="wait">
             <motion.div
@@ -153,7 +160,7 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="text-center mt-6 lg:mt-8 p-4 sm:p-6 bg-gradient-to-r from-electric-indigo/5 to-neon-mint/5 rounded-xl"
+        className="text-center mt-6 lg:mt-8 p-4 sm:p-6 bg-gradient-to-r from-electric-indigo/5 to-neon-mint/5 rounded-xl border border-slate-gray/10"
       >
         <h4 className="text-base sm:text-lg font-semibold text-slate-gray mb-2">
           Ready to create unlimited presentations?

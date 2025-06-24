@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
@@ -92,6 +93,48 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
     }
   };
 
+  // Generate scenario-specific summary content and metrics
+  const getSummaryContent = () => {
+    switch (scenario.category) {
+      case 'Sales':
+        return {
+          content: 'Q4 performance exceeded expectations with strong revenue growth and improved conversion rates across all channels.',
+          metrics: [
+            { value: '+24%', label: 'Revenue Growth' },
+            { value: '89%', label: 'Target Achievement' },
+            { value: '3.2x', label: 'ROI Improvement' }
+          ]
+        };
+      case 'Marketing':
+        return {
+          content: 'Campaign optimization resulted in significant improvements in customer acquisition and engagement metrics.',
+          metrics: [
+            { value: '+34%', label: 'CTR Improvement' },
+            { value: '67%', label: 'Social Conversions' },
+            { value: '$23', label: 'CPA Reduction' }
+          ]
+        };
+      case 'Finance':
+        return {
+          content: 'Strong financial performance with revenue exceeding budget and improved operational efficiency.',
+          metrics: [
+            { value: '+11%', label: 'Budget Variance' },
+            { value: '23%', label: 'Profit Margin' },
+            { value: '-5%', label: 'Cost Reduction' }
+          ]
+        };
+      default:
+        return {
+          content: 'Data analysis reveals positive trends and actionable insights for strategic decision-making.',
+          metrics: [
+            { value: '+15%', label: 'Growth' },
+            { value: '92%', label: 'Accuracy' },
+            { value: '5min', label: 'Time Saved' }
+          ]
+        };
+    }
+  };
+
   switch (slide.type) {
     case 'title':
       return (
@@ -173,7 +216,7 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2 + index * 0.1 }}
-                  className="flex items-start gap-3 lg:gap-4 p-4 lg:p-6 bg-ice-white rounded-xl shadow-sm border border-gray-100"
+                  className="flex items-start gap-3 lg:gap-4 p-4 lg:p-6 bg-ice-white rounded-xl shadow-sm border border-slate-gray/10"
                 >
                   <div className="w-6 h-6 lg:w-8 lg:h-8 bg-neon-mint/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                     <CheckCircle className="w-3 h-3 lg:w-4 lg:h-4 text-neon-mint" />
@@ -189,8 +232,9 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
       );
 
     case 'summary':
+      const summaryData = getSummaryContent();
       return (
-        <div className="h-full p-6 sm:p-8 lg:p-12 bg-gradient-to-br from-electric-indigo/5 to-purple-50">
+        <div className="h-full p-6 sm:p-8 lg:p-12 bg-gradient-to-br from-electric-indigo/5 to-neon-mint/5">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -215,7 +259,7 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              {slide.content}
+              {summaryData.content}
             </motion.p>
 
             <motion.div
@@ -224,18 +268,12 @@ const SlideRenderer = ({ slide, scenario }: SlideRendererProps) => {
               transition={{ delay: 0.6 }}
               className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8"
             >
-              <div className="text-center">
-                <div className="text-xl lg:text-2xl font-bold text-electric-indigo">+15%</div>
-                <div className="text-xs lg:text-sm text-slate-gray/60">Growth</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl lg:text-2xl font-bold text-neon-mint">92%</div>
-                <div className="text-xs lg:text-sm text-slate-gray/60">Accuracy</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl lg:text-2xl font-bold text-purple-600">5min</div>
-                <div className="text-xs lg:text-sm text-slate-gray/60">Time Saved</div>
-              </div>
+              {summaryData.metrics.map((metric, index) => (
+                <div key={index} className="text-center">
+                  <div className="text-xl lg:text-2xl font-bold text-electric-indigo">{metric.value}</div>
+                  <div className="text-xs lg:text-sm text-slate-gray/60">{metric.label}</div>
+                </div>
+              ))}
             </motion.div>
           </motion.div>
         </div>
