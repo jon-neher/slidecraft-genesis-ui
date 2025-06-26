@@ -8,6 +8,7 @@ import QuickSelectHeader from '@/components/dashboard/QuickSelectHeader';
 import ContextPane from '@/components/dashboard/ContextPane';
 import DeckGallery from '@/components/dashboard/DeckGallery';
 import ActivityPanel from '@/components/dashboard/ActivityPanel';
+import IntegrationsPanel from '@/components/dashboard/IntegrationsPanel';
 import FloatingActionButton from '@/components/ui/floating-action-button';
 
 const Dashboard = () => {
@@ -33,8 +34,9 @@ const Dashboard = () => {
                     <ContextPane />
                     <DeckGallery />
                   </div>
-                  <div className="lg:w-auto w-full">
+                  <div className="lg:w-80 w-full space-y-6">
                     <ActivityPanel />
+                    <IntegrationsPanel />
                   </div>
                 </div>
               </main>
