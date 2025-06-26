@@ -24,7 +24,11 @@ const HubSpotConnection = () => {
       
       // Construct HubSpot OAuth URL
       const hubspotAuthUrl = new URL('https://app.hubspot.com/oauth/authorize');
-      hubspotAuthUrl.searchParams.set('client_id', import.meta.env.VITE_HUBSPOT_CLIENT_ID || 'your-hubspot-client-id');
+      const clientId = import.meta.env.VITE_HUBSPOT_CLIENT_ID;
+      if (!clientId) {
+        throw new Error('Missing VITE_HUBSPOT_CLIENT_ID env');
+      }
+      hubspotAuthUrl.searchParams.set('client_id', clientId);
       hubspotAuthUrl.searchParams.set('scope', 'contacts');
       hubspotAuthUrl.searchParams.set('redirect_uri', `${window.location.origin}/api/hubspot_oauth_callback`);
       hubspotAuthUrl.searchParams.set('state', state);

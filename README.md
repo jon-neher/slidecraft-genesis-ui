@@ -228,7 +228,23 @@ npm run test
 - Scroll-triggered animations use `once: true` to prevent re-triggering
 - Clean React hooks to avoid memory leaks
 
+
 This landing page showcases modern web animation techniques while maintaining excellent performance and accessibility standards.
+
+## HubSpot Configuration
+
+Create a `.env` file in the project root and provide the following variables:
+
+```bash
+VITE_HUBSPOT_CLIENT_ID=<your public OAuth id>
+HUBSPOT_CLIENT_ID=<your private OAuth id>
+HUBSPOT_CLIENT_SECRET=<your HubSpot secret>
+HUBSPOT_APP_SECRET=<webhook signature secret>
+SUPABASE_URL=<your Supabase project URL>
+SUPABASE_SERVICE_ROLE_KEY=<service role key>
+```
+
+The React dashboard reads `VITE_HUBSPOT_CLIENT_ID` when initiating OAuth. The server and Edge Function code use the remaining variables via `src/server/config.ts`.
 
 ## API Documentation
 
