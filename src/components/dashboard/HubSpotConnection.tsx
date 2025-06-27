@@ -55,25 +55,25 @@ const HubSpotConnection = () => {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-white border border-gray-200">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
-            <Zap className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 bg-electric-indigo rounded-lg flex items-center justify-center">
+            <Zap className="w-5 h-5 text-ice-white" />
           </div>
           <div>
-            <CardTitle className="text-lg">HubSpot</CardTitle>
-            <CardDescription>Connect your CRM data</CardDescription>
+            <CardTitle className="text-lg text-slate-gray">HubSpot</CardTitle>
+            <CardDescription className="text-gray-600">Connect your CRM data</CardDescription>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {isConnected ? (
-            <Badge variant="default" className="bg-neon-mint text-slate-gray">
+            <Badge variant="success">
               <CheckCircle className="w-3 h-3 mr-1" />
               Connected
             </Badge>
           ) : (
-            <Badge variant="secondary" className="text-slate-gray/60">
+            <Badge variant="secondary">
               <AlertCircle className="w-3 h-3 mr-1" />
               Not Connected
             </Badge>
@@ -82,37 +82,37 @@ const HubSpotConnection = () => {
       </CardHeader>
       
       <CardContent className="space-y-4">
-        <p className="text-sm text-slate-gray/70">
+        <p className="text-sm text-gray-600 leading-relaxed">
           {isConnected 
             ? 'Your HubSpot account is connected. You can now use contact data in your presentations.'
             : 'Connect your HubSpot account to automatically pull contact and company data into your presentations.'
           }
         </p>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {isConnected ? (
             <>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" className="border-gray-200 text-slate-gray hover:bg-gray-50">
                     <Settings className="w-4 h-4 mr-2" />
                     Manage
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Manage HubSpot Connection</DialogTitle>
-                    <DialogDescription>
+                    <DialogTitle className="text-slate-gray">Manage HubSpot Connection</DialogTitle>
+                    <DialogDescription className="text-gray-600">
                       Manage your HubSpot integration settings
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg bg-white">
                       <div>
-                        <p className="font-medium">Connection Status</p>
-                        <p className="text-sm text-muted-foreground">Active and syncing</p>
+                        <p className="font-medium text-slate-gray">Connection Status</p>
+                        <p className="text-sm text-gray-600">Active and syncing</p>
                       </div>
-                      <Badge variant="default" className="bg-neon-mint text-slate-gray">
+                      <Badge variant="success">
                         <CheckCircle className="w-3 h-3 mr-1" />
                         Connected
                       </Badge>
@@ -120,14 +120,14 @@ const HubSpotConnection = () => {
                     <Button 
                       variant="destructive" 
                       onClick={handleDisconnect}
-                      className="w-full"
+                      className="w-full bg-red-500 text-ice-white hover:bg-red-500/90"
                     >
                       Disconnect HubSpot
                     </Button>
                   </div>
                 </DialogContent>
               </Dialog>
-              <Button size="sm" variant="ghost">
+              <Button size="sm" variant="ghost" className="text-slate-gray hover:bg-gray-100">
                 <ExternalLink className="w-4 h-4 mr-2" />
                 Open HubSpot
               </Button>
@@ -136,11 +136,11 @@ const HubSpotConnection = () => {
             <Button 
               onClick={handleConnect}
               disabled={isConnecting}
-              className="bg-electric-indigo hover:bg-electric-indigo/90"
+              className="bg-electric-indigo text-ice-white hover:bg-electric-indigo/90 touch-target"
             >
               {isConnecting ? (
                 <>
-                  <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-ice-white border-t-transparent" />
                   Connecting...
                 </>
               ) : (

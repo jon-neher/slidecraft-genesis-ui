@@ -18,13 +18,13 @@
     @apply m-4 sm:m-6 lg:m-8;
   }
 
-  /* Mobile typography */
+  /* Mobile typography with improved contrast */
   .mobile-heading {
-    @apply text-lg sm:text-xl lg:text-2xl;
+    @apply text-lg sm:text-xl lg:text-2xl text-slate-gray font-semibold;
   }
 
   .mobile-body {
-    @apply text-sm sm:text-base;
+    @apply text-sm sm:text-base text-gray-600;
   }
 
   /* Safe area for mobile devices */
@@ -70,6 +70,27 @@
   .mobile-full-container {
     @apply w-full max-w-full sm:max-w-2xl lg:max-w-4xl xl:max-w-6xl mx-auto;
   }
+
+  /* Mobile-specific color overrides for better readability */
+  .mobile-text-primary {
+    @apply text-slate-gray;
+  }
+
+  .mobile-text-secondary {
+    @apply text-gray-600;
+  }
+
+  .mobile-bg-card {
+    @apply bg-white border border-gray-200;
+  }
+
+  .mobile-badge-success {
+    @apply bg-neon-mint text-slate-gray;
+  }
+
+  .mobile-badge-secondary {
+    @apply bg-gray-100 text-slate-gray;
+  }
 }
 
 /* Spacing utilities */
@@ -91,5 +112,25 @@
   /* Enhance active states for touch */
   .active\:scale-95:active {
     transform: scale(0.95);
+  }
+
+  /* Ensure sufficient contrast on mobile */
+  .text-gray-500 {
+    @apply text-gray-600;
+  }
+
+  .text-gray-400 {
+    @apply text-gray-500;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .text-gray-600 {
+    @apply text-slate-gray;
+  }
+  
+  .border-gray-200 {
+    @apply border-gray-300;
   }
 }
