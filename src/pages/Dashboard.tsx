@@ -10,6 +10,7 @@ import DeckGallery from '@/components/dashboard/DeckGallery';
 import ActivityPanel from '@/components/dashboard/ActivityPanel';
 import IntegrationsPanel from '@/components/dashboard/IntegrationsPanel';
 import FloatingActionButton from '@/components/ui/floating-action-button';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const Dashboard = () => {
   const { isSignedIn } = useAuth();
@@ -18,43 +19,60 @@ const Dashboard = () => {
   const isDevelopment = window.location.hostname.includes('lovableproject.com') || 
                        window.location.hostname === 'localhost';
 
+  console.log('Dashboard - isDevelopment:', isDevelopment, 'hostname:', window.location.hostname);
+
   const handleNewDeck = () => {
     console.log('Creating new deck');
     // Add new deck creation logic here
   };
 
+  const DashboardContent = () => (
+    <div className="min-h-screen bg-ice-white safe-area-top safe-area-bottom">
+      <SidebarProvider>
+        <div className="flex w-full min-h-screen">
+          <ErrorBoundary fallback={<div className="w-64 bg-gray-100 p-4">Navigation Error</div>}>
+            <LeftNav />
+          </ErrorBoundary>
+          <main className="flex-1 flex flex-col w-full">
+            <ErrorBoundary fallback={<div className="h-16 bg-gray-100 p-4">Header Error</div>}>
+              <QuickSelectHeader />
+            </ErrorBoundary>
+            <div className="flex-1 flex flex-col lg:flex-row gap-4 lg:gap-6 mobile-padding">
+              <div className="flex-1 mobile-stack">
+                <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Context Error</div>}>
+                  <ContextPane />
+                </ErrorBoundary>
+                <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Gallery Error</div>}>
+                  <DeckGallery />
+                </ErrorBoundary>
+              </div>
+              <div className="lg:w-80 w-full space-y-6">
+                <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Activity Error</div>}>
+                  <ActivityPanel />
+                </ErrorBoundary>
+                <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Integration Error</div>}>
+                  <IntegrationsPanel />
+                </ErrorBoundary>
+              </div>
+            </div>
+          </main>
+        </div>
+        
+        {/* Floating Action Button for mobile */}
+        <FloatingActionButton
+          icon={<Plus className="w-6 h-6" />}
+          onClick={handleNewDeck}
+        >
+          New Deck
+        </FloatingActionButton>
+      </SidebarProvider>
+    </div>
+  );
+
   // In development mode, bypass authentication
   if (isDevelopment) {
-    return (
-      <div className="min-h-screen bg-ice-white safe-area-top safe-area-bottom">
-        <SidebarProvider>
-          <div className="flex w-full min-h-screen">
-            <LeftNav />
-            <main className="flex-1 flex flex-col w-full">
-              <QuickSelectHeader />
-              <div className="flex-1 flex flex-col lg:flex-row gap-4 lg:gap-6 mobile-padding">
-                <div className="flex-1 mobile-stack">
-                  <ContextPane />
-                  <DeckGallery />
-                </div>
-                <div className="lg:w-80 w-full space-y-6">
-                  <ActivityPanel />
-                  <IntegrationsPanel />
-                </div>
-              </div>
-            </main>
-          </div>
-          
-          {/* Floating Action Button for mobile */}
-          <FloatingActionButton
-            icon={<Plus className="w-6 h-6" />}
-            onClick={handleNewDeck}
-          >
-            New Deck
-          </FloatingActionButton>
-        </SidebarProvider>
-      </div>
-    );
+    console.log('Dashboard - Rendering in development mode');
+    return <DashboardContent />;
   }
 
   return (
@@ -63,34 +81,7 @@ const Dashboard = () => {
         <RedirectToSignIn />
       </SignedOut>
       <SignedIn>
-        <div className="min-h-screen bg-ice-white safe-area-top safe-area-bottom">
-          <SidebarProvider>
-            <div className="flex w-full min-h-screen">
-              <LeftNav />
-              <main className="flex-1 flex flex-col w-full">
-                <QuickSelectHeader />
-                <div className="flex-1 flex flex-col lg:flex-row gap-4 lg:gap-6 mobile-padding">
-                  <div className="flex-1 mobile-stack">
-                    <ContextPane />
-                    <DeckGallery />
-                  </div>
-                  <div className="lg:w-80 w-full space-y-6">
-                    <ActivityPanel />
-                    <IntegrationsPanel />
-                  </div>
-                </div>
-              </main>
-            </div>
-            
-            {/* Floating Action Button for mobile */}
-            <FloatingActionButton
-              icon={<Plus className="w-6 h-6" />}
-              onClick={handleNewDeck}
-            >
-              New Deck
-            </FloatingActionButton>
-          </SidebarProvider>
-        </div>
+        <DashboardContent />
       </SignedIn>
     </>
   );

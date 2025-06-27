@@ -24,15 +24,8 @@ const QuickSelectHeader = () => {
     >
       <div className="flex items-center gap-2 lg:gap-4">
         {isMobile && (
-          <SidebarTrigger asChild>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-10 w-10"
-              aria-label={openMobile ? "Close navigation" : "Open navigation"}
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
+          <SidebarTrigger>
+            <Menu className="w-5 h-5" />
           </SidebarTrigger>
         )}
         
