@@ -8,6 +8,7 @@ import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { headerVariants } from '@/lib/animations';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
+import ProfileMenu from './ProfileMenu';
 
 const QuickSelectHeader = () => {
   const [selectedEntity, setSelectedEntity] = useState(null);
@@ -56,6 +57,7 @@ const QuickSelectHeader = () => {
             New Deck
           </ActionButton>
         )}
+        <ProfileMenu />
       </div>
     </motion.header>
   );
