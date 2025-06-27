@@ -20,11 +20,13 @@
 
   /* Mobile typography with improved contrast */
   .mobile-heading {
-    @apply text-lg sm:text-xl lg:text-2xl text-slate-gray font-semibold;
+    @apply text-lg sm:text-xl lg:text-2xl font-semibold;
+    color: #3A3D4D; /* slate-gray */
   }
 
   .mobile-body {
-    @apply text-sm sm:text-base text-gray-600;
+    @apply text-sm sm:text-base;
+    color: #4B5563; /* gray-600 */
   }
 
   /* Safe area for mobile devices */
@@ -73,11 +75,11 @@
 
   /* Mobile-specific color overrides for better readability */
   .mobile-text-primary {
-    @apply text-slate-gray;
+    color: #3A3D4D; /* slate-gray */
   }
 
   .mobile-text-secondary {
-    @apply text-gray-600;
+    color: #4B5563; /* gray-600 */
   }
 
   .mobile-bg-card {
@@ -85,11 +87,26 @@
   }
 
   .mobile-badge-success {
-    @apply bg-neon-mint text-slate-gray;
+    background-color: #30F2B3; /* neon-mint */
+    color: #3A3D4D; /* slate-gray */
   }
 
   .mobile-badge-secondary {
-    @apply bg-gray-100 text-slate-gray;
+    @apply bg-gray-100;
+    color: #3A3D4D; /* slate-gray */
+  }
+
+  /* Mobile contrast improvements */
+  .mobile-high-contrast {
+    color: #3A3D4D; /* slate-gray for better readability */
+  }
+
+  .mobile-border-light {
+    border-color: #E5E7EB; /* gray-200 */
+  }
+
+  .mobile-shadow-soft {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   }
 }
 
@@ -116,18 +133,18 @@
 
   /* Ensure sufficient contrast on mobile */
   .text-gray-500 {
-    @apply text-gray-600;
+    color: #4B5563; /* gray-600 for better contrast */
   }
 
   .text-gray-400 {
-    @apply text-gray-500;
+    color: #6B7280; /* gray-500 for better contrast */
   }
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .text-gray-600 {
-    @apply text-slate-gray;
+    color: #3A3D4D; /* slate-gray */
   }
   
   .border-gray-200 {
