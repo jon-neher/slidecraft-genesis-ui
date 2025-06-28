@@ -1,0 +1,15 @@
+.slide {
+  margin: auto;
+  max-width: 800px;
+  padding: 1rem;
+  background: #fff;
+  position: relative;
+}
+.slide-container {
+  position: relative;
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+
