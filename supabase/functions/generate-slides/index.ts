@@ -1,9 +1,14 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import OpenAI from 'npm:openai'
+import { createClient } from '@supabase/supabase-js'
+import type { Database } from '../../src/integrations/supabase/types.ts'
+import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from '../../src/server/config.ts'
 
 const apiKey = Deno.env.get('OPENAI_API_KEY')
 const openai = new OpenAI({ apiKey })
+
+const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -37,7 +42,21 @@ serve(async (req) => {
 
         const slides = JSON.parse(completion.choices[0].message.content ?? '')
 
-        return new Response(JSON.stringify(slides), {
+        const { data, error } = await supabase
+          .from('decks')
+          .insert({ prompt, slide_json: slides })
+          .select('id')
+          .single()
+
+        if (error) {
+          console.error('Supabase insert error:', error)
+          return new Response(JSON.stringify({ error: 'Failed to store deck' }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 500,
+          })
+        }
+
+        return new Response(JSON.stringify({ deck_id: data.id }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 200,
         })
