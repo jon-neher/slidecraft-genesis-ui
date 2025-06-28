@@ -248,6 +248,33 @@ SUPABASE_SERVICE_ROLE_KEY=<service role key>
 
 The React dashboard reads `VITE_HUBSPOT_CLIENT_ID` when initiating OAuth. The server and Edge Function code use the remaining variables via `src/server/config.ts`.
 
+## Supabase CLI Setup
+
+1. Log in and initialize your project:
+   ```bash
+   supabase login
+   supabase init
+   ```
+
+2. Store your OpenAI key for the slide generator:
+   ```bash
+   supabase secrets set OPENAI_API_KEY=YOUR_KEY
+   ```
+
+3. Deploy the edge function:
+   ```bash
+   supabase functions deploy generate-slides
+   ```
+
+## Front End Development
+
+```bash
+npm install && npm run dev
+```
+
+### Workflow
+Generate → Preview → Edit → Download PPTX
+
 ## API Documentation
 
 See `docs/openapi.yaml` for the HubSpot integration endpoints and `docs/SECURITY_CHECKLIST.md` for security requirements.
