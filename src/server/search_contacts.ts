@@ -67,12 +67,14 @@ async function searchRemote(
   if (rows.length) {
     await sb
       .from('hubspot_contacts_cache')
-      .upsert(rows.map(r => ({ 
-        portal_id, 
-        id: r.id, 
-        properties: r.properties as any, // Cast to Json type for Supabase
-        updated_at: now 
-      })))
+      .upsert(
+        rows.map(r => ({
+          portal_id,
+          id: r.id,
+          properties: r.properties as Database['public']['Tables']['hubspot_contacts_cache']['Insert']['properties'],
+          updated_at: now,
+        }))
+      )
   }
   return rows.slice(0, limit)
 }

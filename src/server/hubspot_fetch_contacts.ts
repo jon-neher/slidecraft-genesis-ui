@@ -64,7 +64,7 @@ export async function hubspotFetchContacts(
     const rows = results.map((r) => ({
       portal_id,
       id: r.id,
-      properties: r.properties as any, // Cast to Json type for Supabase
+      properties: r.properties as Database['public']['Tables']['hubspot_contacts_cache']['Insert']['properties'],
       updated_at: (r.properties.hs_lastmodifieddate as string) || new Date().toISOString(),
     }))
     await sb.from('hubspot_contacts_cache').upsert(rows)
