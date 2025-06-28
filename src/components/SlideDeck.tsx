@@ -1,68 +1,74 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React, { useEffect, useRef } from 'react'
+
+declare global {
+  interface Window {
+    Reveal: {
+      initialize: (options: unknown) => void
+    }
+    RevealPrintPDF: unknown
+  }
+}
 
 export interface SlideImage {
-  src: string;
-  x: number; // 0-1 fractional position
-  y: number;
-  w: number;
-  h: number;
+  src: string
+  x: number
+  y: number
+  w: number
+  h: number
 }
 
 export interface Slide {
-  title: string;
-  bullets: string[];
-  images: SlideImage[];
+  title: string
+  bullets: string[]
+  images: SlideImage[]
 }
 
 interface SlideDeckProps {
-  slides: Slide[];
+  slides: Slide[]
 }
 
 const SlideDeck = ({ slides }: SlideDeckProps) => {
-  const [current, setCurrent] = useState(0);
+  const deckRef = useRef<HTMLDivElement>(null)
 
-  const next = () => setCurrent((c) => Math.min(c + 1, slides.length - 1));
-  const prev = () => setCurrent((c) => Math.max(c - 1, 0));
-
-  const { title, bullets, images } = slides[current] ?? {} as Slide;
+  useEffect(() => {
+    if (!window.Reveal || !window.RevealPrintPDF) return
+    window.Reveal.initialize({
+      plugins: [window.RevealPrintPDF],
+      pdfSeparateFragments: true,
+      pdfMaxPagesPerSlide: 1,
+    })
+  }, [])
 
   return (
-    <div className="space-y-4">
-      <div className="relative bg-white p-6 rounded-lg border border-gray-200 slide">
-        <h1 className="text-xl font-bold text-slate-gray mb-4">{title}</h1>
-        <ul className="list-disc pl-5 text-slate-gray space-y-1 mb-4">
-          {bullets.map((b, idx) => (
-            <li key={idx}>{b}</li>
-          ))}
-        </ul>
-        {images.map((img, idx) => (
-          <img
-            key={idx}
-            src={img.src}
-            alt="slide image"
-            style={{
-              position: 'absolute',
-              left: `${img.x * 100}%`,
-              top: `${img.y * 100}%`,
-              width: `${img.w * 100}%`,
-              height: `${img.h * 100}%`,
-            }}
-          />
+    <div className="reveal" ref={deckRef}>
+      <div className="slides">
+        {slides.map((slide, i) => (
+          <section key={i} className="p-6 bg-white text-slate-gray">
+            <h2 className="text-xl font-bold mb-4">{slide.title}</h2>
+            <ul className="list-disc pl-5 space-y-1 mb-4">
+              {slide.bullets.map((b, idx) => (
+                <li key={idx}>{b}</li>
+              ))}
+            </ul>
+            {slide.images.map((img, idx) => (
+              <img
+                key={idx}
+                src={img.src}
+                alt="slide"
+                style={{
+                  position: 'absolute',
+                  left: `${img.x * 100}%`,
+                  top: `${img.y * 100}%`,
+                  width: `${img.w * 100}%`,
+                  height: `${img.h * 100}%`,
+                }}
+              />
+            ))}
+          </section>
         ))}
       </div>
-      <div className="flex justify-between">
-        <Button variant="outline" onClick={prev} disabled={current === 0}
-          className="touch-target">
-          Prev
-        </Button>
-        <Button onClick={next} disabled={current === slides.length - 1}
-          className="touch-target">
-          Next
-        </Button>
-      </div>
     </div>
-  );
-};
+  )
+}
 
-export default SlideDeck;
+export default SlideDeck
