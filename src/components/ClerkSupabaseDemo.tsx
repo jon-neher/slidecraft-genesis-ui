@@ -4,6 +4,7 @@ import { useUser } from '@clerk/clerk-react';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { getColorCombination } from '@/lib/color-validation';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'>;
@@ -13,6 +14,8 @@ const ClerkSupabaseDemo = () => {
   const supabase = useSupabaseClient();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
+  const accent = getColorCombination('accent');
+  const success = getColorCombination('success');
 
   const testSupabaseConnection = async () => {
     if (!user) return;
@@ -106,19 +109,19 @@ const ClerkSupabaseDemo = () => {
       )}
       
       <div className="space-y-2">
-        <Button 
+        <Button
           onClick={testSupabaseConnection}
           disabled={loading}
-          className="w-full bg-blue-500 text-white hover:bg-blue-600"
+          className={`w-full ${accent.background} ${accent.text} ${accent.hover}`}
         >
           {loading ? 'Testing...' : 'Test Connection & Load Profile'}
         </Button>
         
         {!profile && (
-          <Button 
+          <Button
             onClick={createProfile}
             disabled={loading}
-            className="w-full bg-green-500 text-white hover:bg-green-600"
+            className={`w-full ${success.background} ${success.text} ${success.hover}`}
           >
             {loading ? 'Creating...' : 'Create Profile'}
           </Button>
