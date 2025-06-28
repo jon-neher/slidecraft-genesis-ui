@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 
 interface DeckEditorProps {
   initialSlides: unknown
@@ -8,6 +9,7 @@ interface DeckEditorProps {
 
 const DeckEditor = ({ initialSlides, onApply }: DeckEditorProps) => {
   const editorRef = useRef<HTMLDeckgoEditorElement | null>(null)
+  const [showGrid, setShowGrid] = useState(false)
 
   // Load the DeckDeckGo editor script once
   useEffect(() => {
@@ -58,9 +60,22 @@ const DeckEditor = ({ initialSlides, onApply }: DeckEditorProps) => {
 
   return (
     <div className="space-y-4">
-      {/* The DeckDeckGo editor web component */}
-      <deckgo-editor ref={editorRef}></deckgo-editor>
-      <Button onClick={handleApply}>Apply Edits</Button>
+      <div className="flex items-center gap-4">
+        <Switch
+          id="show-grid"
+          checked={showGrid}
+          onCheckedChange={setShowGrid}
+        />
+        <label htmlFor="show-grid" className="text-sm text-slate-gray">
+          Show Grid
+        </label>
+        <Button onClick={handleApply}>Apply Edits</Button>
+      </div>
+      <div className="relative">
+        {/* The DeckDeckGo editor web component */}
+        <deckgo-editor ref={editorRef}></deckgo-editor>
+        {showGrid && <div className="grid-overlay pointer-events-none absolute inset-0" />}
+      </div>
     </div>
   )
 }
