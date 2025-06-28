@@ -11,6 +11,15 @@ import {
   ExternalLink,
   CheckCircle,
 } from 'lucide-react';
+import PptxGenJS from 'pptxgenjs';
+import { useSupabaseClient } from '@/hooks/useSupabaseClient';
+import type { SlideImage } from '@/components/SlideDeck';
+
+interface BasicSlide {
+  title: string;
+  bullets?: string[];
+  images?: SlideImage[];
+}
 import { SignedIn, SignedOut, SignUpButton } from '@clerk/clerk-react';
 import { DataScenario } from './types';
 import SlideRenderer from './SlideRenderer';
@@ -67,6 +76,31 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
     link.click();
   };
 
+  const supabase = useSupabaseClient();
+
+  const handleDownloadPptx = async () => {
+    const pptx = new PptxGenJS();
+
+    (slides as BasicSlide[]).forEach((s) => {
+      const slide = pptx.addSlide();
+      slide.addText(s.title, { x: 0.5, y: 0.5, fontSize: 24 });
+      s.bullets?.forEach((b, i) => {
+        slide.addText(b, { x: 0.5, y: 1 + i * 0.5, fontSize: 16, bullet: true });
+      });
+      s.images?.forEach((img) => {
+        slide.addImage({ path: img.src, x: img.x, y: img.y, w: img.w, h: img.h });
+      });
+    });
+
+    const blob = (await pptx.writeFile({ blob: true })) as Blob;
+    const deckId = scenario.id;
+
+    await supabase.storage.from('pptx').upload(`${deckId}.pptx`, blob, {
+      contentType:
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    });
+  };
+
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       {/* Header */}
@@ -80,22 +114,30 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
           </p>
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-          <Button 
-            variant="outline" 
-            onClick={onRestart} 
+          <Button
+            variant="outline"
+            onClick={onRestart}
             className="flex-1 sm:flex-none touch-target border-slate-gray/20 text-slate-gray hover:bg-slate-gray/5"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline">Try Another</span>
             <span className="sm:hidden">Restart</span>
           </Button>
-          <Button 
-            onClick={handleDownload} 
+          <Button
+            onClick={handleDownload}
             className="flex-1 sm:flex-none bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white touch-target"
           >
             <Download className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline">Download PDF</span>
             <span className="sm:hidden">PDF</span>
+          </Button>
+          <Button
+            onClick={handleDownloadPptx}
+            className="flex-1 sm:flex-none bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white touch-target"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            <span className="hidden sm:inline">Download PPTX</span>
+            <span className="sm:hidden">PPTX</span>
           </Button>
         </div>
       </div>
