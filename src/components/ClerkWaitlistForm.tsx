@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react';
+import { SignedIn, SignedOut, SignInButton, SignUpButton, SignOutButton, UserButton } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 
@@ -120,6 +120,11 @@ const ClerkWaitlistForm = () => {
               avatarBox: "w-10 h-10 rounded-full border-2 border-neon-mint"
             }
           }} />
+          </div>
+          <div className="mt-3 flex justify-center">
+            <SignOutButton>
+              <Button variant="outline">Log Out</Button>
+            </SignOutButton>
           </div>
         </motion.div>
       </SignedIn>
