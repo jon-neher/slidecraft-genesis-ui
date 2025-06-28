@@ -113,6 +113,10 @@ safeColor.bg.primary    // bg-ice-white
 safeColor.text.accent   // text-electric-indigo  
 safeColor.border.primary // border-gray-200
 ```
+## Linting Guidelines
+
+All code must pass the project's ESLint configuration (`eslint.config.js`). Run `npm run lint` locally and fix any issues before opening a PR. You can use `npm run lint -- --fix` to automatically fix simple problems.
+
 
 ## Emergency Color Reference
 
