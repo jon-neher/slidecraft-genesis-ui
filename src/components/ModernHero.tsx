@@ -7,6 +7,10 @@ import { Button } from './ui/button';
 import { containerVariants, itemVariants } from '../lib/variants';
 
 const ModernHero = () => {
+  const handleWatchDemo = () => {
+    document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-ice-white">
       {/* Background gradient */}
@@ -63,7 +67,7 @@ const ModernHero = () => {
             variants={itemVariants}
             className="flex justify-center mb-16"
           >
-            <Button variant="outline" className="btn-secondary">
+            <Button variant="outline" className="btn-secondary" onClick={handleWatchDemo}>
               Watch Demo
             </Button>
           </motion.div>

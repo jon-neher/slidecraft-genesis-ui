@@ -38,7 +38,7 @@ const InteractiveDemo = () => {
   };
 
   return (
-    <section className="section-padding bg-gradient-to-br from-ice-white to-slate-50">
+    <section id="demo" className="section-padding bg-gradient-to-br from-ice-white to-slate-50">
       <div className="container mx-auto container-padding">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
