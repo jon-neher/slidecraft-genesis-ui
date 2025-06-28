@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { DataScenario } from './types';
+import { DataScenario, ChartData } from './types';
 import TitleSlide from './slides/TitleSlide';
 import ChartSlide from './slides/ChartSlide';
 import InsightsSlide from './slides/InsightsSlide';
@@ -11,7 +11,7 @@ interface Slide {
   type: 'title' | 'chart' | 'insights' | 'summary';
   title: string;
   content?: string;
-  chartData?: any[];
+  chartData?: ChartData;
   insights?: string[];
 }
 

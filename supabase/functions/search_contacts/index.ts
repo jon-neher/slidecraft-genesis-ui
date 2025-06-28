@@ -1,5 +1,5 @@
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient, type SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -36,10 +36,10 @@ const rateLimiter = new RateLimiterMemory(5, 1000)
 
 interface ContactRecord {
   id: string
-  properties: Record<string, any>
+  properties: Record<string, unknown>
 }
 
-async function ensureAccessToken(portalId: string, supabase: any): Promise<string> {
+async function ensureAccessToken(portalId: string, supabase: SupabaseClient): Promise<string> {
   const { data: tokenData } = await supabase
     .from('hubspot_tokens')
     .select('*')
@@ -89,7 +89,7 @@ async function ensureAccessToken(portalId: string, supabase: any): Promise<strin
   return tokenData.access_token
 }
 
-async function searchHubSpotContacts(portalId: string, query: string, limit: number, supabase: any): Promise<ContactRecord[]> {
+async function searchHubSpotContacts(portalId: string, query: string, limit: number, supabase: SupabaseClient): Promise<ContactRecord[]> {
   const accessToken = await ensureAccessToken(portalId, supabase)
   await rateLimiter.take(portalId)
   
@@ -121,7 +121,7 @@ async function searchHubSpotContacts(portalId: string, query: string, limit: num
   return json.results || []
 }
 
-async function searchLocal(portalId: string, query: string, limit: number, supabase: any): Promise<ContactRecord[]> {
+async function searchLocal(portalId: string, query: string, limit: number, supabase: SupabaseClient): Promise<ContactRecord[]> {
   const { data } = await supabase
     .from('hubspot_contacts_cache')
     .select('*')
@@ -132,7 +132,7 @@ async function searchLocal(portalId: string, query: string, limit: number, supab
   return (data as ContactRecord[]) || []
 }
 
-async function searchRemote(portalId: string, query: string, limit: number, supabase: any): Promise<ContactRecord[]> {
+async function searchRemote(portalId: string, query: string, limit: number, supabase: SupabaseClient): Promise<ContactRecord[]> {
   const contacts = await searchHubSpotContacts(portalId, query, limit, supabase)
 
   if (contacts.length > 0) {
@@ -150,10 +150,10 @@ async function searchRemote(portalId: string, query: string, limit: number, supa
   return contacts.slice(0, limit)
 }
 
-async function searchContacts(portalId: string, query: string, limit: number, supabase: any): Promise<ContactRecord[]> {
+async function searchContacts(portalId: string, query: string, limit: number, supabase: SupabaseClient): Promise<ContactRecord[]> {
   const local = await searchLocal(portalId, query, limit, supabase)
   const seen = new Set(local.map(r => r.id))
-  let results = [...local]
+  const results = [...local]
   
   if (results.length < 5) {
     const remote = await searchRemote(portalId, query, limit, supabase)

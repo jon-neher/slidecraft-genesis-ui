@@ -1,8 +1,12 @@
 // Centralized environment configuration for both Node and Deno runtimes
 
+const maybeDeno = (globalThis as unknown as {
+  Deno?: { env: { toObject(): Record<string, string> } }
+}).Deno;
+
 const env: Record<string, string | undefined> =
-  typeof (globalThis as any).Deno !== 'undefined'
-    ? ((globalThis as any).Deno.env.toObject() as Record<string, string>)
+  typeof maybeDeno !== 'undefined'
+    ? maybeDeno.env.toObject()
     : process.env;
 
 export const HUBSPOT_CLIENT_ID = env.HUBSPOT_CLIENT_ID ?? '';

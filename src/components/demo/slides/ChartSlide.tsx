@@ -1,12 +1,12 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { DataScenario } from '../types';
+import { DataScenario, ChartData } from '../types';
 import { renderChart } from './chartRenderers';
 
 interface ChartSlideProps {
   title: string;
-  chartData?: any[];
+  chartData?: ChartData;
   scenario: DataScenario;
 }
 

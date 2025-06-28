@@ -2,7 +2,7 @@ import { postNote as hubspotPostNote, PostNoteInput } from '../integrations/hubs
 
 export async function postNote(
   input: PostNoteInput,
-): Promise<{ noteId: string } | { error: any }> {
+): Promise<{ noteId: string } | { error: unknown }> {
   return hubspotPostNote(input)
 }
 

@@ -5,12 +5,14 @@ export interface DataScenario {
   description: string;
   icon: string;
   category: string;
-  sampleData: any[];
+  sampleData: ChartData;
   chartType: 'bar' | 'line' | 'pie' | 'area';
   insights: string[];
   templates: PresentationTemplate[];
   dataSource?: DataSource;
 }
+
+export type ChartData = Record<string, number | string>[];
 
 export interface DataSource {
   name: string;
@@ -25,7 +27,7 @@ export interface DataField {
   name: string;
   type: 'string' | 'number' | 'date' | 'boolean';
   description: string;
-  sampleValue: any;
+  sampleValue: string | number | boolean | Date;
 }
 
 export interface PresentationTemplate {
@@ -41,7 +43,7 @@ export interface Slide {
   type: 'title' | 'chart' | 'insights' | 'summary';
   title: string;
   content?: string;
-  chartData?: any[];
+  chartData?: ChartData;
   insights?: string[];
 }
 
