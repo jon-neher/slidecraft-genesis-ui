@@ -28,7 +28,7 @@ serve(async (req) => {
 
       try {
         const completion = await openai.chat.completions.create({
-          model: 'gpt-4.1-mini-2025-04-144',
+          model: 'gpt-4.1-mini',
           messages: [
             { role: 'system', content: 'Return a JSON array of slide objects with title, bullets[], images[]' },
             { role: 'user', content: `Prompt: ${prompt}\nSlides: ${count}` },
