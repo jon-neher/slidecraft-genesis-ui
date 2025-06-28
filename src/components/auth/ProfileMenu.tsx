@@ -1,5 +1,6 @@
 import React from 'react';
 import { SignOutButton, useUser } from '@clerk/clerk-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -19,7 +20,7 @@ const ProfileMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gray-100">
+        <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gray-50">
           <Avatar className="w-8 h-8">
             <AvatarImage src={user.imageUrl} alt={user.fullName ?? 'User'} />
             <AvatarFallback className="bg-electric-indigo text-ice-white">
@@ -34,6 +35,11 @@ const ProfileMenu = () => {
           <p className="text-gray-600">{user.primaryEmailAddress?.emailAddress}</p>
         </div>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/profile" className="w-full text-slate-gray hover:bg-gray-50">
+            Profile
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <SignOutButton>
             <button className="w-full text-left text-slate-gray">Log Out</button>
