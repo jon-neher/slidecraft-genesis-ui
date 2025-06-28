@@ -1,11 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '../src/integrations/supabase/types';
+import type { Database } from '../../src/integrations/supabase/types';
 import {
   HUBSPOT_CLIENT_ID,
   HUBSPOT_CLIENT_SECRET,
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
-} from '../src/server/config.ts';
+} from '../../src/server/config.ts';
 
 const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
