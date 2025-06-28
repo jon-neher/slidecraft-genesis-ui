@@ -1,5 +1,9 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import OpenAI from 'npm:openai'
+
+const apiKey = Deno.env.get('OPENAI_API_KEY')
+const openai = new OpenAI({ apiKey })
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -17,25 +21,33 @@ serve(async (req) => {
     
     // Check if this is a GET request to /generate
     if (req.method === 'GET' && url.pathname === '/generate') {
-      // Get query parameters (prompt and slides are available but not used in this implementation)
-      const prompt = url.searchParams.get('prompt')
-      const slides = url.searchParams.get('slides')
-      
-      console.log('Received request with prompt:', prompt, 'slides:', slides)
-      
-      // Return hard-coded JSON array
-      const response = [
-        {
-          "title": "Test Slide",
-          "bullets": ["One", "Two"],
-          "images": []
-        }
-      ]
-      
-      return new Response(JSON.stringify(response), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      })
+      const prompt = url.searchParams.get('prompt') ?? ''
+      const count = url.searchParams.get('slides') ?? '1'
+
+      console.log('Received request with prompt:', prompt, 'slides:', count)
+
+      try {
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-4.1-mini-2025-04-144',
+          messages: [
+            { role: 'system', content: 'Return a JSON array of slide objects with title, bullets[], images[]' },
+            { role: 'user', content: `Prompt: ${prompt}\nSlides: ${count}` },
+          ],
+        })
+
+        const slides = JSON.parse(completion.choices[0].message.content ?? '')
+
+        return new Response(JSON.stringify(slides), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        })
+      } catch (err) {
+        console.error('OpenAI error:', err)
+        return new Response(JSON.stringify({ error: 'Failed to generate slides' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500,
+        })
+      }
     }
     
     // Handle other paths
