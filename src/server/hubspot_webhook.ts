@@ -41,7 +41,7 @@ export const hubspotWebhookHandler: RequestHandler[] = [
     const payload = req.body;
 
     const events = Array.isArray(payload) ? payload : [payload];
-    const uninstall = events.some((e: any) => e.subscriptionType === 'app.uninstalled');
+    const uninstall = events.some((e: Record<string, unknown>) => e.subscriptionType === 'app.uninstalled');
 
     if (uninstall) {
       // Handle cleanup operations with proper async/await

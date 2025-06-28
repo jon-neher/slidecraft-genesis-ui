@@ -25,7 +25,7 @@ vi.mock('@supabase/supabase-js', () => ({
           if (table === 'hubspot_tokens') return deleteTokensMock(field, val);
           if (table === 'hubspot_contacts_cache') return deleteCacheMock(field, val);
           if (table === 'hubspot_sync_cursors') return deleteCursorsMock(field, val);
-          return undefined as any;
+          return undefined;
         },
       }),
     }),

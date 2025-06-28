@@ -39,7 +39,7 @@ describe('hubspotFetchContacts', () => {
       }),
     })
 
-    await hubspotFetchContacts('p1', undefined, undefined as any, fetchMock)
+    await hubspotFetchContacts('p1', undefined, undefined, fetchMock)
 
     expect(fetchMock).toHaveBeenCalled()
     expect(upsertCache).toHaveBeenCalled()

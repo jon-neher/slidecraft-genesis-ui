@@ -8,7 +8,7 @@ const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 export interface HubSpotContact {
   id: string
-  properties: Record<string, any>
+  properties: Record<string, unknown>
 }
 
 export interface HubSpotSearchResponse {
@@ -24,7 +24,7 @@ export async function hubspotFetchContacts(
   const accessToken = await ensureAccessToken(portal_id, sb, fetchFn)
   await rateLimiter.take(portal_id)
 
-  const body: Record<string, any> = {
+  const body: Record<string, unknown> = {
     limit: 100,
     sorts: ['hs_lastmodifieddate'],
     properties: ['firstname', 'lastname', 'email', 'hs_lastmodifieddate'],

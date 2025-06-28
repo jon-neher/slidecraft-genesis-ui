@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, AreaChart, Area } from 'recharts';
-import { DataScenario } from '../types';
+import { DataScenario, ChartData } from '../types';
 
 interface ChartRendererProps {
-  chartData: any[];
+  chartData: ChartData;
   scenario: DataScenario;
 }
 

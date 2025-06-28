@@ -1,5 +1,7 @@
 
 import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '../integrations/supabase/types';
 
 process.env.SUPABASE_URL = 'http://localhost'
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'key'
@@ -35,9 +37,9 @@ const mockClient = {
     upsert: upsertMock
   }),
   auth: authMock
-} as any
+} as unknown as SupabaseClient<Database>
 
-function makeFetch(results: any[]) {
+function makeFetch<T>(results: T[]) {
   return vi.fn().mockResolvedValue({ ok: true, json: async () => ({ results }) })
 }
 
@@ -53,7 +55,7 @@ describe('searchContacts', () => {
   it('hits local only', async () => {
     limitMock.mockResolvedValue({ data: Array.from({ length: 6 }, (_, i) => ({ id: `${i}`, properties: {} })), error: null })
     const fetch = makeFetch([])
-    const res = await searchContacts('p1', 'foo', 10, mockClient as any, fetch)
+    const res = await searchContacts('p1', 'foo', 10, mockClient as SupabaseClient<Database>, fetch)
     expect(fetch).not.toHaveBeenCalled()
     expect(res.length).toBe(6)
   })
@@ -61,7 +63,7 @@ describe('searchContacts', () => {
   it('hits remote when local < 5', async () => {
     limitMock.mockResolvedValueOnce({ data: [{ id: '1', properties: {} }], error: null })
     const fetch = makeFetch([{ id: '1', properties: {} }, { id: '2', properties: {} }])
-    const res = await searchContacts('p1', 'foo', 2, mockClient as any, fetch)
+    const res = await searchContacts('p1', 'foo', 2, mockClient as SupabaseClient<Database>, fetch)
     expect(fetch).toHaveBeenCalled()
     expect(res.map(r => r.id)).toEqual(['1', '2'])
   })
@@ -74,7 +76,7 @@ describe('searchContacts', () => {
     limitMock.mockResolvedValue({ data: [], error: null })
     const fetch = makeFetch([])
     const start = Date.now()
-    const promises = Array.from({ length: 6 }, () => searchContacts('p1', 'a', 1, mockClient as any, fetch))
+    const promises = Array.from({ length: 6 }, () => searchContacts('p1', 'a', 1, mockClient as SupabaseClient<Database>, fetch))
     await vi.advanceTimersByTimeAsync(1000)
     await Promise.all(promises)
     expect(Date.now() - start).toBeGreaterThanOrEqual(1000)

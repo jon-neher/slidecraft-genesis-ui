@@ -10,7 +10,7 @@ vi.mock('@supabase/supabase-js', () => ({
 }));
 
 const fetchMock = vi.fn();
-// @ts-ignore
+// @ts-expect-error assigning mock fetch
 global.fetch = fetchMock;
 
 describe('hubspotOAuthCallback', () => {

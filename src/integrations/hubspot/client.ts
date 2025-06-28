@@ -7,7 +7,7 @@ import crypto from 'crypto'
 
 export interface HubSpotContact {
   id: string
-  properties: Record<string, any>
+  properties: Record<string, unknown>
 }
 
 export interface HubSpotSearchResponse {
@@ -66,7 +66,7 @@ export async function postNote(
   { portal_id, hubspot_object_id, app_record_url }: PostNoteInput,
   sb: SupabaseClient<Database> = supabase,
   fetchFn: typeof fetch = fetch
-): Promise<{ noteId: string } | { error: any }> {
+): Promise<{ noteId: string } | { error: unknown }> {
   try {
     const accessToken = await ensureAccessToken(portal_id, sb, fetchFn)
     await rateLimiter.take(portal_id)
@@ -95,7 +95,7 @@ export async function postNote(
     }
     return { noteId: json.id }
   } catch (err) {
-    return { error: (err as Error).message }
+    return { error: err }
   }
 }
 

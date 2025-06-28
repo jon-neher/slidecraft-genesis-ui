@@ -11,7 +11,7 @@ import { searchContacts as hubspotSearch } from '../integrations/hubspot/client'
 
 export interface ContactRecord {
   id: string
-  properties: Record<string, any>
+  properties: Record<string, unknown>
 }
 
 
@@ -58,7 +58,7 @@ export async function searchContacts(
 ): Promise<ContactRecord[]> {
   const local = await searchLocal(portal_id, q, limit, sb)
   const seen = new Set(local.map(r => r.id))
-  let results = [...local]
+  const results = [...local]
   if (results.length < 5) {
     const remote = await searchRemote(portal_id, q, limit, sb, fetchFn)
     for (const r of remote) {

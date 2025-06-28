@@ -8,11 +8,11 @@ async function loadConfig() {
 describe('config', () => {
   beforeEach(() => {
     vi.resetModules()
-    delete (global as any).Deno
+    delete (global as unknown as { Deno?: { env: { toObject(): Record<string, string> } } }).Deno
   })
 
   afterEach(() => {
-    delete (global as any).Deno
+    delete (global as unknown as { Deno?: { env: { toObject(): Record<string, string> } } }).Deno
   })
 
   it('reads values from process.env in Node', async () => {
@@ -25,7 +25,7 @@ describe('config', () => {
 
   it('prefers Deno.env when available', async () => {
     process.env.SUPABASE_URL = 'node-url'
-    ;(global as any).Deno = {
+    ;(global as unknown as { Deno?: { env: { toObject(): Record<string, string> } } }).Deno = {
       env: { toObject: () => ({ SUPABASE_URL: 'deno-url', SUPABASE_SERVICE_ROLE_KEY: 'deno-key' }) }
     }
     const cfg = await loadConfig()
