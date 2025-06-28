@@ -1,3 +1,4 @@
+
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../integrations/supabase/types'
 import { ensureAccessToken } from '../integrations/hubspot/tokens'
@@ -63,15 +64,17 @@ export async function hubspotFetchContacts(
     const rows = results.map((r) => ({
       portal_id,
       id: r.id,
-      properties: r.properties,
-      updated_at: r.properties.hs_lastmodifieddate,
+      properties: r.properties as any, // Cast to Json type for Supabase
+      updated_at: (r.properties.hs_lastmodifieddate as string) || new Date().toISOString(),
     }))
     await sb.from('hubspot_contacts_cache').upsert(rows)
 
     const last = rows.reduce<string | undefined>((max, r) => {
-      if (!max || r.updated_at > max) return r.updated_at
+      const currentTimestamp = r.updated_at as string
+      if (!max || currentTimestamp > max) return currentTimestamp
       return max
     }, after)
+    
     if (last) {
       await sb
         .from('hubspot_sync_cursors')
@@ -93,8 +96,8 @@ export async function handleRequest(req: Request): Promise<Response> {
     await hubspotFetchContacts(portal_id, after)
     return new Response(null, { status: 204 })
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error'
-    return new Response(message, { status: 500 })
+    console.error('hubspotFetchContacts error:', err)
+    return new Response('Internal server error', { status: 500 })
   }
 }
 

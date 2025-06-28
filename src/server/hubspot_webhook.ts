@@ -29,55 +29,86 @@ export const hubspotWebhookHandler: RequestHandler[] = [
     const authedReq = req as AuthedRequest;
     const signature = req.header('x-hubspot-signature-v3');
     const raw = authedReq.rawBody || '';
+    
+    // Enhanced signature validation
+    if (!signature) {
+      console.warn('Missing HubSpot signature');
+      return res.sendStatus(401);
+    }
+    
     const expected = createHmac('sha256', HUBSPOT_SECRET)
       .update(raw)
       .digest('base64');
 
     if (signature !== expected) {
+      console.warn('Invalid HubSpot signature');
       return res.sendStatus(401);
     }
 
     const portalId = authedReq.auth.userId;
     const payload = req.body;
 
+    // Input validation
+    if (!payload || (Array.isArray(payload) && payload.length === 0)) {
+      console.warn('Empty webhook payload');
+      return res.sendStatus(400);
+    }
+
     const events = Array.isArray(payload) ? payload : [payload];
     const uninstall = events.some((e: Record<string, unknown>) => e.subscriptionType === 'app.uninstalled');
 
     if (uninstall) {
-      // Handle cleanup operations with proper async/await
+      console.log(`Processing uninstall for portal ${portalId}`);
+      // Handle cleanup operations with proper async/await and error logging
       try {
-        await supabase
+        const { error: tokensError } = await supabase
           .from('hubspot_tokens')
           .delete()
           .eq('portal_id', portalId);
+        
+        if (tokensError) {
+          console.error('uninstall delete tokens error', tokensError);
+        }
       } catch (err) {
         console.error('uninstall delete tokens error', err);
       }
 
       try {
-        await supabase
+        const { error: cacheError } = await supabase
           .from('hubspot_contacts_cache')
           .delete()
           .eq('portal_id', portalId);
+        
+        if (cacheError) {
+          console.error('uninstall delete cache error', cacheError);
+        }
       } catch (err) {
         console.error('uninstall delete cache error', err);
       }
 
       try {
-        await supabase
+        const { error: cursorsError } = await supabase
           .from('hubspot_sync_cursors')
           .delete()
           .eq('portal_id', portalId);
+        
+        if (cursorsError) {
+          console.error('uninstall delete cursors error', cursorsError);
+        }
       } catch (err) {
         console.error('uninstall delete cursors error', err);
       }
     }
 
-    // insert asynchronously
+    // insert asynchronously with proper error handling
     try {
-      await supabase
+      const { error: insertError } = await supabase
         .from('hubspot_events_raw')
         .insert({ portal_id: portalId, raw: payload });
+      
+      if (insertError) {
+        console.error('insert error', insertError);
+      }
     } catch (err) {
       console.error('insert error', err);
     }

@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Rate limiter implementation
+// Rate limiter implementation with enhanced security
 class RateLimiterMemory {
   private tokens: Map<string, { count: number; resetTime: number }> = new Map()
   
@@ -23,8 +23,7 @@ class RateLimiterMemory {
     
     if (bucket.count >= this.maxRequests) {
       const waitTime = bucket.resetTime - now
-      await new Promise(resolve => setTimeout(resolve, waitTime))
-      return this.take(key)
+      throw new Error('Rate limit exceeded')
     }
     
     bucket.count++
@@ -32,11 +31,34 @@ class RateLimiterMemory {
   }
 }
 
-const rateLimiter = new RateLimiterMemory(5, 1000)
+const rateLimiter = new RateLimiterMemory(10, 60000) // 10 requests per minute
 
 interface ContactRecord {
   id: string
   properties: Record<string, unknown>
+}
+
+// Input validation function
+function validateSearchInput(query: string, limit: number): { isValid: boolean; error?: string } {
+  if (typeof query !== 'string') {
+    return { isValid: false, error: 'Query must be a string' }
+  }
+  
+  if (query.length > 100) {
+    return { isValid: false, error: 'Query too long' }
+  }
+  
+  if (limit < 1 || limit > 50) {
+    return { isValid: false, error: 'Limit must be between 1 and 50' }
+  }
+  
+  // Basic SQL injection protection
+  const sqlInjectionPattern = /(\b(union|select|insert|update|delete|drop|create|alter|exec|execute)\b)/i
+  if (sqlInjectionPattern.test(query)) {
+    return { isValid: false, error: 'Invalid query format' }
+  }
+  
+  return { isValid: true }
 }
 
 async function ensureAccessToken(portalId: string, supabase: SupabaseClient): Promise<string> {
@@ -50,12 +72,13 @@ async function ensureAccessToken(portalId: string, supabase: SupabaseClient): Pr
     throw new Error('No HubSpot token found')
   }
 
-  // Check if token is expired
+  // Check if token is expired with buffer time
   const expiresAt = new Date(tokenData.expires_at)
   const now = new Date()
+  const bufferTime = 5 * 60 * 1000 // 5 minutes buffer
   
-  if (expiresAt <= now) {
-    // Token is expired, refresh it
+  if (expiresAt.getTime() - bufferTime <= now.getTime()) {
+    // Token is expired or about to expire, refresh it
     const refreshResponse = await fetch('https://api.hubapi.com/oauth/v1/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -68,13 +91,19 @@ async function ensureAccessToken(portalId: string, supabase: SupabaseClient): Pr
     })
 
     if (!refreshResponse.ok) {
-      throw new Error('Failed to refresh HubSpot token')
+      console.error('Token refresh failed:', refreshResponse.status)
+      // Clean up invalid tokens
+      await supabase
+        .from('hubspot_tokens')
+        .delete()
+        .eq('portal_id', portalId)
+      throw new Error('Token refresh failed')
     }
 
     const refreshData = await refreshResponse.json()
     const newExpiresAt = new Date(Date.now() + (refreshData.expires_in * 1000)).toISOString()
 
-    await supabase
+    const { error: updateError } = await supabase
       .from('hubspot_tokens')
       .update({
         access_token: refreshData.access_token,
@@ -82,6 +111,11 @@ async function ensureAccessToken(portalId: string, supabase: SupabaseClient): Pr
         expires_at: newExpiresAt,
       })
       .eq('portal_id', portalId)
+
+    if (updateError) {
+      console.error('Token update failed:', updateError)
+      throw new Error('Token update failed')
+    }
 
     return refreshData.access_token
   }
@@ -114,6 +148,7 @@ async function searchHubSpotContacts(portalId: string, query: string, limit: num
   })
 
   if (!response.ok) {
+    console.error('HubSpot search failed:', response.status)
     throw new Error('HubSpot search failed')
   }
   
@@ -137,7 +172,7 @@ async function searchRemote(portalId: string, query: string, limit: number, supa
 
   if (contacts.length > 0) {
     const now = new Date().toISOString()
-    await supabase
+    const { error } = await supabase
       .from('hubspot_contacts_cache')
       .upsert(contacts.map(contact => ({
         portal_id: portalId,
@@ -145,12 +180,22 @@ async function searchRemote(portalId: string, query: string, limit: number, supa
         properties: contact.properties,
         updated_at: now
       })))
+    
+    if (error) {
+      console.error('Cache upsert error:', error)
+    }
   }
 
   return contacts.slice(0, limit)
 }
 
 async function searchContacts(portalId: string, query: string, limit: number, supabase: SupabaseClient): Promise<ContactRecord[]> {
+  // Validate input
+  const validation = validateSearchInput(query, limit)
+  if (!validation.isValid) {
+    throw new Error(validation.error)
+  }
+
   const local = await searchLocal(portalId, query, limit, supabase)
   const seen = new Set(local.map(r => r.id))
   const results = [...local]
@@ -200,6 +245,9 @@ Deno.serve(async (req) => {
       })
     }
 
+    // Rate limiting per user
+    await rateLimiter.take(user.id)
+
     const results = await searchContacts(user.id, query, limit, supabase)
     
     return new Response(JSON.stringify(results), {
@@ -208,9 +256,15 @@ Deno.serve(async (req) => {
     })
   } catch (error) {
     console.error('Error in search_contacts function:', error)
-    return new Response(JSON.stringify({ error: error.message }), {
+    
+    // Generic error response for security
+    const isRateLimit = error.message === 'Rate limit exceeded'
+    const status = isRateLimit ? 429 : 500
+    const message = isRateLimit ? 'Too many requests' : 'Internal server error'
+    
+    return new Response(JSON.stringify({ error: message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500,
+      status,
     })
   }
 })

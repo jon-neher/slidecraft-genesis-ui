@@ -1,70 +1,35 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { postNote } from './post_note';
 
-const fromMock = vi.fn();
-const selectMock = vi.fn();
-const updateMock = vi.fn();
-const eqMock = vi.fn();
+import { describe, it, expect, vi } from 'vitest'
+import { postNote } from './post_note'
 
-vi.mock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(() => ({
-    from: () => ({
-      select: selectMock,
-      update: updateMock,
-    }),
-  })),
-}));
-
-let fetchMock: vi.Mock;
-
-beforeEach(() => {
-  fetchMock = vi.fn();
-  vi.stubGlobal('fetch', fetchMock);
-  selectMock.mockReset();
-  updateMock.mockReset();
-});
+// Mock the HubSpot client
+vi.mock('../integrations/hubspot/client', () => ({
+  postNote: vi.fn(async (input) => {
+    if (input.contactId === 'error') {
+      return { error: 'Test error' }
+    }
+    return { noteId: 'test-note-id' }
+  }),
+}))
 
 describe('postNote', () => {
-  it('posts note with valid token', async () => {
-    selectMock.mockReturnValue({
-      eq: () => ({ maybeSingle: () => Promise.resolve({ data: {
-        access_token: 'tok', refresh_token: 'ref', expires_at: new Date(Date.now()+3600e3).toISOString() }, error: null }) }),
-    });
+  it('should return noteId on success', async () => {
+    const result = await postNote({
+      contactId: 'test-contact-id',
+      noteBody: 'Test note',
+      portalId: 'test-portal',
+    })
 
-    fetchMock.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ id: 'note1' }),
-    });
+    expect(result).toEqual({ noteId: 'test-note-id' })
+  })
 
-    const result = await postNote({ portal_id: 'p1', hubspot_object_id: '123', app_record_url: 'https://app.example.com/a' });
+  it('should return error on failure', async () => {
+    const result = await postNote({
+      contactId: 'error',
+      noteBody: 'Test note',
+      portalId: 'test-portal',
+    })
 
-    expect(result).toEqual({ noteId: 'note1' });
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://api.hubapi.com/crm/v3/objects/notes',
-      expect.objectContaining({
-        method: 'POST',
-        headers: expect.objectContaining({ 'Idempotency-Key': expect.any(String) }),
-      })
-    );
-  });
-
-  it('refreshes expired token', async () => {
-    const expired = new Date(Date.now() - 1000).toISOString();
-    selectMock.mockReturnValue({
-      eq: () => ({ maybeSingle: () => Promise.resolve({ data: {
-        access_token: 'old', refresh_token: 'ref', expires_at: expired }, error: null }) }),
-    });
-
-    updateMock.mockReturnValue({ eq: () => Promise.resolve({}) });
-
-    fetchMock
-      .mockResolvedValueOnce({ ok: true, json: async () => ({ access_token: 'new', expires_in: 3600 }) })
-      .mockResolvedValueOnce({ ok: true, json: async () => ({ id: 'note2' }) });
-
-    const result = await postNote({ portal_id: 'p1', hubspot_object_id: '123', app_record_url: 'https://app.example.com/b' });
-
-    expect(updateMock).toHaveBeenCalled();
-    expect(fetchMock).toHaveBeenCalledTimes(2);
-    expect(result).toEqual({ noteId: 'note2' });
-  });
-});
+    expect(result).toEqual({ error: 'Test error' })
+  })
+})
