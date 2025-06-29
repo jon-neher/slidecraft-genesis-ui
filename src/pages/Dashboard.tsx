@@ -18,7 +18,8 @@ const Dashboard = () => {
   const { isSignedIn } = useAuth();
   
   // Development mode bypass - check if we're in Lovable preview environment
-  const isDevelopment = window.location.hostname.includes('lovableproject.com') || 
+  const isDevelopment = window.location.hostname.includes('lovableproject.com') ||
+                       window.location.hostname.includes('lovable.app') ||
                        window.location.hostname === 'localhost' ||
                        process.env.NODE_ENV === 'development';
 
