@@ -41,7 +41,8 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
 
     if (!tokenRes.ok) {
       const text = await tokenRes.text();
-      throw new Error(`HubSpot token exchange failed: ${text}`);
+      console.error('HubSpot token exchange failed:', text);
+      throw new Error('HubSpot token exchange failed');
     }
 
     const token = await tokenRes.json() as {
@@ -71,8 +72,8 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
       headers: { Location: '/dashboard' },
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    return new Response(htmlError(message), {
+    console.error('OAuth callback error:', err);
+    return new Response(htmlError('HubSpot token exchange failed'), {
       status: 500,
       headers: { 'Content-Type': 'text/html' },
     });
