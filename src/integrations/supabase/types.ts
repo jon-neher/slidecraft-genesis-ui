@@ -111,6 +111,30 @@ export type Database = {
         }
         Relationships: []
       }
+      deck_blueprints: {
+        Row: {
+          blueprint_id: string
+          user_id: string
+          blueprint: Json
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          blueprint_id?: string
+          user_id: string
+          blueprint: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          blueprint_id?: string
+          user_id?: string
+          blueprint?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       presentation_plans: {
         Row: {
           created_at: string
