@@ -238,15 +238,14 @@ This landing page showcases modern web animation techniques while maintaining ex
 Create a `.env` file in the project root and provide the following variables:
 
 ```bash
-VITE_HUBSPOT_CLIENT_ID=<your public OAuth id>
-HUBSPOT_CLIENT_ID=<your private OAuth id>
+HUBSPOT_CLIENT_ID=<your HubSpot OAuth id>
 HUBSPOT_CLIENT_SECRET=<your HubSpot secret>
 HUBSPOT_APP_SECRET=<webhook signature secret>
 SUPABASE_URL=<your Supabase project URL>
 SUPABASE_SERVICE_ROLE_KEY=<service role key>
 ```
 
-The React dashboard reads `VITE_HUBSPOT_CLIENT_ID` when initiating OAuth. The server and Edge Function code use the remaining variables via `src/server/config.ts`.
+The React dashboard fetches the client id from the `hubspot_client_id` edge function before initiating OAuth. Server code reads all variables via `src/server/config.ts`.
 
 ## Supabase CLI Setup
 

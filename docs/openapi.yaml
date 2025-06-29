@@ -49,17 +49,23 @@ paths:
       responses:
         "200":
           description: Created note identifier
-  /hubspot_oauth_callback:
-    get:
-      description: OAuth callback endpoint for HubSpot authorization
-      responses:
-        "200":
-          description: Authorization successful
-  /hubspot_fetch_contacts:
-    get:
-      description: Fetch contacts from HubSpot and populate the cache
-      parameters:
-        - in: query
+    /hubspot_oauth_callback:
+      get:
+        description: OAuth callback endpoint for HubSpot authorization
+        responses:
+          "200":
+            description: Authorization successful
+    /hubspot_client_id:
+      get:
+        description: Return the HubSpot OAuth client id
+        responses:
+          "200":
+            description: Object with client_id
+    /hubspot_fetch_contacts:
+      get:
+        description: Fetch contacts from HubSpot and populate the cache
+        parameters:
+          - in: query
           name: portal_id
           required: true
           schema:

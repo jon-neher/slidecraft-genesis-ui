@@ -36,13 +36,19 @@ const HubSpotConnection = () => {
         user_id: user.id,
       });
       
+      // Fetch the client id from the Supabase edge function
+      const idRes = await fetch('/api/hubspot_client_id');
+      if (!idRes.ok) {
+        throw new Error('Failed to load HubSpot client id');
+      }
+      const { client_id } = await idRes.json();
+      if (!client_id) {
+        throw new Error('Missing HubSpot client id');
+      }
+
       // Construct HubSpot OAuth URL
       const hubspotAuthUrl = new URL('https://app.hubspot.com/oauth/authorize');
-      const clientId = import.meta.env.VITE_HUBSPOT_CLIENT_ID;
-      if (!clientId) {
-        throw new Error('Missing VITE_HUBSPOT_CLIENT_ID env');
-      }
-      hubspotAuthUrl.searchParams.set('client_id', clientId);
+      hubspotAuthUrl.searchParams.set('client_id', client_id);
       hubspotAuthUrl.searchParams.set('scope', 'contacts');
       hubspotAuthUrl.searchParams.set('redirect_uri', `${window.location.origin}/api/hubspot_oauth_callback`);
       hubspotAuthUrl.searchParams.set('state', state);
