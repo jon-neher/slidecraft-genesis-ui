@@ -5,6 +5,7 @@ import {
   RedirectToSignIn,
   UserProfile,
 } from '@clerk/clerk-react';
+import { brandColors } from '@/lib/color-validation';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import QuickSelectHeader from '@/components/dashboard/QuickSelectHeader';
 import LeftNav from '@/components/dashboard/LeftNav';
@@ -24,7 +25,21 @@ const ProfileContent = () => (
           </ErrorBoundary>
 
           <div className="flex justify-center p-6 bg-background">
-            <UserProfile />
+            <UserProfile
+              appearance={{
+                variables: {
+                  colorPrimary: brandColors['electric-indigo'],
+                  colorBackground: brandColors['ice-white'],
+                  colorText: brandColors['slate-gray'],
+                  colorTextSecondary: brandColors['gray-600'],
+                  fontFamily: 'Inter, sans-serif',
+                },
+                elements: {
+                  card: 'bg-white border border-gray-200',
+                  headerTitle: 'text-slate-gray',
+                },
+              }}
+            />
           </div>
         </SidebarInset>
       </div>
