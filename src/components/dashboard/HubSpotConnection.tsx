@@ -23,8 +23,6 @@ const HubSpotConnection = () => {
       // Generate a unique state parameter for OAuth security
       const state = crypto.randomUUID();
 
-      // Store state in localStorage for validation after redirect
-      localStorage.setItem('hubspot_oauth_state', state);
 
       if (!user) {
         throw new Error('User not authenticated');
