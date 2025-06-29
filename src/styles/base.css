@@ -46,42 +46,15 @@
     --radius: 0.75rem;
   }
 
-  /* Force safe defaults to prevent browser color inheritance */
   * {
     @apply border-border;
   }
 
-  /* Ensure root elements have safe backgrounds */
-  html {
-    background-color: #FAFAFB !important; /* ice-white */
-  }
-
   body {
     @apply bg-ice-white text-slate-gray font-sans;
-    background: #FAFAFB !important; /* Force ice-white background */
+    background: #FAFAFB;
     min-height: 100vh;
     line-height: 1.6;
-  }
-
-  /* Prevent any yellow from appearing anywhere */
-  *[class*="yellow"],
-  *[class*="amber"],
-  *[class*="orange"] {
-    background-color: #FAFAFB !important; /* Override with ice-white */
-    color: #3A3D4D !important; /* Override with slate-gray */
-  }
-
-  /* Safe defaults for common elements */
-  div, section, main, article, aside, header, footer, nav {
-    background-color: transparent;
-  }
-
-  /* Ensure cards and containers have explicit backgrounds */
-  [class*="card"], 
-  [class*="container"], 
-  [class*="panel"],
-  [data-testid*="card"] {
-    background-color: #FFFFFF; /* white */
   }
 
   /* Modern scrollbar */
@@ -108,7 +81,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.02em;
-  color: #3A3D4D; /* slate-gray */
 }
 
 .display-xl {
@@ -116,7 +88,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.04em;
-  color: #3A3D4D; /* slate-gray */
 }
 
 .display-lg {
@@ -124,7 +95,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.03em;
-  color: #3A3D4D; /* slate-gray */
 }
 
 /* Reduce motion for users who prefer it */
@@ -133,25 +103,5 @@ h1, h2, h3, h4, h5, h6 {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-}
-
-/* Development-only color violation indicators */
-@media screen and (max-width: 99999px) {
-  .color-violation {
-    outline: 2px solid red !important;
-    background-color: rgba(255, 0, 0, 0.1) !important;
-  }
-  
-  .color-violation::before {
-    content: "⚠️ Color Violation";
-    position: absolute;
-    top: -20px;
-    left: 0;
-    background: red;
-    color: white;
-    padding: 2px 6px;
-    font-size: 10px;
-    z-index: 9999;
   }
 }
