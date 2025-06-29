@@ -3,13 +3,11 @@
   "title": "Deck Blueprint",
   "type": "object",
   "properties": {
-    "goal": { "$ref": "#/$defs/stringField" },
-    "audience": { "$ref": "#/$defs/stringField" },
     "section_sequence": { "$ref": "#/$defs/stringArrayField" },
     "theme": { "$ref": "#/$defs/stringField" },
     "slide_library": { "$ref": "#/$defs/stringArrayField" }
   },
-  "required": ["goal", "audience"],
+  "required": [],
   "$defs": {
     "stringField": {
       "type": "object",

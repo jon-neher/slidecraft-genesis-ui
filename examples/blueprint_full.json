@@ -1,14 +1,4 @@
 {
-  "goal": {
-    "value": "Onboard customers",
-    "selection_source": "user",
-    "overrideable": false
-  },
-  "audience": {
-    "value": "marketers",
-    "selection_source": "user",
-    "overrideable": false
-  },
   "section_sequence": {
     "value": ["intro", "features", "pricing"],
     "selection_source": "ai",

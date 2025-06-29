@@ -19,4 +19,13 @@ describe('deck blueprint schema', () => {
     const valid = validate(data)
     expect(valid, JSON.stringify(validate.errors)).toBe(true)
   })
+
+  it('rejects deprecated fields', () => {
+    const data = {
+      goal: { value: 'foo', selection_source: 'user', overrideable: false },
+      audience: { value: 'bar', selection_source: 'user', overrideable: false }
+    }
+    const valid = validate(data)
+    expect(valid).toBe(false)
+  })
 })
