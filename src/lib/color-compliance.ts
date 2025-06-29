@@ -67,7 +67,10 @@ export const initColorCompliance = () => {
 };
 
 // Component-level compliance check
-export const checkComponentColors = (componentName: string, props: any) => {
+export const checkComponentColors = (
+  componentName: string,
+  props: Record<string, unknown>
+) => {
   if (process.env.NODE_ENV === 'development' && props.className) {
     const className = props.className;
     const forbiddenPatterns = [
