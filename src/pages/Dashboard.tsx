@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SignedIn, SignedOut, RedirectToSignIn, useAuth } from '@clerk/clerk-react';
 import { Plus } from 'lucide-react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
@@ -22,9 +23,10 @@ const Dashboard = () => {
 
   console.log('Dashboard - isDevelopment:', isDevelopment, 'hostname:', window.location.hostname);
 
+  const navigate = useNavigate();
+
   const handleNewDeck = () => {
-    console.log('Creating new deck');
-    // Add new deck creation logic here
+    navigate('/new-deck');
   };
 
   const DashboardContent = () => (
