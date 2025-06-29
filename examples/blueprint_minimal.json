@@ -1,0 +1,12 @@
+{
+  "goal": {
+    "value": "Secure funding",
+    "selection_source": "user",
+    "overrideable": false
+  },
+  "audience": {
+    "value": "investors",
+    "selection_source": "user",
+    "overrideable": false
+  }
+}
