@@ -26,6 +26,24 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
   }
 
   try {
+    const {
+      data: stateData,
+      error: stateError,
+    } = await supabase
+      .from('hubspot_oauth_states')
+      .select('user_id')
+      .eq('state', state)
+      .maybeSingle();
+
+    if (stateError || !stateData) {
+      return new Response(htmlError('Invalid state parameter'), {
+        status: 400,
+        headers: { 'Content-Type': 'text/html' },
+      });
+    }
+
+    const portalId = stateData.user_id;
+
     const body = new URLSearchParams({
       grant_type: 'authorization_code',
       client_id: HUBSPOT_CLIENT_ID,
@@ -55,12 +73,14 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
     const scopeArray = token.scope ? token.scope.split(' ') : [];
 
     const { error } = await supabase.from('hubspot_tokens').upsert({
-      portal_id: state,
+      portal_id: portalId,
       access_token: token.access_token,
       refresh_token: token.refresh_token,
       expires_at: expiresAt,
       scope: scopeArray,
     });
+
+    await supabase.from('hubspot_oauth_states').delete().eq('state', state);
 
     if (error) {
       throw new Error(error.message);
