@@ -64,7 +64,7 @@ export const auditColorClass = (className: string): ColorViolation | null => {
 };
 
 // Component wrapper that enforces brand colors
-export const withBrandColors = <T extends Record<string, any>>(
+export const withBrandColors = <T extends Record<string, unknown>>(
   Component: React.ComponentType<T>
 ): React.ComponentType<T> => {
   return (props: T) => {
