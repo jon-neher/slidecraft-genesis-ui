@@ -48,6 +48,6 @@ describe('hubspotOAuthCallback', () => {
     const res = await hubspotOAuthCallback(new Request('https://example.com/cb?code=123&state=me'));
     expect(res.status).toBe(500);
     const body = await res.text();
-    expect(body).toContain('fail');
+    expect(body).toContain('HubSpot token exchange failed');
   });
 });
