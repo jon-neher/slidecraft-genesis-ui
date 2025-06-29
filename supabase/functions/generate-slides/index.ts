@@ -8,8 +8,6 @@ import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from '../../src/server/config
 const apiKey = Deno.env.get('OPENAI_API_KEY')
 const openai = new OpenAI({ apiKey })
 
-const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -28,6 +26,14 @@ serve(async (req) => {
     if (req.method === 'GET' && url.pathname === '/generate') {
       const prompt = url.searchParams.get('prompt') ?? ''
       const count = url.searchParams.get('slides') ?? '1'
+      const auth = req.headers.get('Authorization') || ''
+      const authed = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+        global: { headers: { Authorization: auth } },
+      })
+      const { data: { user } } = await authed.auth.getUser()
+      if (!user) {
+        return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+      }
 
       console.log('Received request with prompt:', prompt, 'slides:', count)
 
@@ -42,21 +48,29 @@ serve(async (req) => {
 
         const slides = JSON.parse(completion.choices[0].message.content ?? '')
 
-        const { data, error } = await supabase
-          .from('decks')
-          .insert({ prompt, slide_json: slides })
-          .select('id')
+        const { data: pres, error: presError } = await authed
+          .from('presentations')
+          .insert({ user_id: user.id, title: prompt })
+          .select('presentation_id')
           .single()
 
-        if (error) {
-          console.error('Supabase insert error:', error)
-          return new Response(JSON.stringify({ error: 'Failed to store deck' }), {
+        if (presError) {
+          console.error('Supabase insert error:', presError)
+          return new Response(JSON.stringify({ error: 'Failed to store presentation' }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             status: 500,
           })
         }
 
-        return new Response(JSON.stringify({ deck_id: data.id }), {
+        const { error: planError } = await authed
+          .from('presentation_plans')
+          .insert({ presentation_id: pres.presentation_id, plan_json: slides })
+
+        if (planError) {
+          console.error('Plan insert error:', planError)
+        }
+
+        return new Response(JSON.stringify({ presentation_id: pres.presentation_id }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 200,
         })
