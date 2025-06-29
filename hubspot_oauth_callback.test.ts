@@ -1,11 +1,28 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { hubspotOAuthCallback } from './supabase/functions/hubspot_oauth_callback';
 
+let selectResult: { data: { user_id: string } | null; error: null };
+const upsertMock = vi.fn().mockResolvedValue({ error: null });
+const deleteMock = vi.fn().mockResolvedValue({ error: null });
+
 vi.mock('@supabase/supabase-js', () => ({
   createClient: vi.fn(() => ({
-    from: () => ({
-      upsert: vi.fn().mockResolvedValue({ error: null }),
-    }),
+    from: (table: string) => {
+      if (table === 'hubspot_tokens') {
+        return { upsert: upsertMock };
+      }
+      if (table === 'hubspot_oauth_states') {
+        return {
+          select: () => ({
+            eq: () => ({
+              maybeSingle: vi.fn(async () => selectResult),
+            }),
+          }),
+          delete: () => ({ eq: () => deleteMock() }),
+        };
+      }
+      return {} as unknown;
+    },
   })),
 }));
 
@@ -16,6 +33,9 @@ global.fetch = fetchMock;
 describe('hubspotOAuthCallback', () => {
   beforeEach(() => {
     fetchMock.mockReset();
+    selectResult = { data: { user_id: 'me' }, error: null };
+    upsertMock.mockClear();
+    deleteMock.mockClear();
   });
 
   it('redirects on successful token exchange', async () => {
@@ -32,10 +52,20 @@ describe('hubspotOAuthCallback', () => {
     );
     expect(res.status).toBe(302);
     expect(res.headers.get('location')).toBe('/dashboard');
+    expect(upsertMock).toHaveBeenCalledWith(
+      expect.objectContaining({ portal_id: 'me' })
+    );
+    expect(deleteMock).toHaveBeenCalled();
   });
 
   it('returns 400 if code missing', async () => {
     const res = await hubspotOAuthCallback(new Request('https://example.com/cb'));
+    expect(res.status).toBe(400);
+  });
+
+  it('returns 400 for invalid state', async () => {
+    selectResult = { data: null, error: null };
+    const res = await hubspotOAuthCallback(new Request('https://example.com/cb?code=123&state=bad'));
     expect(res.status).toBe(400);
   });
 

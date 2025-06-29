@@ -93,6 +93,24 @@ export type Database = {
         }
         Relationships: []
       }
+      hubspot_oauth_states: {
+        Row: {
+          state: string
+          user_id: string
+          created_at: string | null
+        }
+        Insert: {
+          state: string
+          user_id: string
+          created_at?: string | null
+        }
+        Update: {
+          state?: string
+          user_id?: string
+          created_at?: string | null
+        }
+        Relationships: []
+      }
       presentation_plans: {
         Row: {
           created_at: string

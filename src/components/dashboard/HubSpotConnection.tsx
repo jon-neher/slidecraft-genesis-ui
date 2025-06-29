@@ -6,11 +6,15 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Badge } from '@/components/ui/badge';
 import { ExternalLink, Settings, Zap, CheckCircle, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useSupabaseClient } from '@/hooks/useSupabaseClient';
+import { useUser } from '@clerk/clerk-react';
 
 const HubSpotConnection = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const { toast } = useToast();
+  const supabase = useSupabaseClient();
+  const { user } = useUser();
 
   const handleConnect = async () => {
     setIsConnecting(true);
@@ -18,9 +22,19 @@ const HubSpotConnection = () => {
     try {
       // Generate a unique state parameter for OAuth security
       const state = crypto.randomUUID();
-      
+
       // Store state in localStorage for validation after redirect
       localStorage.setItem('hubspot_oauth_state', state);
+
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      // Persist state mapping for validation on callback
+      await supabase.from('hubspot_oauth_states').insert({
+        state,
+        user_id: user.id,
+      });
       
       // Construct HubSpot OAuth URL
       const hubspotAuthUrl = new URL('https://app.hubspot.com/oauth/authorize');
