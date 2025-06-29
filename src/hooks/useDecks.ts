@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from 'react';
 import { useSupabaseClient } from './useSupabaseClient';
 
 export interface DeckSummary {
   id: string;
-  prompt: string;
+  title: string;
   created_at: string;
 }
 
@@ -19,15 +20,22 @@ export const useDecks = () => {
       setError(null);
 
       const { data, error: fetchError } = await supabase
-        .from('decks')
-        .select('id, prompt, created_at')
+        .from('presentations')
+        .select('presentation_id, title, created_at')
         .order('created_at', { ascending: false });
 
       if (fetchError) {
         throw fetchError;
       }
 
-      setDecks(data || []);
+      // Map presentations to DeckSummary format
+      const mappedDecks = (data || []).map(presentation => ({
+        id: presentation.presentation_id,
+        title: presentation.title,
+        created_at: presentation.created_at
+      }));
+
+      setDecks(mappedDecks);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       console.error('Error fetching decks:', err);
@@ -41,17 +49,18 @@ export const useDecks = () => {
       setLoading(true);
       setError(null);
 
+      // Get slide generations for this presentation
       const { data, error: fetchError } = await supabase
-        .from('decks')
-        .select('slide_json')
-        .eq('id', deckId)
-        .single();
+        .from('slide_generations')
+        .select('parsed_content')
+        .eq('presentation_id', deckId)
+        .order('slide_index');
 
       if (fetchError) {
         throw fetchError;
       }
 
-      return data?.slide_json ?? null;
+      return data ? data.map(slide => slide.parsed_content) : null;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       console.error('Error fetching deck slides:', err);

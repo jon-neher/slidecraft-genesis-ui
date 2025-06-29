@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useDecks } from '@/hooks/useDecks';
@@ -16,7 +17,7 @@ const DeckList = () => {
         <ul className="space-y-1">
           {decks.map((deck) => (
             <li key={deck.id} className="text-sm text-slate-gray">
-              {deck.prompt}
+              {deck.title}
             </li>
           ))}
         </ul>

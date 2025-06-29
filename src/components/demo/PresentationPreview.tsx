@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -79,26 +78,34 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
   const supabase = useSupabaseClient();
 
   const handleDownloadPptx = async () => {
-    const pptx = new PptxGenJS();
+    try {
+      const pptx = new PptxGenJS();
 
-    (slides as BasicSlide[]).forEach((s) => {
-      const slide = pptx.addSlide();
-      slide.addText(s.title, { x: 0.5, y: 0.5, fontSize: 24 });
-      s.bullets?.forEach((b, i) => {
-        slide.addText(b, { x: 0.5, y: 1 + i * 0.5, fontSize: 16, bullet: true });
+      (slides as BasicSlide[]).forEach((s) => {
+        const slide = pptx.addSlide();
+        slide.addText(s.title, { x: 0.5, y: 0.5, fontSize: 24 });
+        s.bullets?.forEach((b, i) => {
+          slide.addText(b, { x: 0.5, y: 1 + i * 0.5, fontSize: 16, bullet: true });
+        });
+        s.images?.forEach((img) => {
+          slide.addImage({ path: img.src, x: img.x, y: img.y, w: img.w, h: img.h });
+        });
       });
-      s.images?.forEach((img) => {
-        slide.addImage({ path: img.src, x: img.x, y: img.y, w: img.w, h: img.h });
+
+      // Generate the PPTX file as ArrayBuffer and convert to Blob
+      const arrayBuffer = await pptx.write('ARRAYBUFFER') as ArrayBuffer;
+      const blob = new Blob([arrayBuffer], {
+        type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
       });
-    });
 
-    const blob = (await pptx.writeFile({ blob: true })) as Blob;
-    const deckId = scenario.id;
+      const deckId = scenario.id;
 
-    await supabase.storage.from('pptx').upload(`${deckId}.pptx`, blob, {
-      contentType:
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-    });
+      await supabase.storage.from('pptx').upload(`${deckId}.pptx`, blob, {
+        contentType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      });
+    } catch (error) {
+      console.error('Error generating PPTX:', error);
+    }
   };
 
   return (
