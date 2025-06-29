@@ -12,6 +12,7 @@ import IntegrationsPanel from '@/components/dashboard/IntegrationsPanel';
 import DeckList from '@/components/dashboard/DeckList';
 import FloatingActionButton from '@/components/ui/floating-action-button';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import BrandSafeContainer from '@/components/ui/brand-safe-container';
 
 const Dashboard = () => {
   const { isSignedIn } = useAuth();
@@ -28,37 +29,37 @@ const Dashboard = () => {
   };
 
   const DashboardContent = () => (
-    <div className="min-h-screen bg-ice-white">
+    <BrandSafeContainer className="min-h-screen bg-ice-white">
       <SidebarProvider>
-        <div className="flex min-h-screen w-full">
-          <ErrorBoundary fallback={<div className="w-64 bg-gray-100 p-4">Navigation Error</div>}>
+        <div className="flex min-h-screen w-full bg-ice-white">
+          <ErrorBoundary fallback={<div className="w-64 bg-white p-4">Navigation Error</div>}>
             <LeftNav />
           </ErrorBoundary>
           
-          <SidebarInset className="flex-1">
-            <ErrorBoundary fallback={<div className="h-16 bg-gray-100 p-4">Header Error</div>}>
+          <SidebarInset className="flex-1 bg-ice-white">
+            <ErrorBoundary fallback={<div className="h-16 bg-white p-4">Header Error</div>}>
               <QuickSelectHeader />
             </ErrorBoundary>
             
-            <div className="flex-1 p-6 space-y-6">
+            <div className="flex-1 p-6 space-y-6 bg-ice-white">
               <div className="flex flex-col lg:flex-row gap-6">
                 <div className="flex-1 mobile-stack">
-                  <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Context Error</div>}>
+                  <ErrorBoundary fallback={<div className="p-4 bg-white">Context Error</div>}>
                     <ContextPane />
                   </ErrorBoundary>
-                  <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Gallery Error</div>}>
+                  <ErrorBoundary fallback={<div className="p-4 bg-white">Gallery Error</div>}>
                     <DeckGallery />
                   </ErrorBoundary>
                 </div>
                 
                 <div className="lg:w-80 w-full space-y-6">
-                  <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Activity Error</div>}>
+                  <ErrorBoundary fallback={<div className="p-4 bg-white">Activity Error</div>}>
                     <ActivityPanel />
                   </ErrorBoundary>
-                  <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Integration Error</div>}>
+                  <ErrorBoundary fallback={<div className="p-4 bg-white">Integration Error</div>}>
                     <IntegrationsPanel />
                   </ErrorBoundary>
-                  <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Decks Error</div>}>
+                  <ErrorBoundary fallback={<div className="p-4 bg-white">Decks Error</div>}>
                     <DeckList />
                   </ErrorBoundary>
                 </div>
@@ -75,7 +76,7 @@ const Dashboard = () => {
           New Deck
         </FloatingActionButton>
       </SidebarProvider>
-    </div>
+    </BrandSafeContainer>
   );
 
   // In development mode, bypass authentication
