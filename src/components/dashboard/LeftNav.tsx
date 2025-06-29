@@ -1,8 +1,18 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Home, FileText, Settings, Sparkles, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { 
+  Sidebar, 
+  SidebarContent, 
+  SidebarHeader, 
+  SidebarMenu, 
+  SidebarMenuButton, 
+  SidebarMenuItem, 
+  SidebarTrigger, 
+  useSidebar 
+} from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useTouchGestures } from '@/hooks/use-touch-gestures';
 
@@ -41,19 +51,23 @@ const LeftNav = () => {
   }, [isMobile, openMobile, setOpenMobile]);
 
   return (
-    <Sidebar className="w-60 border-r border-gray-200 bg-white" ref={swipeRef}>
-      <SidebarHeader className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between">
+    <Sidebar 
+      className="border-sidebar-border bg-sidebar" 
+      ref={swipeRef}
+      collapsible="offcanvas"
+    >
+      <SidebarHeader className="border-b border-sidebar-border">
+        <div className="flex items-center justify-between p-4">
           <motion.div 
             className="flex items-center gap-3"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="w-8 h-8 bg-electric-gradient rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-r from-electric-indigo to-neon-mint rounded-lg flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-semibold text-slate-gray">Threadline</span>
+            <span className="text-xl font-semibold text-sidebar-foreground">Threadline</span>
           </motion.div>
           
           {isMobile && (
@@ -61,7 +75,7 @@ const LeftNav = () => {
               variant="ghost"
               size="icon"
               onClick={() => setOpenMobile(false)}
-              className="h-8 w-8 hover:bg-gray-100"
+              className="h-8 w-8 hover:bg-sidebar-accent text-sidebar-foreground"
               aria-label="Close navigation drawer"
             >
               <X className="w-5 h-5" />
@@ -82,18 +96,15 @@ const LeftNav = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   asChild
-                  className={`w-full justify-start gap-3 h-12 rounded-xl transition-all duration-200 ${
-                    item.active 
-                      ? 'bg-electric-indigo text-white shadow-lg' 
-                      : 'text-slate-gray hover:bg-gray-100 hover:text-electric-indigo'
-                  }`}
+                  isActive={item.active}
+                  className="w-full justify-start gap-3 h-12 rounded-xl transition-all duration-200"
                   onClick={() => {
                     if (isMobile) {
                       setOpenMobile(false);
                     }
                   }}
                 >
-                  <a href={item.url}>
+                  <a href={item.url} className="flex items-center gap-3">
                     <item.icon className="w-5 h-5" />
                     <span className="font-medium">{item.title}</span>
                   </a>

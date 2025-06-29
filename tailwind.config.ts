@@ -71,6 +71,10 @@ export default {
 				'neon-mint': '#30F2B3',
 				'soft-coral': '#FF6B6B',
 			},
+			backgroundImage: {
+				'electric-gradient': 'linear-gradient(135deg, #5A2EFF 0%, #30F2B3 100%)',
+				'subtle-gradient': 'linear-gradient(135deg, #FAFAFB 0%, #F8F9FA 100%)',
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',

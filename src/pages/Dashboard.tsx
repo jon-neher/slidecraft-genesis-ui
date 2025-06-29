@@ -2,7 +2,7 @@
 import React from 'react';
 import { SignedIn, SignedOut, RedirectToSignIn, useAuth } from '@clerk/clerk-react';
 import { Plus } from 'lucide-react';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import LeftNav from '@/components/dashboard/LeftNav';
 import QuickSelectHeader from '@/components/dashboard/QuickSelectHeader';
 import ContextPane from '@/components/dashboard/ContextPane';
@@ -28,38 +28,43 @@ const Dashboard = () => {
   };
 
   const DashboardContent = () => (
-    <div className="min-h-screen bg-ice-white safe-area-top safe-area-bottom">
+    <div className="min-h-screen bg-ice-white">
       <SidebarProvider>
-        <div className="flex w-full min-h-screen">
+        <div className="flex min-h-screen w-full">
           <ErrorBoundary fallback={<div className="w-64 bg-gray-100 p-4">Navigation Error</div>}>
             <LeftNav />
           </ErrorBoundary>
-          <main className="flex-1 flex flex-col w-full">
+          
+          <SidebarInset className="flex-1">
             <ErrorBoundary fallback={<div className="h-16 bg-gray-100 p-4">Header Error</div>}>
               <QuickSelectHeader />
             </ErrorBoundary>
-            <div className="flex-1 flex flex-col lg:flex-row gap-4 lg:gap-6 mobile-padding">
-              <div className="flex-1 mobile-stack">
-                <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Context Error</div>}>
-                  <ContextPane />
-                </ErrorBoundary>
-                <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Gallery Error</div>}>
-                  <DeckGallery />
-                </ErrorBoundary>
-              </div>
-              <div className="lg:w-80 w-full space-y-6">
-                <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Activity Error</div>}>
-                  <ActivityPanel />
-                </ErrorBoundary>
-                <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Integration Error</div>}>
-                  <IntegrationsPanel />
-                </ErrorBoundary>
-                <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Decks Error</div>}>
-                  <DeckList />
-                </ErrorBoundary>
+            
+            <div className="flex-1 p-6 space-y-6">
+              <div className="flex flex-col lg:flex-row gap-6">
+                <div className="flex-1 mobile-stack">
+                  <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Context Error</div>}>
+                    <ContextPane />
+                  </ErrorBoundary>
+                  <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Gallery Error</div>}>
+                    <DeckGallery />
+                  </ErrorBoundary>
+                </div>
+                
+                <div className="lg:w-80 w-full space-y-6">
+                  <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Activity Error</div>}>
+                    <ActivityPanel />
+                  </ErrorBoundary>
+                  <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Integration Error</div>}>
+                    <IntegrationsPanel />
+                  </ErrorBoundary>
+                  <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Decks Error</div>}>
+                    <DeckList />
+                  </ErrorBoundary>
+                </div>
               </div>
             </div>
-          </main>
+          </SidebarInset>
         </div>
         
         {/* Floating Action Button for mobile */}

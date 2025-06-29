@@ -18,14 +18,14 @@ const QuickSelectHeader = () => {
 
   return (
     <motion.header 
-      className="border-b border-gray-200 bg-white p-4 lg:p-6"
+      className="sticky top-0 z-40 border-b border-sidebar-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4 lg:p-6"
       initial="hidden"
       animate="visible"
       variants={headerVariants}
     >
       <div className="flex items-center gap-2 lg:gap-4">
         {isMobile && (
-          <SidebarTrigger>
+          <SidebarTrigger className="h-10 w-10">
             <Menu className="w-5 h-5" />
           </SidebarTrigger>
         )}
