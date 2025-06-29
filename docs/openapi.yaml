@@ -83,3 +83,95 @@ paths:
       responses:
         "204":
           description: Event processed
+  /blueprints:
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: includeDefaults
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of blueprints
+    post:
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "201":
+          description: Created blueprint
+  /blueprints/{blueprintId}:
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: blueprintId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Blueprint details
+        "404":
+          description: Not found
+    put:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: blueprintId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Updated
+        "403":
+          description: Forbidden
+        "404":
+          description: Not found
+    delete:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: blueprintId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+        "403":
+          description: Forbidden
+        "404":
+          description: Not found
+  /blueprints/{defaultId}/clone:
+    post:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: defaultId
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Cloned blueprint
+        "404":
+          description: Not found
