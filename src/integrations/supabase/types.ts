@@ -12,6 +12,12 @@ export type Database = {
       blueprints: {
         Row: {
           blueprint: Json
+          goal: string
+          audience: string
+          section_sequence: string[]
+          theme: string
+          slide_library: string[]
+          extra_metadata: Json
           blueprint_id: string
           created_at: string
           is_default: boolean
@@ -21,6 +27,12 @@ export type Database = {
         }
         Insert: {
           blueprint: Json
+          goal?: string
+          audience?: string
+          section_sequence?: string[]
+          theme?: string
+          slide_library?: string[]
+          extra_metadata?: Json
           blueprint_id?: string
           created_at?: string
           is_default?: boolean
@@ -30,6 +42,12 @@ export type Database = {
         }
         Update: {
           blueprint?: Json
+          goal?: string
+          audience?: string
+          section_sequence?: string[]
+          theme?: string
+          slide_library?: string[]
+          extra_metadata?: Json
           blueprint_id?: string
           created_at?: string
           is_default?: boolean
