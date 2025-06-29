@@ -7,7 +7,8 @@
     "audience": { "$ref": "#/$defs/stringField" },
     "section_sequence": { "$ref": "#/$defs/stringArrayField" },
     "theme": { "$ref": "#/$defs/stringField" },
-    "slide_library": { "$ref": "#/$defs/stringArrayField" }
+    "slide_library": { "$ref": "#/$defs/stringArrayField" },
+    "extra_metadata": { "type": "object", "additionalProperties": true }
   },
   "required": ["goal", "audience"],
   "$defs": {

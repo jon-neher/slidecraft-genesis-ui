@@ -23,5 +23,8 @@
     "value": ["hero", "testimonials", "cta"],
     "selection_source": "ai",
     "overrideable": true
+  },
+  "extra_metadata": {
+    "notes": "Slides should be concise"
   }
 }
