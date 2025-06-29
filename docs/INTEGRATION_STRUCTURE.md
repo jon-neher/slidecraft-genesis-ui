@@ -8,7 +8,8 @@ The reusable handlers live in `src/server/` and are imported by thin wrappers un
 
 The HubSpot client relies on the following variables which are read in `src/server/config.ts`:
 
-- `HUBSPOT_CLIENT_ID` – OAuth client id of the HubSpot app.
+- `HUBSPOT_CLIENT_ID` – OAuth client id of the HubSpot app. When deploying
+  edge functions, supply this value using `supabase secrets set`.
 - `HUBSPOT_CLIENT_SECRET` – OAuth client secret used when exchanging and refreshing tokens.
 - `HUBSPOT_APP_SECRET` – Secret used to validate webhook signatures.
 - `SUPABASE_URL` – Base URL of the Supabase instance.

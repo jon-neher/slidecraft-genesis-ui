@@ -1,4 +1,6 @@
-import { HUBSPOT_CLIENT_ID } from '../../src/server/config.ts'
+// The client id is read from Supabase Edge Function secrets at runtime
+
+const HUBSPOT_CLIENT_ID = Deno.env.get('HUBSPOT_CLIENT_ID') || ''
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
