@@ -92,8 +92,8 @@ const PresentationPreview = ({ scenario, onRestart }: PresentationPreviewProps) 
         });
       });
 
-      // Generate the PPTX file as ArrayBuffer and convert to Blob
-      const arrayBuffer = await pptx.write('ARRAYBUFFER') as ArrayBuffer;
+      // Generate the PPTX file as ArrayBuffer using the correct WriteProps format
+      const arrayBuffer = await pptx.write({ outputType: 'arraybuffer' }) as ArrayBuffer;
       const blob = new Blob([arrayBuffer], {
         type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
       });
