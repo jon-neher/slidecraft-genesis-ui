@@ -52,7 +52,7 @@
 
   body {
     @apply bg-ice-white text-slate-gray font-sans;
-    background: #FAFAFB;
+    background: rgb(var(--background, 250 250 251));
     min-height: 100vh;
     line-height: 1.6;
   }
