@@ -19,7 +19,8 @@ const Dashboard = () => {
   
   // Development mode bypass - check if we're in Lovable preview environment
   const isDevelopment = window.location.hostname.includes('lovableproject.com') || 
-                       window.location.hostname === 'localhost';
+                       window.location.hostname === 'localhost' ||
+                       process.env.NODE_ENV === 'development';
 
   console.log('Dashboard - isDevelopment:', isDevelopment, 'hostname:', window.location.hostname);
 
@@ -32,34 +33,34 @@ const Dashboard = () => {
     <BrandSafeContainer className="min-h-screen bg-ice-white">
       <SidebarProvider>
         <div className="flex min-h-screen w-full bg-ice-white">
-          <ErrorBoundary fallback={<div className="w-64 bg-white p-4">Navigation Error</div>}>
+          <ErrorBoundary fallback={<div className="w-64 bg-white p-4 border-r border-gray-200">Navigation Error</div>}>
             <LeftNav />
           </ErrorBoundary>
           
           <SidebarInset className="flex-1 bg-ice-white">
-            <ErrorBoundary fallback={<div className="h-16 bg-white p-4">Header Error</div>}>
+            <ErrorBoundary fallback={<div className="h-16 bg-white p-4 border-b border-gray-200">Header Error</div>}>
               <QuickSelectHeader />
             </ErrorBoundary>
             
             <div className="flex-1 p-6 space-y-6 bg-ice-white">
               <div className="flex flex-col lg:flex-row gap-6">
                 <div className="flex-1 mobile-stack">
-                  <ErrorBoundary fallback={<div className="p-4 bg-white">Context Error</div>}>
+                  <ErrorBoundary fallback={<div className="p-4 bg-white rounded-lg border border-gray-200">Context Error</div>}>
                     <ContextPane />
                   </ErrorBoundary>
-                  <ErrorBoundary fallback={<div className="p-4 bg-white">Gallery Error</div>}>
+                  <ErrorBoundary fallback={<div className="p-4 bg-white rounded-lg border border-gray-200 mt-6">Gallery Error</div>}>
                     <DeckGallery />
                   </ErrorBoundary>
                 </div>
                 
                 <div className="lg:w-80 w-full space-y-6">
-                  <ErrorBoundary fallback={<div className="p-4 bg-white">Activity Error</div>}>
+                  <ErrorBoundary fallback={<div className="p-4 bg-white rounded-lg border border-gray-200">Activity Error</div>}>
                     <ActivityPanel />
                   </ErrorBoundary>
-                  <ErrorBoundary fallback={<div className="p-4 bg-white">Integration Error</div>}>
+                  <ErrorBoundary fallback={<div className="p-4 bg-white rounded-lg border border-gray-200">Integration Error</div>}>
                     <IntegrationsPanel />
                   </ErrorBoundary>
-                  <ErrorBoundary fallback={<div className="p-4 bg-white">Decks Error</div>}>
+                  <ErrorBoundary fallback={<div className="p-4 bg-white rounded-lg border border-gray-200">Decks Error</div>}>
                     <DeckList />
                   </ErrorBoundary>
                 </div>
