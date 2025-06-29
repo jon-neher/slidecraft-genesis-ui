@@ -51,6 +51,24 @@ export type Database = {
         }
         Relationships: []
       }
+      hubspot_oauth_states: {
+        Row: {
+          created_at: string | null
+          state: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          state: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          state?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       hubspot_sync_cursors: {
         Row: {
           hs_timestamp: string | null
@@ -90,24 +108,6 @@ export type Database = {
           portal_id?: string
           refresh_token?: string | null
           scope?: string[] | null
-        }
-        Relationships: []
-      }
-      hubspot_oauth_states: {
-        Row: {
-          state: string
-          user_id: string
-          created_at: string | null
-        }
-        Insert: {
-          state: string
-          user_id: string
-          created_at?: string | null
-        }
-        Update: {
-          state?: string
-          user_id?: string
-          created_at?: string | null
         }
         Relationships: []
       }
