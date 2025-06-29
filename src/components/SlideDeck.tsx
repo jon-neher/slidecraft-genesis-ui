@@ -1,13 +1,7 @@
 import React, { useEffect, useRef } from 'react'
-
-declare global {
-  interface Window {
-    Reveal: {
-      initialize: (options: unknown) => void
-    }
-    RevealPrintPDF: unknown
-  }
-}
+import Reveal from 'reveal.js'
+import 'reveal.js/dist/reveal.css'
+import 'reveal.js/dist/theme/black.css'
 
 export interface SlideImage {
   src: string
@@ -31,12 +25,18 @@ const SlideDeck = ({ slides }: SlideDeckProps) => {
   const deckRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!window.Reveal || !window.RevealPrintPDF) return
-    window.Reveal.initialize({
-      plugins: [window.RevealPrintPDF],
+    if (!deckRef.current) return
+
+    const deck = new Reveal(deckRef.current, {
       pdfSeparateFragments: true,
       pdfMaxPagesPerSlide: 1,
     })
+
+    deck.initialize()
+
+    return () => {
+      deck.destroy()
+    }
   }, [])
 
   return (
