@@ -17,7 +17,10 @@ const AnimatedContainer = ({
 }: AnimatedContainerProps) => {
   return (
     <motion.div
-      className={cn("grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6", className)}
+      className={cn(
+        "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 bg-background",
+        className
+      )}
       variants={variants}
       initial="hidden"
       animate="visible"
