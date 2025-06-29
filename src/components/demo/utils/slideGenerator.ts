@@ -1,12 +1,12 @@
 
-import { DataScenario, ChartData } from '../types';
+import { DataScenario } from '../types';
 
 export interface GeneratedSlide {
   id: string;
   type: 'title' | 'chart' | 'insights' | 'summary';
   title: string;
   content?: string;
-  chartData?: ChartData;
+  chartData?: any;
   insights?: string[];
 }
 

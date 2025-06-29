@@ -8,69 +8,54 @@ export const initColorCompliance = () => {
   if (process.env.NODE_ENV === 'development') {
     initColorChecker();
     
-    // Add global color violation detector (less aggressive)
+    // Add global color violation detector
     const detectColorViolations = () => {
-      try {
-        const allElements = document.querySelectorAll('*');
-        const violations: HTMLElement[] = [];
+      const allElements = document.querySelectorAll('*');
+      const violations: HTMLElement[] = [];
+      
+      allElements.forEach((element) => {
+        const computedStyle = window.getComputedStyle(element);
+        const backgroundColor = computedStyle.backgroundColor;
+        const color = computedStyle.color;
         
-        // Only check first 100 elements to avoid performance issues
-        const elementsToCheck = Array.from(allElements).slice(0, 100);
-        
-        elementsToCheck.forEach((element) => {
-          const computedStyle = window.getComputedStyle(element);
-          const backgroundColor = computedStyle.backgroundColor;
-          
-          // Check for yellow/amber/orange colors in computed styles
-          if (
-            backgroundColor.includes('rgb(255, 255, 0)') || // yellow
-            backgroundColor.includes('rgb(255, 193, 7)') ||  // amber
-            backgroundColor.includes('rgb(255, 152, 0)') ||  // orange
-            backgroundColor.includes('yellow') ||
-            backgroundColor.includes('amber') ||
-            backgroundColor.includes('orange')
-          ) {
-            violations.push(element as HTMLElement);
-            console.warn('🚨 Computed style violation detected:', {
-              element,
-              backgroundColor,
-              className: element.className
-            });
-          }
-        });
-        
-        // Mark violations visually in development
-        violations.forEach(element => {
-          element.classList.add('color-violation');
-        });
-        
-        return violations;
-      } catch (error) {
-        console.warn('Color compliance check failed:', error);
-        return [];
-      }
+        // Check for yellow/amber/orange colors in computed styles
+        if (
+          backgroundColor.includes('rgb(255, 255, 0)') || // yellow
+          backgroundColor.includes('rgb(255, 193, 7)') ||  // amber
+          backgroundColor.includes('rgb(255, 152, 0)') ||  // orange
+          backgroundColor.includes('yellow') ||
+          backgroundColor.includes('amber') ||
+          backgroundColor.includes('orange')
+        ) {
+          violations.push(element as HTMLElement);
+          console.error('🚨 Computed style violation detected:', {
+            element,
+            backgroundColor,
+            className: element.className
+          });
+        }
+      });
+      
+      // Mark violations visually in development
+      violations.forEach(element => {
+        element.classList.add('color-violation');
+      });
+      
+      return violations;
     };
     
-    // Run initial check after DOM is ready with delay
+    // Run initial check after DOM is ready
     setTimeout(() => {
       detectColorViolations();
-    }, 2000);
+    }, 1000);
     
-    // Less frequent checks to avoid performance issues
-    const intervalId = setInterval(detectColorViolations, 10000);
-    
-    // Clean up interval when page unloads
-    window.addEventListener('beforeunload', () => {
-      clearInterval(intervalId);
-    });
+    // Check periodically for dynamic content
+    setInterval(detectColorViolations, 5000);
   }
 };
 
 // Component-level compliance check
-export const checkComponentColors = (
-  componentName: string,
-  props: Record<string, unknown>
-) => {
+export const checkComponentColors = (componentName: string, props: any) => {
   if (process.env.NODE_ENV === 'development' && props.className) {
     const className = props.className;
     const forbiddenPatterns = [
@@ -87,7 +72,7 @@ export const checkComponentColors = (
     
     forbiddenPatterns.forEach(pattern => {
       if (pattern.test(className)) {
-        console.warn(`🚨 Color violation in ${componentName}:`, {
+        console.error(`🚨 Color violation in ${componentName}:`, {
           className,
           pattern: pattern.toString(),
           component: componentName

@@ -1,7 +1,6 @@
 
 // Comprehensive color audit system to prevent brand violations
 import { brandColors, validateColorClass } from './color-validation';
-import React from 'react';
 
 export interface ColorViolation {
   file: string;
@@ -64,9 +63,9 @@ export const auditColorClass = (className: string): ColorViolation | null => {
 };
 
 // Component wrapper that enforces brand colors
-export const withBrandColors = <T extends Record<string, unknown>>(
+export const withBrandColors = <T extends Record<string, any>>(
   Component: React.ComponentType<T>
-): React.ComponentType<T> => {
+) => {
   return (props: T) => {
     // Audit className prop if it exists
     if (props.className && typeof props.className === 'string') {
@@ -83,12 +82,12 @@ export const withBrandColors = <T extends Record<string, unknown>>(
             .replace(/text-amber[^\s]*/g, 'text-electric-indigo')
             .replace(/text-orange[^\s]*/g, 'text-slate-gray');
           
-          return React.createElement(Component, { ...props, className: safeClassName });
+          return <Component {...props} className={safeClassName} />;
         }
       }
     }
     
-    return React.createElement(Component, props);
+    return <Component {...props} />;
   };
 };
 
