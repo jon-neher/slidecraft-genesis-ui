@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Deck Blueprint",
+  "type": "object",
+  "properties": {
+    "goal": { "$ref": "#/$defs/stringField" },
+    "audience": { "$ref": "#/$defs/stringField" },
+    "section_sequence": { "$ref": "#/$defs/stringArrayField" },
+    "theme": { "$ref": "#/$defs/stringField" },
+    "slide_library": { "$ref": "#/$defs/stringArrayField" }
+  },
+  "required": ["goal", "audience"],
+  "$defs": {
+    "stringField": {
+      "type": "object",
+      "properties": {
+        "value": { "type": "string" },
+        "selection_source": { "type": "string", "enum": ["user", "ai"] },
+        "overrideable": { "type": "boolean" }
+      },
+      "required": ["value", "selection_source", "overrideable"],
+      "additionalProperties": false
+    },
+    "stringArrayField": {
+      "type": "object",
+      "properties": {
+        "value": { "type": "array", "items": { "type": "string" } },
+        "selection_source": { "type": "string", "enum": ["user", "ai"] },
+        "overrideable": { "type": "boolean" }
+      },
+      "required": ["value", "selection_source", "overrideable"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
