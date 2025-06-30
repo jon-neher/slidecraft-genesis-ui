@@ -1,16 +1,14 @@
 
 import express, { RequestHandler, Request, Response } from 'express';
 import { requireAuth } from '@clerk/express';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseClient } from './supabaseClient';
 import { createHmac } from 'crypto';
 import {
   HUBSPOT_APP_SECRET as HUBSPOT_SECRET,
-  SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY,
 } from './config';
 import { devLog } from '../lib/dev-log';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+const supabase = getSupabaseClient();
 
 export interface AuthedRequest extends Request {
   rawBody?: string;

@@ -6,7 +6,7 @@ const authMock = { getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'u
 
 const createMock = vi.fn()
 
-vi.mock('@supabase/supabase-js', () => ({
+vi.doMock('@supabase/supabase-js', () => ({
   createClient: vi.fn(() => ({ auth: authMock })),
 }))
 

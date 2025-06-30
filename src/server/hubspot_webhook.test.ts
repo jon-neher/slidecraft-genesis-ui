@@ -16,7 +16,7 @@ const deleteTokensMock = vi.fn().mockResolvedValue({});
 const deleteCacheMock = vi.fn().mockResolvedValue({});
 const deleteCursorsMock = vi.fn().mockResolvedValue({});
 
-vi.mock('@supabase/supabase-js', () => ({
+vi.doMock('@supabase/supabase-js', () => ({
   createClient: vi.fn(() => ({
     from: (table: string) => ({
       insert: table === 'hubspot_events_raw' ? insertMock : undefined,

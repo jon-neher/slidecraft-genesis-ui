@@ -1,11 +1,11 @@
 
-import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../integrations/supabase/types'
 import { ensureAccessToken } from '../integrations/hubspot/tokens'
 import rateLimiter from './rate_limiter_memory'
-import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from './config'
+import { getSupabaseClient } from './supabaseClient'
 
-const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+const supabase = getSupabaseClient()
 
 export interface HubSpotContact {
   id: string

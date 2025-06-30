@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../supabase/types'
 import rateLimiter from '../../server/rate_limiter_memory'
-import supabase from '../../server/supabaseClient'
+import { getSupabaseClient } from '../../server/supabaseClient'
 import { ensureAccessToken } from './tokens'
 import crypto from 'crypto'
 
@@ -29,7 +29,7 @@ export async function searchContacts(
   portal_id: string,
   q: string,
   limit: number,
-  sb: SupabaseClient<Database> = supabase,
+  sb: SupabaseClient<Database> = getSupabaseClient(),
   fetchFn: typeof fetch = fetch
 ): Promise<HubSpotContact[]> {
   const accessToken = await ensureAccessToken(portal_id, sb, fetchFn)
@@ -64,7 +64,7 @@ export async function searchContacts(
 
 export async function postNote(
   { portal_id, hubspot_object_id, app_record_url }: PostNoteInput,
-  sb: SupabaseClient<Database> = supabase,
+  sb: SupabaseClient<Database> = getSupabaseClient(),
   fetchFn: typeof fetch = fetch
 ): Promise<{ noteId: string } | { error: unknown }> {
   try {

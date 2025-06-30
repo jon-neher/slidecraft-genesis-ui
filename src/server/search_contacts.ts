@@ -1,12 +1,10 @@
 
-import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../integrations/supabase/types'
 
 import {
-  SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY,
 } from './config'
-import supabase from './supabaseClient'
+import { getSupabaseClient } from './supabaseClient'
 
 import { searchContacts as hubspotSearch } from '../integrations/hubspot/client'
 
@@ -42,7 +40,7 @@ export async function searchLocal(
   portal_id: string,
   q: string,
   limit: number,
-  sb: SupabaseClient<Database> = supabase,
+  sb: SupabaseClient<Database> = getSupabaseClient(),
 ): Promise<ContactRecord[]> {
   const { data } = await sb
     .from('hubspot_contacts_cache')
@@ -58,7 +56,7 @@ async function searchRemote(
   portal_id: string,
   q: string,
   limit: number,
-  sb: SupabaseClient<Database> = supabase,
+  sb: SupabaseClient<Database> = getSupabaseClient(),
   fetchFn: typeof fetch = fetch,
 ): Promise<ContactRecord[]> {
   const rows = await hubspotSearch(portal_id, q, limit, sb, fetchFn)
@@ -83,7 +81,7 @@ export async function searchContacts(
   portal_id: string,
   q: string,
   limit: number,
-  sb: SupabaseClient<Database> = supabase,
+  sb: SupabaseClient<Database> = getSupabaseClient(),
   fetchFn: typeof fetch = fetch,
 ): Promise<ContactRecord[]> {
   // Validate input
@@ -115,9 +113,7 @@ export async function handleRequest(req: Request): Promise<Response> {
   const limit = parseInt(url.searchParams.get('limit') || '10', 10)
 
   const auth = req.headers.get('Authorization') || ''
-  const client = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-    global: { headers: { Authorization: auth } },
-  })
+  const client = getSupabaseClient(auth)
   
   const {
     data: { user },

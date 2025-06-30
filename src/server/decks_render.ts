@@ -1,6 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
 import type { Database } from '../integrations/supabase/types'
-import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from './config'
+import { getSupabaseClient } from './supabaseClient'
 import { devLog } from '../lib/dev-log'
 
 interface SlideData {
@@ -38,9 +37,7 @@ export async function handleRequest(req: Request): Promise<Response> {
   }
 
   const auth = req.headers.get('Authorization') || ''
-  const client = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-    global: { headers: { Authorization: auth } },
-  })
+  const client = getSupabaseClient(auth)
   const { data: { user } } = await client.auth.getUser()
   if (!user) return new Response('Unauthorized', { status: 401 })
 
