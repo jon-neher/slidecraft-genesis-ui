@@ -88,6 +88,10 @@ export async function handleRequest(req: Request): Promise<Response> {
         } else {
           query.eq('user_id', user.id)
         }
+        const themeFilter = parsed.searchParams.get('theme')
+        if (themeFilter) {
+          query.eq('theme', themeFilter)
+        }
         const { data, error } = await query
         if (error) throw error
         return new Response(

@@ -53,4 +53,10 @@ describe('handleRequest blueprints', () => {
     expect(res.status).toBe(200)
     expect(orMock).toHaveBeenCalled()
   })
+
+  it('filters by theme', async () => {
+    const res = await handleRequest(new Request('http://x/blueprints?theme=dark'))
+    expect(res.status).toBe(200)
+    expect(eqMock.mock.calls.some(c => c[0] === 'theme' && c[1] === 'dark')).toBe(true)
+  })
 })
