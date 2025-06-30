@@ -6,14 +6,14 @@ let handleRequest: typeof import('./section_templates').handleRequest
 const builder = {
   select: jest.fn().mockReturnThis(),
   eq: jest.fn().mockReturnThis(),
-  maybeSingle: jest.fn(),
-  insert: jest.fn(),
-  update: jest.fn(),
-  delete: jest.fn(),
+  maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
+  insert: jest.fn().mockResolvedValue({ data: null, error: null }),
+  update: jest.fn().mockResolvedValue({ data: null, error: null }),
+  delete: jest.fn().mockResolvedValue({ data: null, error: null }),
 }
 
 const authBuilder = {
-  getUser: jest.fn(),
+  getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user' } }, error: null }),
 }
 
 let fromMock: jest.MockedFunction<any>

@@ -8,13 +8,13 @@ let getUserBlueprints: typeof import('./blueprints').getUserBlueprints
 const mockBuilder = {
   select: jest.fn().mockReturnThis(),
   eq: jest.fn().mockReturnThis(),
-  insert: jest.fn(),
-  maybeSingle: jest.fn(),
-  single: jest.fn(),
+  insert: jest.fn().mockResolvedValue({ data: null, error: null }),
+  maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
+  single: jest.fn().mockResolvedValue({ data: null, error: null }),
 }
 
 const mockAuthBuilder = {
-  getUser: jest.fn(),
+  getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user' } }, error: null }),
 }
 
 const mockSupabase = {
@@ -25,7 +25,9 @@ const mockSupabase = {
 const mockOpenAI = {
   chat: {
     completions: {
-      create: jest.fn()
+      create: jest.fn().mockResolvedValue({
+        choices: [{ message: { content: '["intro", "problem", "solution"]' } }]
+      })
     }
   }
 }
