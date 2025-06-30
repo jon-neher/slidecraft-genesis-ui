@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { useSupabaseClient } from './useSupabaseClient';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
@@ -15,7 +15,7 @@ export const useSlideGenerations = (presentationId?: string) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchGenerations = async () => {
+  const fetchGenerations = useCallback(async () => {
     if (!user || !presentationId) return;
 
     try {
@@ -39,7 +39,7 @@ export const useSlideGenerations = (presentationId?: string) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, presentationId, supabase]);
 
   const createGeneration = async (generationData: SlideGenerationInsert) => {
     if (!user) return;
@@ -112,7 +112,7 @@ export const useSlideGenerations = (presentationId?: string) => {
     } else {
       setGenerations([]);
     }
-  }, [user, presentationId]);
+  }, [user, presentationId, fetchGenerations]);
 
   return {
     generations,

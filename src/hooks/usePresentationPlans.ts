@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { useSupabaseClient } from './useSupabaseClient';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
@@ -15,7 +15,7 @@ export const usePresentationPlans = (presentationId?: string) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPlans = async () => {
+  const fetchPlans = useCallback(async () => {
     if (!user || !presentationId) return;
 
     try {
@@ -44,7 +44,7 @@ export const usePresentationPlans = (presentationId?: string) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, presentationId, supabase]);
 
   const createPlan = async (planData: PresentationPlanInsert) => {
     if (!user) return;
@@ -114,7 +114,7 @@ export const usePresentationPlans = (presentationId?: string) => {
     } else {
       setPlans([]);
     }
-  }, [user, presentationId]);
+  }, [user, presentationId, fetchPlans]);
 
   return {
     plans,

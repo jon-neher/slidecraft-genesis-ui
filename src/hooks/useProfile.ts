@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { useSupabaseClient } from './useSupabaseClient';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
@@ -15,7 +15,7 @@ export const useProfile = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -39,7 +39,7 @@ export const useProfile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, supabase]);
 
   const createProfile = async (profileData: Omit<ProfileInsert, 'id'>) => {
     if (!user) return;
@@ -107,7 +107,7 @@ export const useProfile = () => {
     } else {
       setProfile(null);
     }
-  }, [user]);
+  }, [user, fetchProfile]);
 
   return {
     profile,
