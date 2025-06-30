@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getColorCombination } from '@/lib/color-validation';
 import type { Tables } from '@/integrations/supabase/types';
+import { devLog } from '@/lib/dev-log';
 
 type Profile = Tables<'profiles'>;
 
@@ -22,17 +23,17 @@ const ClerkSupabaseDemo = () => {
     
     try {
       setLoading(true);
-      console.log('Testing Supabase connection with Clerk token...');
+      devLog('Testing Supabase connection with Clerk token...');
       
       // Test auth connection
       const { data: authData, error: authError } = await supabase.auth.getUser();
       
       if (authError) {
-        console.log('Supabase auth error:', authError);
+        devLog('Supabase auth error:', authError);
         return;
       }
       
-      console.log('Supabase auth successful! User data:', authData);
+      devLog('Supabase auth successful! User data:', authData);
       
       // Test profiles table query
       const { data: profileData, error: profileError } = await supabase
@@ -42,9 +43,9 @@ const ClerkSupabaseDemo = () => {
         .maybeSingle();
       
       if (profileError) {
-        console.log('Profile query error:', profileError);
+        devLog('Profile query error:', profileError);
       } else {
-        console.log('Profile data:', profileData);
+        devLog('Profile data:', profileData);
         setProfile(profileData);
       }
       
@@ -60,7 +61,7 @@ const ClerkSupabaseDemo = () => {
     
     try {
       setLoading(true);
-      console.log('Creating profile...');
+      devLog('Creating profile...');
       
       const { data, error } = await supabase
         .from('profiles')
@@ -76,7 +77,7 @@ const ClerkSupabaseDemo = () => {
       if (error) {
         console.error('Error creating profile:', error);
       } else {
-        console.log('Profile created:', data);
+        devLog('Profile created:', data);
         setProfile(data);
       }
     } catch (error) {

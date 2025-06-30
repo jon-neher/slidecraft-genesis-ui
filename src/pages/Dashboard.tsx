@@ -13,6 +13,7 @@ import IntegrationsPanel from '@/components/dashboard/IntegrationsPanel';
 import DeckList from '@/components/dashboard/DeckList';
 import FloatingActionButton from '@/components/ui/floating-action-button';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { devLog } from '@/lib/dev-log';
 
 const Dashboard = () => {
   const { isSignedIn } = useAuth();
@@ -21,7 +22,7 @@ const Dashboard = () => {
   const isDevelopment = window.location.hostname.includes('lovableproject.com') || 
                        window.location.hostname === 'localhost';
 
-  console.log('Dashboard - isDevelopment:', isDevelopment, 'hostname:', window.location.hostname);
+  devLog('Dashboard - isDevelopment:', isDevelopment, 'hostname:', window.location.hostname);
 
   const navigate = useNavigate();
 
@@ -82,7 +83,7 @@ const Dashboard = () => {
 
   // In development mode, bypass authentication
   if (isDevelopment) {
-    console.log('Dashboard - Rendering in development mode');
+    devLog('Dashboard - Rendering in development mode');
     return <DashboardContent />;
   }
 

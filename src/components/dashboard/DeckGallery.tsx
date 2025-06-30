@@ -6,6 +6,7 @@ import TouchCard from '@/components/ui/touch-card';
 import FilterBar from './shared/FilterBar';
 import { mockDeckTypes } from '@/data/mockData';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { devLog } from '@/lib/dev-log';
 
 const DeckGallery = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,12 +15,12 @@ const DeckGallery = () => {
   const isMobile = useIsMobile();
 
   const handleDeckSelect = (deckId: string) => {
-    console.log('Selected deck:', deckId);
+    devLog('Selected deck:', deckId);
     // Add deck selection logic here
   };
 
   const handleDeckLongPress = (deckId: string) => {
-    console.log('Long pressed deck:', deckId);
+    devLog('Long pressed deck:', deckId);
     // Add context menu or actions for long press
   };
 
