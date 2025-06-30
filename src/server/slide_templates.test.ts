@@ -4,13 +4,13 @@ import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals
 let handleRequest: typeof import('./slide_templates').handleRequest
 
 const builder = {
-  select: jest.fn().mockReturnThis(),
-  eq: jest.fn().mockReturnThis(),
+  select: jest.fn() as jest.MockedFunction<any>,
+  eq: jest.fn() as jest.MockedFunction<any>,
   maybeSingle: jest.fn() as jest.MockedFunction<any>,
   single: jest.fn() as jest.MockedFunction<any>,
-  insert: jest.fn().mockReturnThis(),
-  update: jest.fn().mockReturnThis(),
-  delete: jest.fn().mockReturnThis(),
+  insert: jest.fn() as jest.MockedFunction<any>,
+  update: jest.fn() as jest.MockedFunction<any>,
+  delete: jest.fn() as jest.MockedFunction<any>,
 }
 let fromMock: jest.MockedFunction<any>
 
@@ -24,17 +24,20 @@ beforeAll(async () => {
 
 beforeEach(() => {
   jest.clearAllMocks()
-  builder.select.mockReturnThis()
-  builder.eq.mockReturnThis()
+  
+  // Reset builder chain
+  builder.select.mockReturnValue(builder)
+  builder.eq.mockReturnValue(builder)
   builder.maybeSingle.mockResolvedValue({ data: null, error: null })
   builder.single.mockResolvedValue({ data: null, error: null })
-  builder.insert.mockReturnThis()
-  builder.update.mockReturnThis()
-  builder.delete.mockReturnThis()
+  builder.insert.mockReturnValue(builder)
+  builder.update.mockReturnValue(builder)
+  builder.delete.mockReturnValue(builder)
 })
 
 describe('slideTemplates handleRequest', () => {
   it('lists templates', async () => {
+    // Override select for this specific test to return resolved data
     builder.select.mockResolvedValueOnce({ data: [], error: null })
     const res = await handleRequest(new Request('http://x/slide-templates'))
     expect(res.status).toBe(200)

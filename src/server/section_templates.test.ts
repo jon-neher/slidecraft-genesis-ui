@@ -4,8 +4,8 @@ import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals
 let handleRequest: typeof import('./section_templates').handleRequest
 
 const builder = {
-  select: jest.fn().mockReturnThis(),
-  eq: jest.fn().mockReturnThis(),
+  select: jest.fn() as jest.MockedFunction<any>,
+  eq: jest.fn() as jest.MockedFunction<any>,
   maybeSingle: jest.fn() as jest.MockedFunction<any>,
   insert: jest.fn() as jest.MockedFunction<any>,
   update: jest.fn() as jest.MockedFunction<any>,
@@ -33,17 +33,22 @@ beforeAll(async () => {
 
 beforeEach(() => {
   jest.clearAllMocks()
-  builder.select.mockReturnThis()
-  builder.eq.mockReturnThis()
+  
+  // Reset builder chain
+  builder.select.mockReturnValue(builder)
+  builder.eq.mockReturnValue(builder)
   builder.maybeSingle.mockResolvedValue({ data: null, error: null })
   builder.insert.mockResolvedValue({ data: null, error: null })
   builder.update.mockResolvedValue({ data: null, error: null })
   builder.delete.mockResolvedValue({ data: null, error: null })
+  
+  // Reset auth
   authBuilder.getUser.mockResolvedValue({ data: { user: { id: 'test-user' } }, error: null })
 })
 
 describe('sectionTemplates handleRequest', () => {
   it('gets all section templates', async () => {
+    // Override select for this specific test to return resolved data
     builder.select.mockResolvedValueOnce({ 
       data: [{ section_id: 'intro', name: 'Introduction' }], 
       error: null 

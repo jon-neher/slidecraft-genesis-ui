@@ -33,14 +33,15 @@ beforeEach(async () => {
 
 describe('hubspotFetchContacts', () => {
   it('stores fetched contacts and updates cursor', async () => {
-    const fetchMock = jest.fn().mockResolvedValue({
+    const fetchMock = jest.fn() as jest.MockedFunction<typeof fetch>
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({
         results: [
           { id: '1', properties: { hs_lastmodifieddate: '2024-01-01T00:00:00Z' } },
         ],
       }),
-    }) as jest.MockedFunction<typeof fetch>
+    } as Response)
 
     await hubspotFetchContacts('p1', undefined, undefined, fetchMock)
 

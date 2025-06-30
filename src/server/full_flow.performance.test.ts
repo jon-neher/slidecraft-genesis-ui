@@ -6,8 +6,8 @@ let createBlueprint: typeof import('./blueprints').createBlueprint
 let getUserBlueprints: typeof import('./blueprints').getUserBlueprints
 
 const mockBuilder = {
-  select: jest.fn().mockReturnThis(),
-  eq: jest.fn().mockReturnThis(),
+  select: jest.fn() as jest.MockedFunction<any>,
+  eq: jest.fn() as jest.MockedFunction<any>,
   insert: jest.fn() as jest.MockedFunction<any>,
   maybeSingle: jest.fn() as jest.MockedFunction<any>,
   single: jest.fn() as jest.MockedFunction<any>,
@@ -45,12 +45,18 @@ beforeAll(async () => {
 
 beforeEach(() => {
   jest.clearAllMocks()
-  mockBuilder.select.mockReturnThis()
-  mockBuilder.eq.mockReturnThis()
+  
+  // Reset builder chain
+  mockBuilder.select.mockReturnValue(mockBuilder)
+  mockBuilder.eq.mockReturnValue(mockBuilder)
   mockBuilder.maybeSingle.mockResolvedValue({ data: null, error: null })
   mockBuilder.single.mockResolvedValue({ data: null, error: null })
   mockBuilder.insert.mockResolvedValue({ data: null, error: null })
+  
+  // Reset auth
   mockAuthBuilder.getUser.mockResolvedValue({ data: { user: { id: 'test-user' } }, error: null })
+  
+  // Reset OpenAI
   mockOpenAI.chat.completions.create.mockResolvedValue({
     choices: [{ message: { content: '["intro", "problem", "solution"]' } }]
   })
@@ -94,7 +100,8 @@ describe('Full Flow Performance', () => {
   })
 
   it('retrieves blueprints quickly', async () => {
-    mockBuilder.select.mockResolvedValue({ data: [], error: null })
+    // Override select for this specific test to return resolved data
+    mockBuilder.select.mockResolvedValueOnce({ data: [], error: null })
 
     const start = Date.now()
     await getUserBlueprints('test-user')

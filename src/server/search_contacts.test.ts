@@ -42,10 +42,12 @@ const mockClient = {
 } as unknown as SupabaseClient<Database>
 
 function makeFetch<T>(results: T[]): jest.MockedFunction<typeof fetch> {
-  return jest.fn().mockResolvedValue({ 
+  const fetchMock = jest.fn() as jest.MockedFunction<typeof fetch>
+  fetchMock.mockResolvedValue({ 
     ok: true, 
     json: async () => ({ results }) 
-  }) as jest.MockedFunction<typeof fetch>
+  } as Response)
+  return fetchMock
 }
 
 describe('searchContacts', () => {

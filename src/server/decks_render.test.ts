@@ -4,9 +4,9 @@ import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals
 let handleRequest: typeof import('./decks_render').handleRequest
 
 const builder = {
-  select: jest.fn().mockReturnThis(),
-  eq: jest.fn().mockReturnThis(),
-  in: jest.fn().mockReturnThis(),
+  select: jest.fn() as jest.MockedFunction<any>,
+  eq: jest.fn() as jest.MockedFunction<any>,
+  in: jest.fn() as jest.MockedFunction<any>,
   maybeSingle: jest.fn() as jest.MockedFunction<any>,
   single: jest.fn() as jest.MockedFunction<any>,
 }
@@ -32,11 +32,15 @@ beforeAll(async () => {
 
 beforeEach(() => {
   jest.clearAllMocks()
-  builder.select.mockReturnThis()
-  builder.eq.mockReturnThis()
-  builder.in.mockReturnThis()
+  
+  // Reset and setup builder chain
+  builder.select.mockReturnValue(builder)
+  builder.eq.mockReturnValue(builder)
+  builder.in.mockReturnValue(builder)
   builder.maybeSingle.mockResolvedValue({ data: null, error: null })
   builder.single.mockResolvedValue({ data: null, error: null })
+  
+  // Reset auth
   authBuilder.getUser.mockResolvedValue({ data: { user: { id: 'test-user' } }, error: null })
 })
 
@@ -69,6 +73,7 @@ describe('deckRender handleRequest', () => {
         error: null 
       })
     
+    // Override select for this specific test to return resolved data
     builder.select.mockResolvedValueOnce({ 
       data: [{ section_id: 'intro', default_templates: ['t1'] }], 
       error: null 
@@ -98,6 +103,7 @@ describe('deckRender handleRequest', () => {
         error: null 
       })
     
+    // Override select for this specific test to return resolved data
     builder.select.mockResolvedValueOnce({ 
       data: [], 
       error: null 
