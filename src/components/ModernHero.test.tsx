@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
@@ -5,16 +6,27 @@ import { describe, it, expect, jest } from '@jest/globals';
 import ModernHero from './ModernHero';
 import React from 'react';
 
+jest.mock('framer-motion', () => ({
+  motion: {
+    div: (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />,
+    h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h1 {...props} />,
+    p: (props: React.HTMLAttributes<HTMLParagraphElement>) => <p {...props} />,
+  },
+}));
+
 jest.mock('@clerk/clerk-react', () => ({
-  useUser: () => ({ isSignedIn: false })
+  __esModule: true,
+  useUser: () => ({ isSignedIn: false }),
 }));
 
 jest.mock('./ClerkWaitlistForm', () => ({
-  default: () => <div data-testid="clerk-form">Waitlist</div>
+  __esModule: true,
+  default: () => <div data-testid="clerk-form">Waitlist</div>,
 }));
 
 jest.mock('./ThreadingAnimation', () => ({
-  default: () => <div data-testid="threading" />
+  __esModule: true,
+  default: () => <div data-testid="threading" />,
 }));
 
 describe('ModernHero', () => {

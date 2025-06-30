@@ -5,10 +5,10 @@ import type { Database } from '../integrations/supabase/types';
 
 process.env.SUPABASE_URL = 'http://localhost'
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'key'
-jest.mock('../integrations/hubspot/rateLimiter', async () => {
-  const mod = await jest.importActual<typeof import('../integrations/hubspot/rateLimiter')>('../integrations/hubspot/rateLimiter')
-  return { __esModule: true, default: new mod.RateLimiterMemory(100, 1000), RateLimiterMemory: mod.RateLimiterMemory }
-})
+jest.mock('../integrations/hubspot/rateLimiter', () => {
+  const mod = jest.requireActual<typeof import('../integrations/hubspot/rateLimiter')>('../integrations/hubspot/rateLimiter');
+  return { __esModule: true, default: new mod.RateLimiterMemory(100, 1000), RateLimiterMemory: mod.RateLimiterMemory };
+});
 import { RateLimiterMemory } from '../integrations/hubspot/rateLimiter'
 let searchContacts: typeof import('./search_contacts').searchContacts
 beforeAll(async () => {

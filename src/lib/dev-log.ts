@@ -1,17 +1,11 @@
-export const isDev = (() => {
-  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV) {
-    return process.env.NODE_ENV !== 'production';
-  }
-  try {
-    // Vite exposes import.meta.env.DEV
-    return (
-      (import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV ?? false
-    );
-  } catch {
-    // Fallback to true in unknown environments
-    return true;
-  }
-})();
+// Simplified development check that avoids using `import.meta` so tests can run
+// in environments where ECMAScript modules aren't enabled.
+// Jest sets `process.env.NODE_ENV` to "test", so this is considered a
+// development environment.
+export const isDev =
+  typeof process !== 'undefined' && process.env
+    ? process.env.NODE_ENV !== 'production'
+    : true;
 
 export function devLog(...args: unknown[]): void {
   if (isDev) {

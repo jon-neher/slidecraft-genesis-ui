@@ -2,7 +2,9 @@ import type { JestConfigWithTsJest } from 'ts-jest';
 
 const config: JestConfigWithTsJest = {
   preset: 'ts-jest/presets/default-esm',
-  testEnvironment: 'jsdom',
+  // Use the Node environment by default; React tests override this with a
+  // file-level directive so server tests can access native globals like `Request`.
+  testEnvironment: 'node',
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

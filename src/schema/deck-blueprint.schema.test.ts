@@ -11,13 +11,13 @@ describe('deck blueprint schema', () => {
   it('validates minimal blueprint', () => {
     const data = JSON.parse(readFileSync(join(__dirname, '../../examples/blueprint_minimal.json'), 'utf-8'))
     const valid = validate(data)
-    expect(valid, JSON.stringify(validate.errors)).toBe(true)
+    expect(valid).toBe(true)
   })
 
   it('validates full blueprint', () => {
     const data = JSON.parse(readFileSync(join(__dirname, '../../examples/blueprint_full.json'), 'utf-8'))
     const valid = validate(data)
-    expect(valid, JSON.stringify(validate.errors)).toBe(true)
+    expect(valid).toBe(true)
   })
 
   it('rejects deprecated fields', () => {

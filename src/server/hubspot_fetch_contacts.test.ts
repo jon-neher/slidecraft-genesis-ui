@@ -16,8 +16,9 @@ jest.mock('../integrations/hubspot/tokens', () => ({
 }))
 
 jest.mock('./rate_limiter_memory', () => ({
+  __esModule: true,
   default: { take: jest.fn() },
-}))
+}));
 
 let hubspotFetchContacts: typeof import('./hubspot_fetch_contacts').hubspotFetchContacts
 

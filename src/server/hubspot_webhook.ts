@@ -1,5 +1,5 @@
 
-import express, { RequestHandler, Request, Response } from 'express';
+import express, { RequestHandler, Request, Response, json } from 'express';
 import { requireAuth } from '@clerk/express';
 import { getSupabaseClient } from './supabaseClient';
 import { createHmac } from 'crypto';
@@ -16,7 +16,7 @@ export interface AuthedRequest extends Request {
 }
 
 // capture raw body for signature validation
-export const jsonWithRaw = express.json({
+export const jsonWithRaw = json({
   verify: (req, _res, buf) => {
     (req as AuthedRequest).rawBody = buf.toString();
   },

@@ -27,10 +27,11 @@ beforeAll(async () => {
     return { createClient: jest.fn(() => ({ from: fromMock, auth: authMock })) }
   })
   jest.doMock('openai', () => ({
+    __esModule: true,
     default: class {
-      chat = { completions: { create: jest.fn() } }
-    }
-  }))
+      chat = { completions: { create: jest.fn() } };
+    },
+  }));
   ;({ handleRequest: blueprintsHandler } = await import('./blueprints'))
   ;({ handleRequest: sectionsHandler } = await import('./sections'))
   ;({ handleRequest: renderHandler } = await import('./decks_render'))
