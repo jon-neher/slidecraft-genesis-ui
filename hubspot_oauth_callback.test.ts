@@ -1,5 +1,6 @@
-import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { hubspotOAuthCallback } from './supabase/functions/hubspot_oauth_callback';
+import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+
+let hubspotOAuthCallback: typeof import('./supabase/functions/hubspot_oauth_callback').hubspotOAuthCallback;
 
 let selectResult: { data: { user_id: string } | null; error: null };
 const upsertMock = jest.fn().mockResolvedValue({ error: null });
@@ -31,11 +32,18 @@ const fetchMock = jest.fn();
 global.fetch = fetchMock;
 
 describe('hubspotOAuthCallback', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     fetchMock.mockReset();
     selectResult = { data: { user_id: 'me' }, error: null };
     upsertMock.mockClear();
     deleteMock.mockClear();
+    jest.resetModules();
+    (global as any).Deno = { env: { get: () => '' } };
+    ({ hubspotOAuthCallback } = await import('./supabase/functions/hubspot_oauth_callback'));
+  });
+
+  afterEach(() => {
+    delete (global as any).Deno;
   });
 
   it('redirects on successful token exchange', async () => {
