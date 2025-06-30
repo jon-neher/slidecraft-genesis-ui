@@ -20,7 +20,7 @@ export const useSecureHubSpotData = () => {
 
     try {
       const { data, error: functionError } = await supabase.functions.invoke('search_contacts', {
-        body: JSON.stringify({ q: query, limit }),
+        query: { q: query, limit },
       });
 
       if (functionError) {
