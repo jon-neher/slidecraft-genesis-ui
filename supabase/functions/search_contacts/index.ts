@@ -1,34 +1,10 @@
 
 import { createClient, type SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { RateLimiterMemory } from '../../../src/server/rate_limiter_memory.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
-
-// Rate limiter implementation with enhanced security
-class RateLimiterMemory {
-  private tokens: Map<string, { count: number; resetTime: number }> = new Map()
-  
-  constructor(private maxRequests: number, private windowMs: number) {}
-  
-  async take(key: string): Promise<void> {
-    const now = Date.now()
-    const bucket = this.tokens.get(key) || { count: 0, resetTime: now + this.windowMs }
-    
-    if (now > bucket.resetTime) {
-      bucket.count = 0
-      bucket.resetTime = now + this.windowMs
-    }
-    
-    if (bucket.count >= this.maxRequests) {
-      const waitTime = bucket.resetTime - now
-      throw new Error('Rate limit exceeded')
-    }
-    
-    bucket.count++
-    this.tokens.set(key, bucket)
-  }
 }
 
 const rateLimiter = new RateLimiterMemory(10, 60000) // 10 requests per minute

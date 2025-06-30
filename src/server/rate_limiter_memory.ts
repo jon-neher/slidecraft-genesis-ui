@@ -40,3 +40,4 @@ export class RateLimiterMemory {
 
 const rateLimiterMemory = new RateLimiterMemory();
 export default rateLimiterMemory;
+export { RateLimiterMemory };
