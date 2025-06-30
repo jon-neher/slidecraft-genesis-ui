@@ -4,25 +4,35 @@ import { useUser } from '@clerk/clerk-react';
 import { useState, useCallback } from 'react';
 import type { PostgrestError } from '@supabase/supabase-js';
 
-// Import security utilities with error handling for build environments
+// Build-safe import handling
 let SecurityValidator: any;
 let AuditLogger: any;
 
-try {
-  const securityModule = await import('@/server/security');
-  SecurityValidator = securityModule.SecurityValidator;
-  AuditLogger = securityModule.AuditLogger;
-} catch (error) {
-  // Fallback for build environments where server modules might not be available
-  console.warn('Security module not available in this environment');
-  SecurityValidator = {
-    validateInput: (input: string) => ({ isValid: true }),
-    sanitizeString: (input: string) => input
-  };
-  AuditLogger = {
-    logSecurityEvent: () => Promise.resolve()
-  };
+// Only import security modules in browser environment
+if (typeof window !== 'undefined') {
+  try {
+    // Dynamic import to prevent server-side issues
+    import('@/server/security').then((securityModule) => {
+      SecurityValidator = securityModule.SecurityValidator;
+      AuditLogger = securityModule.AuditLogger;
+    }).catch(() => {
+      // Fallback for environments where server modules aren't available
+      console.warn('Security module not available in this environment');
+    });
+  } catch (error) {
+    console.warn('Security module import failed:', error);
+  }
 }
+
+// Fallback implementations for build environments
+const defaultSecurityValidator = {
+  validateInput: (input: string) => ({ isValid: true }),
+  sanitizeString: (input: string) => input.replace(/[<>&"']/g, '') // Basic sanitization
+};
+
+const defaultAuditLogger = {
+  logSecurityEvent: () => Promise.resolve()
+};
 
 export const useSecureSupabase = () => {
   const supabase = useSupabaseClient();
@@ -38,7 +48,8 @@ export const useSecureSupabase = () => {
     if (!user) {
       const errorMessage = 'Authentication required for this operation';
       try {
-        await AuditLogger.logSecurityEvent('permission_denied', null, {
+        const logger = AuditLogger || defaultAuditLogger;
+        await logger.logSecurityEvent('permission_denied', null, {
           operation: operationType,
           reason: 'no_user'
         });
@@ -56,7 +67,8 @@ export const useSecureSupabase = () => {
       
       if (result.error) {
         try {
-          await AuditLogger.logSecurityEvent('data_access', user.id, {
+          const logger = AuditLogger || defaultAuditLogger;
+          await logger.logSecurityEvent('data_access', user.id, {
             operation: operationType,
             error: result.error.message,
             success: false
@@ -70,7 +82,8 @@ export const useSecureSupabase = () => {
       // Optional validation of returned data
       if (validation && result.data && !validation(result.data)) {
         try {
-          await AuditLogger.logSecurityEvent('data_access', user.id, {
+          const logger = AuditLogger || defaultAuditLogger;
+          await logger.logSecurityEvent('data_access', user.id, {
             operation: operationType,
             error: 'data_validation_failed',
             success: false
@@ -82,7 +95,8 @@ export const useSecureSupabase = () => {
       }
 
       try {
-        await AuditLogger.logSecurityEvent('data_access', user.id, {
+        const logger = AuditLogger || defaultAuditLogger;
+        await logger.logSecurityEvent('data_access', user.id, {
           operation: operationType,
           success: true
         });
@@ -102,11 +116,12 @@ export const useSecureSupabase = () => {
 
   const validateAndSanitizeInput = useCallback((input: string, fieldName: string): string => {
     try {
-      const validation = SecurityValidator.validateInput(input, fieldName);
+      const validator = SecurityValidator || defaultSecurityValidator;
+      const validation = validator.validateInput(input, fieldName);
       if (!validation.isValid) {
         throw new Error(validation.error);
       }
-      return SecurityValidator.sanitizeString(input);
+      return validator.sanitizeString(input);
     } catch (error) {
       console.warn('Input validation failed, using fallback:', error);
       return input.replace(/[<>&"']/g, ''); // Basic sanitization fallback

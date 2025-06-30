@@ -20,7 +20,8 @@ const HubSpotConnection = () => {
   // Check connection status on component mount
   useEffect(() => {
     const checkConnectionStatus = async () => {
-      if (!user) {
+      // Build-safe check
+      if (!user || !supabase || typeof window === 'undefined') {
         setConnectionStatus('disconnected');
         return;
       }
@@ -59,7 +60,8 @@ const HubSpotConnection = () => {
   }, [user, supabase]);
 
   const handleConnect = async () => {
-    if (!user) {
+    // Build-safe check
+    if (!user || typeof window === 'undefined') {
       toast({
         title: 'Authentication Required',
         description: 'Please log in to connect HubSpot.',
@@ -118,7 +120,7 @@ const HubSpotConnection = () => {
   };
 
   const handleDisconnect = async () => {
-    if (!user) return;
+    if (!user || !supabase) return;
 
     try {
       const { error } = await supabase
