@@ -175,3 +175,23 @@ paths:
           description: Cloned blueprint
         "404":
           description: Not found
+  /section-templates:
+    get:
+      description: List section-template mappings
+      responses:
+        "200":
+          description: List of mappings
+  /section-templates/{sectionId}:
+    get:
+      description: Get mapping for a section
+      parameters:
+        - in: path
+          name: sectionId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Section mapping
+        "404":
+          description: Not found
