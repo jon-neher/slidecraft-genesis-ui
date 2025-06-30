@@ -1,22 +1,22 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 
-const upsertCache = vi.fn()
-const upsertCursor = vi.fn()
+const upsertCache = jest.fn()
+const upsertCursor = jest.fn()
 
-vi.doMock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(() => ({
+jest.doMock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({
     from: (table: string) => ({
       upsert: table === 'hubspot_contacts_cache' ? upsertCache : upsertCursor,
     }),
   })),
 }))
 
-vi.mock('../integrations/hubspot/tokens', () => ({
-  ensureAccessToken: vi.fn(async () => 'tok'),
+jest.mock('../integrations/hubspot/tokens', () => ({
+  ensureAccessToken: jest.fn(async () => 'tok'),
 }))
 
-vi.mock('./rate_limiter_memory', () => ({
-  default: { take: vi.fn() },
+jest.mock('./rate_limiter_memory', () => ({
+  default: { take: jest.fn() },
 }))
 
 let hubspotFetchContacts: typeof import('./hubspot_fetch_contacts').hubspotFetchContacts
@@ -24,13 +24,13 @@ let hubspotFetchContacts: typeof import('./hubspot_fetch_contacts').hubspotFetch
 beforeEach(async () => {
   upsertCache.mockClear()
   upsertCursor.mockClear()
-  vi.resetModules()
+  jest.resetModules()
   ;({ hubspotFetchContacts } = await import('./hubspot_fetch_contacts'))
 })
 
 describe('hubspotFetchContacts', () => {
   it('stores fetched contacts and updates cursor', async () => {
-    const fetchMock = vi.fn().mockResolvedValue({
+    const fetchMock = jest.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
         results: [

@@ -1,23 +1,23 @@
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import express from 'express';
 import request from 'supertest';
 import { createHmac } from 'crypto';
 
-vi.mock('@clerk/express', () => ({
+jest.mock('@clerk/express', () => ({
   requireAuth: () => (req: express.Request & { auth?: { userId: string } }, _res: express.Response, next: express.NextFunction) => {
     req.auth = { userId: 'user_123' };
     next();
   },
 }));
 
-const insertMock = vi.fn().mockResolvedValue({});
-const deleteTokensMock = vi.fn().mockResolvedValue({});
-const deleteCacheMock = vi.fn().mockResolvedValue({});
-const deleteCursorsMock = vi.fn().mockResolvedValue({});
+const insertMock = jest.fn().mockResolvedValue({});
+const deleteTokensMock = jest.fn().mockResolvedValue({});
+const deleteCacheMock = jest.fn().mockResolvedValue({});
+const deleteCursorsMock = jest.fn().mockResolvedValue({});
 
-vi.doMock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(() => ({
+jest.doMock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({
     from: (table: string) => ({
       insert: table === 'hubspot_events_raw' ? insertMock : undefined,
       delete: () => ({
@@ -43,7 +43,7 @@ beforeEach(async () => {
   deleteCacheMock.mockClear();
   deleteCursorsMock.mockClear();
   process.env.HUBSPOT_APP_SECRET = secret;
-  vi.resetModules();
+  jest.resetModules();
   ({ hubspotWebhookHandler, jsonWithRaw } = await import('./hubspot_webhook'));
 });
 

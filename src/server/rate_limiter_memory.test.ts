@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
 import RateLimiterMemorySingleton, { RateLimiterMemory } from './rate_limiter_memory';
 
 function collect(times: number[], start: number) {
@@ -7,11 +7,11 @@ function collect(times: number[], start: number) {
 
 describe('RateLimiterMemory', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   it('blocks after burst and recovers', async () => {
@@ -23,11 +23,11 @@ describe('RateLimiterMemory', () => {
       limiter.take('p1').then(collect(times, start))
     );
 
-    await vi.runAllTicks();
+    await jest.runAllTicks();
     expect(times.length).toBe(100);
 
-    vi.advanceTimersByTime(10_000);
-    await vi.runAllTicks();
+    jest.advanceTimersByTime(10_000);
+    await jest.runAllTicks();
     await Promise.all(promises);
 
     expect(times.length).toBe(150);

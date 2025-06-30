@@ -1,20 +1,20 @@
-import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest'
+import { describe, it, expect, jest, beforeAll, beforeEach } from '@jest/globals'
 
 let handleRequest: typeof import('./decks_render').handleRequest
 
 const builder = {
-  select: vi.fn().mockReturnThis(),
-  eq: vi.fn().mockReturnThis(),
-  in: vi.fn().mockReturnThis(),
-  maybeSingle: vi.fn(),
+  select: jest.fn().mockReturnThis(),
+  eq: jest.fn().mockReturnThis(),
+  in: jest.fn().mockReturnThis(),
+  maybeSingle: jest.fn(),
 }
-let fromMock: ReturnType<typeof vi.fn>
-const authMock = { getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'u1' } } })) }
+let fromMock: ReturnType<typeof jest.fn>
+const authMock = { getUser: jest.fn(() => Promise.resolve({ data: { user: { id: 'u1' } } })) }
 
 beforeAll(async () => {
-  vi.doMock('@supabase/supabase-js', () => {
-    fromMock = vi.fn(() => builder)
-    return { createClient: vi.fn(() => ({ from: fromMock, auth: authMock })) }
+  jest.doMock('@supabase/supabase-js', () => {
+    fromMock = jest.fn(() => builder)
+    return { createClient: jest.fn(() => ({ from: fromMock, auth: authMock })) }
   })
   ;({ handleRequest } = await import('./decks_render'))
 })

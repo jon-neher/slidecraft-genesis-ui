@@ -1,12 +1,12 @@
 
-import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
+import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '../integrations/supabase/types';
 
 process.env.SUPABASE_URL = 'http://localhost'
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'key'
-vi.mock('../integrations/hubspot/rateLimiter', async () => {
-  const mod = await vi.importActual<typeof import('../integrations/hubspot/rateLimiter')>('../integrations/hubspot/rateLimiter')
+jest.mock('../integrations/hubspot/rateLimiter', async () => {
+  const mod = await jest.importActual<typeof import('../integrations/hubspot/rateLimiter')>('../integrations/hubspot/rateLimiter')
   return { __esModule: true, default: new mod.RateLimiterMemory(100, 1000), RateLimiterMemory: mod.RateLimiterMemory }
 })
 import { RateLimiterMemory } from '../integrations/hubspot/rateLimiter'
@@ -15,16 +15,16 @@ beforeAll(async () => {
   ;({ searchContacts } = await import('./search_contacts'))
 })
 
-vi.useFakeTimers()
+jest.useFakeTimers()
 
-const fromMock = vi.fn()
-const textSearchMock = vi.fn()
-const eqMock = vi.fn()
-const limitMock = vi.fn()
-const maybeSingleMock = vi.fn()
-const upsertMock = vi.fn()
+const fromMock = jest.fn()
+const textSearchMock = jest.fn()
+const eqMock = jest.fn()
+const limitMock = jest.fn()
+const maybeSingleMock = jest.fn()
+const upsertMock = jest.fn()
 const authMock = {
-  getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'p1' } } }))
+  getUser: jest.fn(() => Promise.resolve({ data: { user: { id: 'p1' } } }))
 }
 
 const mockClient = {
@@ -40,7 +40,7 @@ const mockClient = {
 } as unknown as SupabaseClient<Database>
 
 function makeFetch<T>(results: T[]) {
-  return vi.fn().mockResolvedValue({ ok: true, json: async () => ({ results }) })
+  return jest.fn().mockResolvedValue({ ok: true, json: async () => ({ results }) })
 }
 
 describe('searchContacts', () => {
@@ -77,7 +77,7 @@ describe('searchContacts', () => {
     const fetch = makeFetch([])
     const start = Date.now()
     const promises = Array.from({ length: 6 }, () => searchContacts('p1', 'a', 1, mockClient as SupabaseClient<Database>, fetch))
-    await vi.advanceTimersByTimeAsync(1000)
+    await jest.advanceTimersByTimeAsync(1000)
     await Promise.all(promises)
     expect(Date.now() - start).toBeGreaterThanOrEqual(1000)
   })

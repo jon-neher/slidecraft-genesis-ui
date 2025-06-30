@@ -1,10 +1,10 @@
 
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, jest } from '@jest/globals'
 import { postNote } from './post_note'
 
 // Mock the HubSpot client
-vi.mock('../integrations/hubspot/client', () => ({
-  postNote: vi.fn(async (input) => {
+jest.mock('../integrations/hubspot/client', () => ({
+  postNote: jest.fn(async (input) => {
     if (input.hubspot_object_id === 'error') {
       return { error: 'Test error' }
     }

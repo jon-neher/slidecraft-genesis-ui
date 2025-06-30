@@ -117,6 +117,13 @@ safeColor.border.primary // border-gray-200
 
 All code must pass the project's ESLint configuration (`eslint.config.js`). Run `npm run lint` locally and fix any issues before opening a PR. You can use `npm run lint -- --fix` to automatically fix simple problems.
 
+## Testing Guidelines
+
+Run the Jest test suite with Node.js 20:
+```bash
+npm test
+```
+
 
 ## Emergency Color Reference
 
