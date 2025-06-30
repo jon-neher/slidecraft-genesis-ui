@@ -2,8 +2,17 @@ import { createClient } from '@supabase/supabase-js'
 import type { Database } from '../integrations/supabase/types'
 import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from './config'
 
-function buildHtml(sections: string[]): string {
-  const slides = sections.map(s => `<section><h2>${s}</h2></section>`).join('\n')
+interface SlideData {
+  section: string
+  templates: string[]
+}
+
+function buildHtml(slidesData: SlideData[]): string {
+  const slides = slidesData
+    .map(({ section, templates }) =>
+      `<section data-section="${section}" data-templates="${templates.join(',')}"><h2>${section}</h2></section>`,
+    )
+    .join('\n')
   return `<!doctype html>
 <html>
 <head>
@@ -48,7 +57,23 @@ export async function handleRequest(req: Request): Promise<Response> {
       return new Response('Not Found', { status: 404 })
     }
     const sections = (data.section_sequence as string[]) || []
-    const html = buildHtml(sections)
+
+    const { data: mappings, error: mapErr } = await client
+      .from('section_templates')
+      .select('section_id, default_templates')
+      .in('section_id', sections)
+    if (mapErr) throw mapErr
+
+    const defaults = new Map(
+      (mappings || []).map(m => [m.section_id, m.default_templates as string[]]),
+    )
+
+    const slidesData = sections.map(section => ({
+      section,
+      templates: (overrides[section] as string[]) || defaults.get(section) || [],
+    }))
+
+    const html = buildHtml(slidesData)
     const deckId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)
     const base = `https://example.com/decks/${deckId}`
 
