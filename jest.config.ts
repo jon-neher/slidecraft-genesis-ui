@@ -1,3 +1,4 @@
+
 import type { JestConfigWithTsJest } from 'ts-jest';
 
 const config: JestConfigWithTsJest = {
@@ -6,7 +7,7 @@ const config: JestConfigWithTsJest = {
   // file-level directive so server tests can access native globals like `Request`.
   testEnvironment: 'node',
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
-  moduleNameMapper: {
+  moduleNameMapping: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
@@ -16,6 +17,10 @@ const config: JestConfigWithTsJest = {
       useESM: true,
       tsconfig: './tsconfig.jest.json',
     },
+  },
+  // Add better handling for DOM environments
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'node-addons'],
   },
 };
 

@@ -1,147 +1,200 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSlideTemplates } from '@/hooks/useSlideTemplates';
-import { usePresentations } from '@/hooks/usePresentations';
-import { useSlideGenerations } from '@/hooks/useSlideGenerations';
-import { useSecureHubSpotData } from '@/hooks/useSecureHubSpotData';
+import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { SearchInput } from '@/components/ui/search-input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
+import { usePresentations } from '@/hooks/usePresentations';
+import { useSecureHubSpotData } from '@/hooks/useSecureHubSpotData';
+import type { ContactResult } from '@/integrations/hubspot/client';
 
-interface ContactResult {
-  id: string;
-  properties: Record<string, unknown>;
+interface FormData {
+  title: string;
+  audience: string;
+  goals: string;
+  selectedContact: ContactResult | null;
+  notes: string;
 }
 
 const NewDeckFlow = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [selectedContact, setSelectedContact] = useState<ContactResult | null>(null);
-  const [contactQuery, setContactQuery] = useState('');
-  const [context, setContext] = useState('');
-  const [title, setTitle] = useState('');
-
-  const { templates } = useSlideTemplates();
+  const { toast } = useToast();
   const { createPresentation } = usePresentations();
-  const { createGeneration } = useSlideGenerations();
-  const { searchContacts } = useSecureHubSpotData();
-  const [contactResults, setContactResults] = useState<ContactResult[]>([]);
+  const { contacts, loading: contactsLoading } = useSecureHubSpotData();
+  
+  const [formData, setFormData] = useState<FormData>({
+    title: '',
+    audience: '',
+    goals: '',
+    selectedContact: null,
+    notes: ''
+  });
 
-  const handleSearch = async () => {
-    const results = await searchContacts(contactQuery, 5);
-    setContactResults(results);
-  };
+  const handleCreatePresentation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      // Convert ContactResult to a serializable format for JSON storage
+      const contextData = formData.selectedContact && formData.notes ? {
+        contact: {
+          id: formData.selectedContact.id,
+          firstname: formData.selectedContact.properties?.firstname || '',
+          lastname: formData.selectedContact.properties?.lastname || '',
+          email: formData.selectedContact.properties?.email || '',
+          company: formData.selectedContact.properties?.company || '',
+          // Add other relevant properties as simple strings/numbers
+        },
+        notes: formData.notes,
+        audience: formData.audience,
+        goals: formData.goals
+      } : {
+        audience: formData.audience,
+        goals: formData.goals
+      };
 
-  const handleGenerate = async () => {
-    if (!selectedTemplate || !selectedContact) return;
-    const presentation = await createPresentation({ title, context: { contact: selectedContact, notes: context } });
-    await createGeneration({
-      presentation_id: presentation.presentation_id,
-      template_id: selectedTemplate,
-      slide_index: 1,
-    });
-    navigate('/dashboard');
+      await createPresentation({
+        title: formData.title,
+        context: contextData
+      });
+
+      toast({
+        title: 'Success',
+        description: 'Deck creation started successfully',
+      });
+
+      navigate('/dashboard');
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to create deck',
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
-    <div className="min-h-screen bg-ice-white p-6 space-y-6">
-      {step === 0 && (
-        <Card className="max-w-xl mx-auto">
-          <CardHeader>
-            <CardTitle>Select a Template</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {templates.map(t => (
-              <Button
-                key={t.template_id}
-                variant={selectedTemplate === t.template_id ? 'default' : 'outline'}
-                className="w-full justify-start"
-                onClick={() => setSelectedTemplate(t.template_id)}
-              >
-                {t.name}
-              </Button>
-            ))}
-            <div className="flex justify-end pt-4">
-              <Button disabled={!selectedTemplate} onClick={() => setStep(1)}>
-                Next
-              </Button>
+    <>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+      <SignedIn>
+        <div className="min-h-screen bg-background p-6">
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="text-center space-y-4">
+              <h1 className="text-3xl font-bold">Create New Deck</h1>
+              <p className="text-muted-foreground">
+                Let's gather some information to create your personalized presentation
+              </p>
             </div>
-          </CardContent>
-        </Card>
-      )}
 
-      {step === 1 && (
-        <Card className="max-w-xl mx-auto">
-          <CardHeader>
-            <CardTitle>Choose a Contact</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-2">
-              <SearchInput
-                value={contactQuery}
-                onChange={e => setContactQuery(e.target.value)}
-                placeholder="Search HubSpot contacts"
-              />
-              <Button onClick={handleSearch}>Search</Button>
-            </div>
-            <ul className="space-y-2">
-              {contactResults.map(c => (
-                <li key={c.id}>
-                  <Button
-                    variant={selectedContact?.id === c.id ? 'default' : 'outline'}
-                    className="w-full justify-start"
-                    onClick={() => setSelectedContact(c)}
-                  >
-                    {c.properties?.firstname as string} {c.properties?.lastname as string}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-            <div className="flex justify-between pt-4">
-              <Button variant="secondary" onClick={() => setStep(0)}>
-                Back
-              </Button>
-              <Button disabled={!selectedContact} onClick={() => setStep(2)}>
-                Next
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            <Card>
+              <CardHeader>
+                <CardTitle>Deck Details</CardTitle>
+                <CardDescription>
+                  Provide basic information about your presentation
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleCreatePresentation} className="space-y-4">
+                  <div>
+                    <Label htmlFor="title">Presentation Title</Label>
+                    <Input
+                      id="title"
+                      value={formData.title}
+                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                      placeholder="Enter your presentation title"
+                      required
+                    />
+                  </div>
 
-      {step === 2 && (
-        <Card className="max-w-xl mx-auto">
-          <CardHeader>
-            <CardTitle>Additional Details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Input
-              placeholder="Presentation title"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-            />
-            <textarea
-              className="w-full h-32 border border-gray-200 rounded-md p-2"
-              placeholder="Context or notes"
-              value={context}
-              onChange={e => setContext(e.target.value)}
-            />
-            <div className="flex justify-between pt-4">
-              <Button variant="secondary" onClick={() => setStep(1)}>
-                Back
-              </Button>
-              <Button disabled={!selectedTemplate || !selectedContact || !title} onClick={handleGenerate}>
-                Generate
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+                  <div>
+                    <Label htmlFor="audience">Target Audience</Label>
+                    <Input
+                      id="audience"
+                      value={formData.audience}
+                      onChange={(e) => setFormData(prev => ({ ...prev, audience: e.target.value }))}
+                      placeholder="Who is this presentation for?"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="goals">Goals & Objectives</Label>
+                    <Textarea
+                      id="goals"
+                      value={formData.goals}
+                      onChange={(e) => setFormData(prev => ({ ...prev, goals: e.target.value }))}
+                      placeholder="What do you want to achieve with this presentation?"
+                      rows={3}
+                      required
+                    />
+                  </div>
+
+                  {contacts && contacts.length > 0 && (
+                    <>
+                      <div>
+                        <Label htmlFor="contact">Select Contact (Optional)</Label>
+                        <Select onValueChange={(value) => {
+                          const contact = contacts.find(c => c.id === value);
+                          setFormData(prev => ({ ...prev, selectedContact: contact || null }));
+                        }}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Choose a contact to personalize for" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {contacts.map((contact) => (
+                              <SelectItem key={contact.id} value={contact.id}>
+                                {contact.properties?.firstname} {contact.properties?.lastname} 
+                                {contact.properties?.email && ` (${contact.properties.email})`}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {formData.selectedContact && (
+                        <div>
+                          <Label htmlFor="notes">Additional Notes</Label>
+                          <Textarea
+                            id="notes"
+                            value={formData.notes}
+                            onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                            placeholder="Any specific points you'd like to address for this contact?"
+                            rows={3}
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  <div className="flex gap-4">
+                    <Button type="button" variant="outline" onClick={() => navigate('/dashboard')} className="flex-1">
+                      Cancel
+                    </Button>
+                    <Button type="submit" className="flex-1">
+                      Create Deck
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+
+            {contactsLoading && (
+              <Card>
+                <CardContent className="text-center py-8">
+                  <p>Loading contacts...</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      </SignedIn>
+    </>
   );
 };
 
 export default NewDeckFlow;
-

@@ -9,6 +9,54 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      blueprints: {
+        Row: {
+          audience: string | null
+          blueprint: Json | null
+          blueprint_id: string
+          created_at: string
+          extra_metadata: Json | null
+          goal: string | null
+          is_default: boolean
+          name: string
+          section_sequence: string[] | null
+          slide_library: string[] | null
+          theme: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          audience?: string | null
+          blueprint?: Json | null
+          blueprint_id?: string
+          created_at?: string
+          extra_metadata?: Json | null
+          goal?: string | null
+          is_default?: boolean
+          name: string
+          section_sequence?: string[] | null
+          slide_library?: string[] | null
+          theme?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          audience?: string | null
+          blueprint?: Json | null
+          blueprint_id?: string
+          created_at?: string
+          extra_metadata?: Json | null
+          goal?: string | null
+          is_default?: boolean
+          name?: string
+          section_sequence?: string[] | null
+          slide_library?: string[] | null
+          theme?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       hubspot_contacts_cache: {
         Row: {
           id: string

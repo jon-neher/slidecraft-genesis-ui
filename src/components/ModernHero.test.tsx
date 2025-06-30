@@ -1,3 +1,4 @@
+
 /** @jest-environment jsdom */
 
 import { render, screen } from '@testing-library/react';
@@ -36,8 +37,14 @@ describe('ModernHero', () => {
         <ModernHero />
       </MemoryRouter>
     );
-    expect(screen.getByText(/Turn your data into/i)).toBeInTheDocument();
-    expect(screen.getByTestId('clerk-form')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Watch Demo/i })).toBeInTheDocument();
+    
+    // Use more specific queries that don't rely on jest-dom matchers
+    const headline = screen.getByText(/Turn your data into/i);
+    const waitlistForm = screen.getByTestId('clerk-form');
+    const demoButton = screen.getByRole('button', { name: /Watch Demo/i });
+    
+    expect(headline).toBeDefined();
+    expect(waitlistForm).toBeDefined();
+    expect(demoButton).toBeDefined();
   });
 });

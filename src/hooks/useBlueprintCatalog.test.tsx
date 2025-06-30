@@ -1,35 +1,42 @@
+
 /** @jest-environment jsdom */
 
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { useBlueprintCatalog } from './useBlueprintCatalog';
+import React from 'react';
 
 describe('useBlueprintCatalog', () => {
-  const fetchMock = jest.fn();
-  beforeAll(() => {
-    if (typeof global.fetch === 'undefined') {
-      Object.defineProperty(global, 'fetch', {
-        value: globalThis.fetch as typeof fetch,
-        writable: true,
-        configurable: true,
-      });
-    }
-  });
+  let queryClient: QueryClient;
+  
   const wrapper: React.FC<{children: React.ReactNode}> = ({ children }) => (
-    <QueryClientProvider client={new QueryClient()}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 
   beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+    
+    // Mock fetch globally
+    global.fetch = jest.fn();
+  });
+
+  afterEach(() => {
     jest.restoreAllMocks();
-    (global as unknown as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch;
   });
 
   it('fetches blueprint catalog', async () => {
     const mockCatalog = [{ blueprint_id: '1', name: 'A', is_default: true, data: {} }];
-    fetchMock.mockResolvedValueOnce(
-      { ok: true, json: async () => mockCatalog } as unknown as Response
-    );
+    
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockCatalog,
+    });
 
     const { result } = renderHook(() => useBlueprintCatalog(true), { wrapper });
 
