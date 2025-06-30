@@ -195,3 +195,66 @@ paths:
           description: Section mapping
         "404":
           description: Not found
+  /slide-templates:
+    get:
+      description: List slide templates
+      responses:
+        "200":
+          description: List of templates
+    post:
+      description: Create a slide template
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "201":
+          description: Created template
+  /slide-templates/{templateId}:
+    get:
+      description: Get a slide template
+      parameters:
+        - in: path
+          name: templateId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Slide template
+        "404":
+          description: Not found
+    put:
+      description: Update a slide template
+      parameters:
+        - in: path
+          name: templateId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Updated
+        "404":
+          description: Not found
+    delete:
+      description: Delete a slide template
+      parameters:
+        - in: path
+          name: templateId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
