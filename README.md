@@ -279,6 +279,18 @@ npm install && npm run dev
 ### Workflow
 Generate → Preview → Edit → Download PPTX
 
+## Blueprint Wizard
+
+The dashboard includes a REST-driven wizard for crafting deck blueprints. The flow uses these endpoints:
+
+1. **Fetch catalog** – `GET /api/blueprints?includeDefaults=true`
+2. **Import default** – `POST /api/blueprints/{defaultId}/clone`
+3. **Enter goal & audience** – captured in the wizard UI
+4. **Request AI outline** – `POST /api/sections/suggest`
+5. **Save** – `PUT /api/blueprints/{blueprintId}`
+
+Each query is optimized via indexes on `owner_id`, `is_default` and `goal` so catalog responses remain under 200 ms even with 1k blueprints.
+
 ## API Documentation
 
 See `docs/openapi.yaml` for the HubSpot integration endpoints and `docs/SECURITY_CHECKLIST.md` for security requirements.

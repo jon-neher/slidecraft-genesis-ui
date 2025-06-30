@@ -175,3 +175,24 @@ paths:
           description: Cloned blueprint
         "404":
           description: Not found
+  /sections/suggest:
+    post:
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                blueprintId:
+                  type: string
+                goal:
+                  type: string
+                audience:
+                  type: string
+              required: [blueprintId, goal, audience]
+      responses:
+        "200":
+          description: Suggested section sequence
