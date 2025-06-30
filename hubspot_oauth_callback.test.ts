@@ -1,12 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { hubspotOAuthCallback } from './supabase/functions/hubspot_oauth_callback';
 
 let selectResult: { data: { user_id: string } | null; error: null };
-const upsertMock = vi.fn().mockResolvedValue({ error: null });
-const deleteMock = vi.fn().mockResolvedValue({ error: null });
+const upsertMock = jest.fn().mockResolvedValue({ error: null });
+const deleteMock = jest.fn().mockResolvedValue({ error: null });
 
-vi.mock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(() => ({
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({
     from: (table: string) => {
       if (table === 'hubspot_tokens') {
         return { upsert: upsertMock };
@@ -15,7 +15,7 @@ vi.mock('@supabase/supabase-js', () => ({
         return {
           select: () => ({
             eq: () => ({
-              maybeSingle: vi.fn(async () => selectResult),
+              maybeSingle: jest.fn(async () => selectResult),
             }),
           }),
           delete: () => ({ eq: () => deleteMock() }),
@@ -26,7 +26,7 @@ vi.mock('@supabase/supabase-js', () => ({
   })),
 }));
 
-const fetchMock = vi.fn();
+const fetchMock = jest.fn();
 // @ts-expect-error assigning mock fetch
 global.fetch = fetchMock;
 

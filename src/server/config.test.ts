@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals'
 
 // helper to import fresh module each time
 async function loadConfig() {
@@ -7,7 +7,7 @@ async function loadConfig() {
 
 describe('config', () => {
   beforeEach(() => {
-    vi.resetModules()
+    jest.resetModules()
     delete (global as unknown as { Deno?: { env: { toObject(): Record<string, string> } } }).Deno
   })
 
