@@ -1,13 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '../../src/integrations/supabase/types';
-import {
-  HUBSPOT_CLIENT_ID,
-  HUBSPOT_CLIENT_SECRET,
-  SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY,
-} from '../../src/server/config.ts';
 
-const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+const HUBSPOT_CLIENT_ID = Deno.env.get('HUBSPOT_CLIENT_ID') ?? '';
+const HUBSPOT_CLIENT_SECRET = Deno.env.get('HUBSPOT_CLIENT_SECRET') ?? '';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 function htmlError(msg: string) {
   return `<html><body><h1>OAuth Error</h1><p>${msg}</p></body></html>`;
@@ -101,10 +99,7 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
 }
 
 // When running in a Deno environment (Supabase Edge Functions), start the server.
-if (typeof Deno !== 'undefined') {
-  (async () => {
-    const { serve } = await import('https://deno.land/std@0.205.0/http/server.ts');
-    serve(hubspotOAuthCallback);
-  })();
+if (typeof Deno !== 'undefined' && typeof (Deno as any).serve === 'function') {
+  ;(Deno as any).serve(hubspotOAuthCallback);
 }
 
