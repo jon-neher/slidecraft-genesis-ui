@@ -11,9 +11,9 @@ export const useSecureSupabase = () => {
   const [error, setError] = useState<string | null>(null);
 
   const secureQuery = useCallback(async <T>(
-    operation: () => Promise<{ data: T | null; error: any }>,
+    operation: () => Promise<{ data: T | null; error: unknown }>,
     operationType: string,
-    validation?: (data: any) => boolean
+    validation?: (data: T) => boolean
   ) => {
     if (!user) {
       const errorMessage = 'Authentication required for this operation';
