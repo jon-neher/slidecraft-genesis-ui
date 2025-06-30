@@ -6,6 +6,7 @@ const builder = {
   eq: vi.fn().mockReturnThis(),
   maybeSingle: vi.fn(),
 }
+// eslint-disable-next-line no-var
 var fromMock: ReturnType<typeof vi.fn>
 vi.mock('@supabase/supabase-js', () => {
   fromMock = vi.fn(() => builder)
