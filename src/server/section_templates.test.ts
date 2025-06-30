@@ -54,7 +54,7 @@ describe('sectionTemplates handleRequest', () => {
       error: null 
     })
     
-    const res = await handleRequest(new Request('http://x/api/section-templates'))
+    const res = await handleRequest(new Request('http://x/section-templates'))
     expect(res.status).toBe(200)
   })
 
@@ -64,14 +64,14 @@ describe('sectionTemplates handleRequest', () => {
       error: null 
     })
     
-    const res = await handleRequest(new Request('http://x/api/section-templates/intro'))
+    const res = await handleRequest(new Request('http://x/section-templates/intro'))
     expect(res.status).toBe(200)
   })
 
   it('returns 404 for missing template', async () => {
     builder.maybeSingle.mockResolvedValueOnce({ data: null, error: null })
     
-    const res = await handleRequest(new Request('http://x/api/section-templates/missing'))
+    const res = await handleRequest(new Request('http://x/section-templates/missing'))
     expect(res.status).toBe(404)
   })
 })

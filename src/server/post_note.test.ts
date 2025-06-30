@@ -3,6 +3,7 @@ import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 import { postNote } from './post_note'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
+const invokeMock = jest.fn()
 const mockClient = {
   from: jest.fn().mockReturnValue({
     select: jest.fn().mockReturnValue({
@@ -10,19 +11,14 @@ const mockClient = {
         maybeSingle: jest.fn() as jest.MockedFunction<any>
       })
     })
-  })
+  }),
+  functions: { invoke: invokeMock }
 } as unknown as SupabaseClient
-
-const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>
 
 describe('postNote', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({ id: 'note-123' })
-    } as Response)
-    
+    invokeMock.mockResolvedValue({ data: { noteId: 'note-123' }, error: null })
     const mockSelectChain = (mockClient.from as jest.MockedFunction<any>)().select().eq()
     mockSelectChain.maybeSingle.mockResolvedValue({ data: { access_token: 'mock-token' }, error: null })
   })
@@ -34,26 +30,14 @@ describe('postNote', () => {
       app_record_url: 'https://app.example.com/record/1'
     }
 
-    const result = await postNote(input, mockClient, mockFetch)
-    
+    const result = await postNote(input, mockClient)
+
     expect(result).toEqual({ noteId: 'note-123' })
-    expect(mockFetch).toHaveBeenCalledWith(
-      'https://api.hubapi.com/crm/v3/objects/notes',
-      expect.objectContaining({
-        method: 'POST',
-        headers: expect.objectContaining({
-          'Authorization': 'Bearer mock-token',
-          'Content-Type': 'application/json'
-        })
-      })
-    )
+    expect(invokeMock).toHaveBeenCalledWith('post_note', { body: input })
   })
 
   it('handles errors gracefully', async () => {
-    mockFetch.mockResolvedValue({
-      ok: false,
-      json: async () => ({ error: 'API Error' })
-    } as Response)
+    invokeMock.mockResolvedValueOnce({ error: new Error('API Error'), data: null })
 
     const input = {
       portal_id: 'test-portal',
@@ -61,7 +45,7 @@ describe('postNote', () => {
       app_record_url: 'https://app.example.com/record/1'
     }
 
-    const result = await postNote(input, mockClient, mockFetch)
+    const result = await postNote(input, mockClient)
     
     expect(result).toHaveProperty('error')
   })
