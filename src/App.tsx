@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Slides from "./pages/Slides";
 import NewDeckFlow from "./pages/NewDeckFlow";
+import BlueprintWizard from "./pages/BlueprintWizard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/slides" element={<Slides />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/new-deck" element={<NewDeckFlow />} />
+          <Route path="/new-blueprint" element={<BlueprintWizard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
