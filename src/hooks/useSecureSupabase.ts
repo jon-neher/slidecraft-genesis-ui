@@ -15,6 +15,7 @@ export const useSecureSupabase = () => {
     operation: () => Promise<{ data: T | null; error: PostgrestError | null }>,
     operationType: string,
     validation?: (data: T) => boolean
+
   ) => {
     if (!user) {
       const errorMessage = 'Authentication required for this operation';
