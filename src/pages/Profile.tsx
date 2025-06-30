@@ -53,7 +53,6 @@ const ProfileContent = () => {
               </Tabs>
 
               <UserProfile
-                path={`/${activeTab}`}
                 routing="virtual"
                 appearance={{
                   variables: {
