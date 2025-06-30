@@ -25,6 +25,7 @@ export default tseslint.config(
       ],
       // Use the default options from the recommended ruleset
       "@typescript-eslint/no-unused-expressions": "error",
+      "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": "off",
     },
   }

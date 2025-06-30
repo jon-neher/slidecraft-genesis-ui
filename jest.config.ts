@@ -7,7 +7,7 @@ const config: JestConfigWithTsJest = {
   // file-level directive so server tests can access native globals like `Request`.
   testEnvironment: 'node',
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],

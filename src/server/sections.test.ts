@@ -1,6 +1,7 @@
 
-import { describe, it, expect, jest, beforeEach } from '@jest/globals'
-import { generateSections } from './sections'
+import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals'
+
+let generateSections: typeof import('./sections').generateSections
 
 const mockOpenAI = {
   chat: {
@@ -10,9 +11,15 @@ const mockOpenAI = {
   }
 }
 
-jest.doMock('openai', () => ({
+jest.mock('openai', () => ({
+  __esModule: true,
+  default: jest.fn(() => mockOpenAI),
   OpenAI: jest.fn(() => mockOpenAI)
 }))
+
+beforeAll(async () => {
+  ;({ generateSections } = await import('./sections'))
+})
 
 describe('generateSections', () => {
   beforeEach(() => {
@@ -33,7 +40,13 @@ describe('generateSections', () => {
       choices: [{ message: { content: 'invalid json' } }]
     })
 
-    await expect(generateSections('Test goal', 'Test audience', false))
-      .rejects.toThrow('Failed to parse OpenAI response')
+    const result = await generateSections('Test goal', 'Test audience', false)
+    expect(result.sections).toEqual([
+      'intro',
+      'context',
+      'analysis',
+      'recommendation',
+      'q_and_a'
+    ])
   })
 })

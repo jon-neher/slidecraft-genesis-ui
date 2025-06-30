@@ -73,10 +73,10 @@ describe('deckRender handleRequest', () => {
         error: null 
       })
     
-    // Override select for this specific test to return resolved data
-    builder.select.mockResolvedValueOnce({ 
-      data: [{ section_id: 'intro', default_templates: ['t1'] }], 
-      error: null 
+    // Override in() for this specific test to return resolved data
+    builder.in.mockResolvedValueOnce({
+      data: [{ section_id: 'intro', default_templates: ['t1'] }],
+      error: null
     })
     
     const res = await handleRequest(new Request('http://x/api/decks/render', {
@@ -103,10 +103,10 @@ describe('deckRender handleRequest', () => {
         error: null 
       })
     
-    // Override select for this specific test to return resolved data
-    builder.select.mockResolvedValueOnce({ 
-      data: [], 
-      error: null 
+    // Override in() for this specific test to return resolved data
+    builder.in.mockResolvedValueOnce({
+      data: [],
+      error: null
     })
     
     const res = await handleRequest(new Request('http://x/api/decks/render', {

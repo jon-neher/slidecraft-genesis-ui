@@ -36,6 +36,8 @@ beforeAll(async () => {
   }))
   
   jest.doMock('openai', () => ({
+    __esModule: true,
+    default: jest.fn(() => mockOpenAI),
     OpenAI: jest.fn(() => mockOpenAI)
   }))
   
@@ -51,7 +53,7 @@ beforeEach(() => {
   mockBuilder.eq.mockReturnValue(mockBuilder)
   mockBuilder.maybeSingle.mockResolvedValue({ data: null, error: null })
   mockBuilder.single.mockResolvedValue({ data: null, error: null })
-  mockBuilder.insert.mockResolvedValue({ data: null, error: null })
+  mockBuilder.insert.mockReturnValue(mockBuilder)
   
   // Reset auth
   mockAuthBuilder.getUser.mockResolvedValue({ data: { user: { id: 'test-user' } }, error: null })
@@ -71,20 +73,21 @@ describe('Full Flow Performance', () => {
   })
 
   it('creates blueprint efficiently', async () => {
-    mockBuilder.insert.mockResolvedValue({ 
-      data: { 
-        blueprint_id: 'bp1', 
-        user_id: 'test-user', 
-        name: 'Test', 
-        is_default: false, 
-        goal: 'test', 
-        audience: 'test', 
-        section_sequence: ['intro'], 
-        theme: 'default', 
-        slide_library: [], 
-        extra_metadata: {} 
-      }, 
-      error: null 
+    mockBuilder.select.mockReturnValueOnce(mockBuilder)
+    mockBuilder.single.mockResolvedValueOnce({
+      data: {
+        blueprint_id: 'bp1',
+        user_id: 'test-user',
+        name: 'Test',
+        is_default: false,
+        goal: 'test',
+        audience: 'test',
+        section_sequence: ['intro'],
+        theme: 'default',
+        slide_library: [],
+        extra_metadata: {}
+      },
+      error: null
     })
 
     const start = Date.now()
@@ -100,8 +103,8 @@ describe('Full Flow Performance', () => {
   })
 
   it('retrieves blueprints quickly', async () => {
-    // Override select for this specific test to return resolved data
-    mockBuilder.select.mockResolvedValueOnce({ data: [], error: null })
+    // Override eq for this specific test to return resolved data
+    mockBuilder.eq.mockResolvedValueOnce({ data: [], error: null })
 
     const start = Date.now()
     await getUserBlueprints('test-user')
