@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs'
 import { join } from 'path'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from '@jest/globals'
 import Ajv from 'ajv/dist/2020'
 
 const ajv = new Ajv()

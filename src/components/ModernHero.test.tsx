@@ -1,19 +1,19 @@
 
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, jest } from '@jest/globals';
 import ModernHero from './ModernHero';
 import React from 'react';
 
-vi.mock('@clerk/clerk-react', () => ({
+jest.mock('@clerk/clerk-react', () => ({
   useUser: () => ({ isSignedIn: false })
 }));
 
-vi.mock('./ClerkWaitlistForm', () => ({
+jest.mock('./ClerkWaitlistForm', () => ({
   default: () => <div data-testid="clerk-form">Waitlist</div>
 }));
 
-vi.mock('./ThreadingAnimation', () => ({
+jest.mock('./ThreadingAnimation', () => ({
   default: () => <div data-testid="threading" />
 }));
 

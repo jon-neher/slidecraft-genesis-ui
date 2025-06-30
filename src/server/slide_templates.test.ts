@@ -1,22 +1,22 @@
-import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
+import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals'
 
 let handleRequest: typeof import('./slide_templates').handleRequest
 
 const builder = {
-  select: vi.fn(() => builder),
-  eq: vi.fn(() => builder),
-  maybeSingle: vi.fn(),
-  single: vi.fn(),
-  insert: vi.fn(() => builder),
-  update: vi.fn(() => builder),
-  delete: vi.fn(() => builder),
+  select: jest.fn(() => builder),
+  eq: jest.fn(() => builder),
+  maybeSingle: jest.fn(),
+  single: jest.fn(),
+  insert: jest.fn(() => builder),
+  update: jest.fn(() => builder),
+  delete: jest.fn(() => builder),
 }
-let fromMock: ReturnType<typeof vi.fn>
+let fromMock: ReturnType<typeof jest.fn>
 
 beforeAll(async () => {
-  vi.doMock('@supabase/supabase-js', () => {
-    fromMock = vi.fn(() => builder)
-    return { createClient: vi.fn(() => ({ from: fromMock })) }
+  jest.doMock('@supabase/supabase-js', () => {
+    fromMock = jest.fn(() => builder)
+    return { createClient: jest.fn(() => ({ from: fromMock })) }
   })
   ;({ handleRequest } = await import('./slide_templates'))
 })

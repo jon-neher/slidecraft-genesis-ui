@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest'
+import { describe, it, expect, jest, beforeAll, beforeEach } from '@jest/globals'
 import { performance } from 'node:perf_hooks'
 
 let blueprintsHandler: typeof import('./blueprints').handleRequest
@@ -6,29 +6,29 @@ let sectionsHandler: typeof import('./sections').handleRequest
 let renderHandler: typeof import('./decks_render').handleRequest
 
 const builder = {
-  select: vi.fn().mockReturnThis(),
-  insert: vi.fn(),
-  update: vi.fn(),
-  delete: vi.fn(),
-  eq: vi.fn().mockReturnThis(),
-  or: vi.fn().mockReturnThis(),
-  in: vi.fn().mockReturnThis(),
-  maybeSingle: vi.fn(),
-  single: vi.fn(),
+  select: jest.fn().mockReturnThis(),
+  insert: jest.fn(),
+  update: jest.fn(),
+  delete: jest.fn(),
+  eq: jest.fn().mockReturnThis(),
+  or: jest.fn().mockReturnThis(),
+  in: jest.fn().mockReturnThis(),
+  maybeSingle: jest.fn(),
+  single: jest.fn(),
   then: (resolve: (v: unknown) => unknown) => Promise.resolve({ data: [], error: null }).then(resolve),
 }
 
-let fromMock: ReturnType<typeof vi.fn>
-const authMock = { getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'u1' } } })) }
+let fromMock: ReturnType<typeof jest.fn>
+const authMock = { getUser: jest.fn(() => Promise.resolve({ data: { user: { id: 'u1' } } })) }
 
 beforeAll(async () => {
-  vi.doMock('@supabase/supabase-js', () => {
-    fromMock = vi.fn(() => builder)
-    return { createClient: vi.fn(() => ({ from: fromMock, auth: authMock })) }
+  jest.doMock('@supabase/supabase-js', () => {
+    fromMock = jest.fn(() => builder)
+    return { createClient: jest.fn(() => ({ from: fromMock, auth: authMock })) }
   })
-  vi.doMock('openai', () => ({
+  jest.doMock('openai', () => ({
     default: class {
-      chat = { completions: { create: vi.fn() } }
+      chat = { completions: { create: jest.fn() } }
     }
   }))
   ;({ handleRequest: blueprintsHandler } = await import('./blueprints'))
@@ -76,7 +76,7 @@ describe('full API flow performance', () => {
     builder.single.mockResolvedValueOnce({ data: defaultBlueprint, error: null })
     const clone = { ...defaultBlueprint, blueprint_id: 'b1', is_default: false }
     builder.insert.mockReturnValueOnce({
-      select: () => ({ single: vi.fn(async () => ({ data: clone, error: null })) }),
+      select: () => ({ single: jest.fn(async () => ({ data: clone, error: null })) }),
     })
     const t2 = performance.now()
     const res2 = await blueprintsHandler(new Request('http://x/blueprints/d1/clone', { method: 'POST' }))

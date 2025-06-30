@@ -200,7 +200,7 @@ Ensure **Node.js 20** is installed to match the CI environment.
 npm install
 ```
 
-2. Run tests with **Vitest**:
+2. Run tests with **Jest**:
 ```bash
 npm test
 ```

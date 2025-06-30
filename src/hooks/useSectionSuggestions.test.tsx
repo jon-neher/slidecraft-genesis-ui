@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { useSectionSuggestions } from './useSectionSuggestions';
 
 const wrapper: React.FC<{children: React.ReactNode}> = ({ children }) => (
@@ -9,14 +9,13 @@ const wrapper: React.FC<{children: React.ReactNode}> = ({ children }) => (
 
 describe('useSectionSuggestions', () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('returns sections from mutation', async () => {
     const sections = ['a', 'b'];
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ sections }) }) as unknown as typeof fetch
+    jest.spyOn(global, 'fetch').mockResolvedValue(
+      { ok: true, json: async () => ({ sections }) } as unknown as Response
     );
 
     const { result } = renderHook(() => useSectionSuggestions(), { wrapper });
