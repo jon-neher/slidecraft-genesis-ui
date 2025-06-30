@@ -14,6 +14,7 @@ export const useSecureSupabase = () => {
     operation: () => Promise<{ data: T | null; error: unknown }>,
     operationType: string,
     validation?: (data: T) => boolean
+
   ) => {
     if (!user) {
       const errorMessage = 'Authentication required for this operation';

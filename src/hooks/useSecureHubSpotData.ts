@@ -1,7 +1,7 @@
 
 import { useSupabaseClient } from './useSupabaseClient';
 import { useUser } from '@clerk/clerk-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { ContactRecord } from '@/server/search_contacts';
 
 export const useSecureHubSpotData = () => {
@@ -19,9 +19,8 @@ export const useSecureHubSpotData = () => {
     setError(null);
 
     try {
-      const { data, error: functionError } = await supabase.functions.invoke('search_contacts', {
-        query: { q: query, limit },
-      });
+      const endpoint = `search_contacts?q=${encodeURIComponent(query)}&limit=${limit}`;
+      const { data, error: functionError } = await supabase.functions.invoke(endpoint);
 
       if (functionError) {
         throw functionError;
