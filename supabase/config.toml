@@ -1,1 +1,75 @@
+# Supabase configuration for Slidecraft
+# Generated for local development
 project_id = "igspkppkbqbbxffhdqlq"
+
+[api]
+port = 54321
+schemas = ["public", "content", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+port = 54323
+
+[inbucket]
+port = 54324
+
+[storage]
+file_size_limit = "50MiB"
+
+[storage.buckets.fonts]
+public = true
+objects_path = "buckets/fonts"
+
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = [
+  "https://*-supabase.vercel.app/*/*",
+  "https://supabase.com/*/*",
+  "http://localhost:3000/*/*",
+]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+
+[auth.external.github]
+enabled = false
+client_id = "env(GITHUB_CLIENT_ID)"
+secret = "env(GITHUB_SECRET)"
+redirect_uri = "http://localhost:54321/auth/v1/callback"
+
+[auth.external.apple]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+# Public edge functions
+[functions.hubspot_client_id]
+verify_jwt = false
+
+[functions.hubspot_oauth_callback]
+verify_jwt = false
+
+[functions.section-templates]
+verify_jwt = false
+
+[functions.slide-templates]
+verify_jwt = false
+
+[functions.hubspot_fetch_contacts]
+verify_jwt = false
+
+[functions.post_note]
+verify_jwt = false
+
+# Authenticated edge functions use default verify_jwt = true
