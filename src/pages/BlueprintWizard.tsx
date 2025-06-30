@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
+import { useBlueprintCatalog } from '@/hooks/useBlueprintCatalog'
+import { useSectionSuggestions } from '@/hooks/useSectionSuggestions'
 
 interface Blueprint {
   blueprint_id: string
@@ -16,22 +18,14 @@ interface Blueprint {
 const BlueprintWizard = () => {
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
-  const [catalog, setCatalog] = useState<Blueprint[]>([])
+  const { data: catalog = [], isLoading: catalogLoading } = useBlueprintCatalog(step === 0)
   const [selected, setSelected] = useState<Blueprint | null>(null)
   const [goal, setGoal] = useState('')
   const [audience, setAudience] = useState('')
   const [creative, setCreative] = useState(false)
   const [sections, setSections] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    if (step === 0) {
-      fetch('/api/blueprints?includeDefaults=true')
-        .then(r => r.json())
-        .then(setCatalog)
-        .catch(err => console.error('Fetch catalog error:', err))
-    }
-  }, [step])
+  const sectionSuggest = useSectionSuggestions()
 
   const handleImport = async () => {
     if (!selected) return
@@ -49,13 +43,8 @@ const BlueprintWizard = () => {
   const handleSuggest = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/sections/suggest', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goal, audience, creative }),
-      })
-      const json = await res.json()
-      setSections(json.sections || [])
+      const data = await sectionSuggest.mutateAsync({ goal, audience, creative })
+      setSections(data.sections || [])
       setStep(2)
     } finally {
       setLoading(false)
