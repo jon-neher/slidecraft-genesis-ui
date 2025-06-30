@@ -356,6 +356,27 @@ export type Database = {
         }
         Relationships: []
       }
+      section_templates: {
+        Row: {
+          section_id: string
+          purpose: string
+          default_templates: string[]
+          editable: boolean
+        }
+        Insert: {
+          section_id?: string
+          purpose: string
+          default_templates: string[]
+          editable?: boolean
+        }
+        Update: {
+          section_id?: string
+          purpose?: string
+          default_templates?: string[]
+          editable?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
