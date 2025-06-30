@@ -7,7 +7,7 @@ interface SlideData {
   templates: string[]
 }
 
-function buildHtml(slidesData: SlideData[]): string {
+function buildHtml(slidesData: SlideData[], themeCss: string): string {
   const slides = slidesData
     .map(({ section, templates }) =>
       `<section data-section="${section}" data-templates="${templates.join(',')}"><h2>${section}</h2></section>`,
@@ -18,6 +18,7 @@ function buildHtml(slidesData: SlideData[]): string {
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css">
+  <style>${themeCss}</style>
   <script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
 </head>
 <body>
@@ -73,7 +74,13 @@ export async function handleRequest(req: Request): Promise<Response> {
       templates: (overrides[section] as string[]) || defaults.get(section) || [],
     }))
 
-    const html = buildHtml(slidesData)
+    const { data: themeRow } = await client
+      .from('themes')
+      .select('css')
+      .eq('theme_id', data.theme)
+      .maybeSingle()
+
+    const html = buildHtml(slidesData, themeRow?.css || '')
     const deckId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)
     const base = `https://example.com/decks/${deckId}`
 

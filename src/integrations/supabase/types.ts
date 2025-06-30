@@ -377,6 +377,30 @@ export type Database = {
         }
         Relationships: []
       }
+      themes: {
+        Row: {
+          theme_id: string
+          name: string
+          css: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          theme_id?: string
+          name: string
+          css: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          theme_id?: string
+          name?: string
+          css?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
