@@ -9,54 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      blueprints: {
-        Row: {
-          audience: string
-          blueprint: Json
-          blueprint_id: string
-          created_at: string
-          extra_metadata: Json
-          goal: string
-          is_default: boolean
-          name: string
-          section_sequence: string[]
-          slide_library: string[]
-          theme: string
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          audience?: string
-          blueprint: Json
-          blueprint_id?: string
-          created_at?: string
-          extra_metadata?: Json
-          goal?: string
-          is_default?: boolean
-          name: string
-          section_sequence?: string[]
-          slide_library?: string[]
-          theme?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          audience?: string
-          blueprint?: Json
-          blueprint_id?: string
-          created_at?: string
-          extra_metadata?: Json
-          goal?: string
-          is_default?: boolean
-          name?: string
-          section_sequence?: string[]
-          slide_library?: string[]
-          theme?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       hubspot_contacts_cache: {
         Row: {
           id: string
@@ -352,30 +304,6 @@ export type Database = {
           output_schema?: Json
           prompt_template?: string
           template_id?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      themes: {
-        Row: {
-          created_at: string
-          css: string
-          name: string
-          theme_id: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          css: string
-          name: string
-          theme_id: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          css?: string
-          name?: string
-          theme_id?: string
           updated_at?: string
         }
         Relationships: []

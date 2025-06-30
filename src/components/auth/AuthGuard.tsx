@@ -18,8 +18,12 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Check if we're in a build/static environment to avoid navigation issues
+  const isStaticBuild = typeof window === 'undefined' || !window.location;
+
   useEffect(() => {
-    if (!isLoaded) return; // Wait for auth to load
+    // Skip auth checks during static builds or server-side rendering
+    if (isStaticBuild || !isLoaded) return;
 
     if (requireAuth && !user) {
       // User should be authenticated but isn't
@@ -29,10 +33,10 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
       // User shouldn't be on this page if authenticated
       navigate('/dashboard', { replace: true });
     }
-  }, [user, isLoaded, requireAuth, navigate, location.pathname, redirectTo]);
+  }, [user, isLoaded, requireAuth, navigate, location.pathname, redirectTo, isStaticBuild]);
 
   // Show loading while auth is being determined
-  if (!isLoaded) {
+  if (!isLoaded || isStaticBuild) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-electric-indigo"></div>

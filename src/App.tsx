@@ -11,28 +11,42 @@ import Slides from "./pages/Slides";
 import NewDeckFlow from "./pages/NewDeckFlow";
 import BlueprintWizard from "./pages/BlueprintWizard";
 import NotFound from "./pages/NotFound";
+import PublishErrorBoundary from "./components/PublishErrorBoundary";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        // Don't retry during builds/publishing
+        if (typeof window === 'undefined') return false;
+        return failureCount < 3;
+      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/slides" element={<Slides />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/new-deck" element={<NewDeckFlow />} />
-          <Route path="/new-blueprint" element={<BlueprintWizard />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <PublishErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/slides" element={<Slides />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/new-deck" element={<NewDeckFlow />} />
+            <Route path="/new-blueprint" element={<BlueprintWizard />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </PublishErrorBoundary>
 );
 
 export default App;

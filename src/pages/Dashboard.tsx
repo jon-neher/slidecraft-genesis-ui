@@ -19,15 +19,22 @@ const Dashboard = () => {
   const { isSignedIn } = useAuth();
   
   // Development mode bypass - check if we're in Lovable preview environment
-  const isDevelopment = window.location.hostname.includes('lovableproject.com') || 
-                       window.location.hostname === 'localhost';
+  const isDevelopment = typeof window !== 'undefined' && (
+    window.location.hostname.includes('lovableproject.com') || 
+    window.location.hostname === 'localhost'
+  );
 
-  devLog('Dashboard - isDevelopment:', isDevelopment, 'hostname:', window.location.hostname);
+  // Additional check for build/static environments  
+  const isStaticBuild = typeof window === 'undefined';
+
+  devLog('Dashboard - isDevelopment:', isDevelopment, 'hostname:', typeof window !== 'undefined' ? window.location.hostname : 'server');
 
   const navigate = useNavigate();
 
   const handleNewDeck = () => {
-    navigate('/new-deck');
+    if (typeof window !== 'undefined') {
+      navigate('/new-deck');
+    }
   };
 
   const DashboardContent = () => (
@@ -70,20 +77,22 @@ const Dashboard = () => {
           </SidebarInset>
         </div>
         
-        {/* Floating Action Button for mobile */}
-        <FloatingActionButton
-          icon={<Plus className="w-6 h-6" />}
-          onClick={handleNewDeck}
-        >
-          New Deck
-        </FloatingActionButton>
+        {/* Floating Action Button for mobile - only render in browser */}
+        {typeof window !== 'undefined' && (
+          <FloatingActionButton
+            icon={<Plus className="w-6 h-6" />}
+            onClick={handleNewDeck}
+          >
+            New Deck
+          </FloatingActionButton>
+        )}
       </SidebarProvider>
     </div>
   );
 
-  // In development mode, bypass authentication
-  if (isDevelopment) {
-    devLog('Dashboard - Rendering in development mode');
+  // In development mode or static build, bypass authentication
+  if (isDevelopment || isStaticBuild) {
+    devLog('Dashboard - Rendering in development/static mode');
     return <DashboardContent />;
   }
 
