@@ -1,6 +1,6 @@
 # Threadline Web App
 
-Threadline is an AI-powered presentation builder. This repository contains both the marketing site and the signed‑in dashboard, along with the Supabase/HubSpot integration code. The UI is built with React, Vite and Tailwind CSS using the shadcn/ui component library. The project targets **Node.js 20** to match the CI environment, so ensure that version is installed locally.
+Threadline is an AI-powered presentation builder. This repository contains both the marketing site and the signed‑in dashboard, along with the Supabase/HubSpot integration code. The UI is built with React, Vite and Tailwind CSS using the shadcn/ui component library. The project targets **Node.js 20** or newer and this is enforced via the `engines` field in `package.json`, so ensure that version is installed locally.
 
 ## 🚀 Features
 
@@ -193,7 +193,7 @@ transition={{
 
 ## 🔧 Installation & Setup
 
-Ensure **Node.js 20** is installed to match the CI environment.
+Ensure **Node.js 20** or newer is installed to match the CI environment. The requirement is enforced via the `engines` field.
 
 1. Install dependencies:
 ```bash
