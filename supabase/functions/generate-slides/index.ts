@@ -4,6 +4,7 @@ import OpenAI from 'npm:openai'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '../../src/integrations/supabase/types.ts'
 import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from '../../src/server/config.ts'
+import { devLog } from '../../src/lib/dev-log.ts'
 
 const apiKey = Deno.env.get('OPENAI_API_KEY')
 const openai = new OpenAI({ apiKey })
@@ -35,7 +36,7 @@ serve(async (req) => {
         return new Response('Unauthorized', { status: 401, headers: corsHeaders })
       }
 
-      console.log('Received request with prompt:', prompt, 'slides:', count)
+      devLog('Received request with prompt:', prompt, 'slides:', count)
 
       try {
         const completion = await openai.chat.completions.create({

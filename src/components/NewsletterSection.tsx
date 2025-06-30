@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { devLog } from '@/lib/dev-log';
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ const NewsletterSection = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@')) return;
-    console.log('Newsletter subscription:', email);
+    devLog('Newsletter subscription:', email);
     setIsSubscribed(true);
     setEmail('');
   };

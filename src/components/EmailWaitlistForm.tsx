@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { devLog } from '@/lib/dev-log';
 
 const formVariants = {
   hidden: { 
@@ -49,7 +50,7 @@ const EmailWaitlistForm = () => {
       setTimeout(() => setIsShaking(false), 500);
       return;
     }
-    console.log('Email submitted to waitlist:', email);
+    devLog('Email submitted to waitlist:', email);
     setIsSubmitted(true);
     // Handle successful submission
   };

@@ -8,6 +8,7 @@ import {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
 } from './config';
+import { devLog } from '../lib/dev-log';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -58,7 +59,7 @@ export const hubspotWebhookHandler: RequestHandler[] = [
     const uninstall = events.some((e: Record<string, unknown>) => e.subscriptionType === 'app.uninstalled');
 
     if (uninstall) {
-      console.log(`Processing uninstall for portal ${portalId}`);
+      devLog(`Processing uninstall for portal ${portalId}`);
       // Handle cleanup operations with proper async/await and error logging
       try {
         const { error: tokensError } = await supabase
