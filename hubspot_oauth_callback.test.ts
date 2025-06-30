@@ -38,7 +38,7 @@ describe('hubspotOAuthCallback', () => {
     upsertMock.mockClear();
     deleteMock.mockClear();
     jest.resetModules();
-    (global as any).Deno = { env: { get: () => '' } };
+    (global as any).Deno = { env: { get: () => '' }, serve: jest.fn() };
     ({ hubspotOAuthCallback } = await import('./supabase/functions/hubspot_oauth_callback'));
   });
 
