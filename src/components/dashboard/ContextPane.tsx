@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import EntitySelector from './shared/EntitySelector';
 import { mockSelectedEntity } from '@/data/mockData';
-import { slideInVariants } from '@/lib/animations';
+import { slideInVariants } from '@/lib/variants';
 
 const ContextPane = () => {
   return (

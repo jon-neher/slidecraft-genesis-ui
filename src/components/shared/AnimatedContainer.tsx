@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion, Variants } from 'framer-motion';
-import { containerVariants } from '@/lib/animations';
+import { containerVariants } from '@/lib/variants';
 import { cn } from '@/lib/utils';
 
 interface AnimatedContainerProps {

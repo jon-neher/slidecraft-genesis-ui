@@ -6,7 +6,7 @@ import { Plus, Menu } from 'lucide-react';
 import { SearchInput } from '@/components/ui/search-input';
 import ActionButton from './shared/ActionButton';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
-import { headerVariants } from '@/lib/animations';
+import { headerVariants } from '@/lib/variants';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import ProfileMenu from '@/components/auth/ProfileMenu';

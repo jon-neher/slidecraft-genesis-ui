@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import { itemVariants } from '@/lib/animations';
+import { itemVariants } from '@/lib/variants';
 import { cn } from '@/lib/utils';
 
 interface AnimatedCardProps {
