@@ -1,16 +1,19 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { handleRequest } from './section_templates'
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
+
+let handleRequest: typeof import('./section_templates').handleRequest
 
 const builder = {
   select: vi.fn().mockReturnThis(),
   eq: vi.fn().mockReturnThis(),
   maybeSingle: vi.fn(),
 }
-// eslint-disable-next-line no-var
-var fromMock: ReturnType<typeof vi.fn>
-vi.mock('@supabase/supabase-js', () => {
-  fromMock = vi.fn(() => builder)
-  return { createClient: vi.fn(() => ({ from: fromMock })) }
+let fromMock: ReturnType<typeof vi.fn>
+beforeAll(async () => {
+  vi.doMock('@supabase/supabase-js', () => {
+    fromMock = vi.fn(() => builder)
+    return { createClient: vi.fn(() => ({ from: fromMock })) }
+  })
+  ;({ handleRequest } = await import('./section_templates'))
 })
 
 beforeEach(() => {
