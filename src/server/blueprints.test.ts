@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { handleRequest } from './blueprints'
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
+
+let handleRequest: typeof import('./blueprints').handleRequest
 
 const insertMock = vi.fn()
 const updateMock = vi.fn()
@@ -25,12 +26,18 @@ const authMock = {
   getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'u1' } } })),
 }
 
-vi.mock('@supabase/supabase-js', () => ({
+vi.doMock('@supabase/supabase-js', () => ({
   createClient: vi.fn(() => ({
     from: fromMock,
     auth: authMock,
   })),
 }))
+
+beforeAll(async () => {
+  process.env.SUPABASE_URL = 'http://localhost'
+  process.env.SUPABASE_SERVICE_ROLE_KEY = 'key'
+  ;({ handleRequest } = await import('./blueprints'))
+})
 
 beforeEach(() => {
   insertMock.mockReset()

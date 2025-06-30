@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 const upsertCache = vi.fn()
 const upsertCursor = vi.fn()
 
-vi.mock('@supabase/supabase-js', () => ({
+vi.doMock('@supabase/supabase-js', () => ({
   createClient: vi.fn(() => ({
     from: (table: string) => ({
       upsert: table === 'hubspot_contacts_cache' ? upsertCache : upsertCursor,

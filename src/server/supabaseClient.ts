@@ -1,7 +1,13 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../integrations/supabase/types'
 import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from './config'
 
-const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+export function getSupabaseClient(
+  authHeader?: string,
+): SupabaseClient<Database> {
+  return createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    ...(authHeader ? { global: { headers: { Authorization: authHeader } } } : {}),
+  })
+}
 
-export default supabase
+export default getSupabaseClient

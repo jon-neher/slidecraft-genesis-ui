@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../supabase/types'
-import supabase from '../../server/supabaseClient'
+import { getSupabaseClient } from '../../server/supabaseClient'
 import {
   HUBSPOT_CLIENT_ID,
   HUBSPOT_CLIENT_SECRET,
@@ -16,7 +16,7 @@ export interface HubSpotTokenResponse {
 
 export async function ensureAccessToken(
   portal_id: string,
-  sb: SupabaseClient<Database> = supabase,
+  sb: SupabaseClient<Database> = getSupabaseClient(),
   fetchFn: typeof fetch = fetch
 ): Promise<string> {
   const { data, error } = await sb
