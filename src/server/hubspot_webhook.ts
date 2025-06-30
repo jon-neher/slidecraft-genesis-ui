@@ -1,3 +1,4 @@
+
 import { getSupabaseClient } from './supabaseClient'
 import { verifyHubSpotSignature } from './verify_signature'
 import { Database } from '../integrations/supabase/types'
@@ -36,10 +37,12 @@ export async function handleRequest(req: Request): Promise<Response> {
       await supabaseClient
         .from('hubspot_contacts_cache')
         .upsert({
-          hubspot_id: event.objectId,
-          property_name: event.propertyName,
-          property_value: event.propertyValue,
-          change_source: event.changeSource,
+          id: event.objectId.toString(),
+          portal_id: event.objectId.toString(),
+          properties: {
+            [event.propertyName]: event.propertyValue
+          },
+          updated_at: new Date().toISOString(),
         })
         .then((res) => {
           if (res.error) {
@@ -54,3 +57,5 @@ export async function handleRequest(req: Request): Promise<Response> {
     return new Response('Internal Server Error', { status: 500 })
   }
 }
+
+export default { handleRequest }

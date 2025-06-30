@@ -4,19 +4,19 @@ import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals
 let handleRequest: typeof import('./decks_render').handleRequest
 
 const builder = {
-  select: jest.fn().mockReturnThis(),
-  eq: jest.fn().mockReturnThis(),
-  in: jest.fn().mockReturnThis(),
+  select: jest.fn(),
+  eq: jest.fn(),
+  in: jest.fn(),
   maybeSingle: jest.fn(),
   single: jest.fn(),
-  from: jest.fn().mockReturnThis(),
+  from: jest.fn(),
 }
 
 const authBuilder = {
   getUser: jest.fn(),
 }
 
-let fromMock: ReturnType<typeof jest.fn>
+let fromMock: jest.MockedFunction<any>
 let supabaseClient: any
 
 beforeAll(async () => {

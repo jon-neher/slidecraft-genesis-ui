@@ -4,8 +4,8 @@ import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals
 let handleRequest: typeof import('./section_templates').handleRequest
 
 const builder = {
-  select: jest.fn().mockReturnThis(),
-  eq: jest.fn().mockReturnThis(),
+  select: jest.fn(),
+  eq: jest.fn(),
   maybeSingle: jest.fn(),
   insert: jest.fn(),
   update: jest.fn(),
@@ -16,7 +16,7 @@ const authBuilder = {
   getUser: jest.fn(),
 }
 
-let fromMock: ReturnType<typeof jest.fn>
+let fromMock: jest.MockedFunction<any>
 let supabaseClient: any
 
 beforeAll(async () => {

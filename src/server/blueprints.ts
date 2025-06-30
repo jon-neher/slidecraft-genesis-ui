@@ -1,4 +1,3 @@
-
 import type { Database } from '../integrations/supabase/types'
 import { getSupabaseClient } from './supabaseClient'
 
@@ -58,6 +57,47 @@ function rowToResponse(
       ...(extra_metadata as Record<string, unknown>),
     },
   }
+}
+
+export async function createBlueprint(
+  data: {
+    name: string
+    goal: string
+    audience: string
+    section_sequence: string[]
+    theme: string
+  },
+  userId: string
+) {
+  const client = getSupabaseClient()
+  const parsed = parseBlueprintData(data)
+  const { data: result, error } = await client
+    .from('blueprints')
+    .insert({
+      user_id: userId,
+      name: data.name,
+      blueprint: parsed.blueprint,
+      goal: parsed.goal,
+      audience: parsed.audience,
+      section_sequence: parsed.section_sequence,
+      theme: parsed.theme,
+      slide_library: parsed.slide_library,
+      extra_metadata: parsed.extra_metadata,
+    })
+    .select()
+    .single()
+  if (error) throw error
+  return rowToResponse(result)
+}
+
+export async function getUserBlueprints(userId: string) {
+  const client = getSupabaseClient()
+  const { data, error } = await client
+    .from('blueprints')
+    .select('*')
+    .eq('user_id', userId)
+  if (error) throw error
+  return data.map(rowToResponse)
 }
 
 export async function handleRequest(req: Request): Promise<Response> {
@@ -231,4 +271,4 @@ export async function handleRequest(req: Request): Promise<Response> {
   }
 }
 
-export default { handleRequest }
+export default { handleRequest, createBlueprint, getUserBlueprints }

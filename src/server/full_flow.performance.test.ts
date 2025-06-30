@@ -6,8 +6,8 @@ let createBlueprint: typeof import('./blueprints').createBlueprint
 let getUserBlueprints: typeof import('./blueprints').getUserBlueprints
 
 const mockBuilder = {
-  select: jest.fn().mockReturnThis(),
-  eq: jest.fn().mockReturnThis(),
+  select: jest.fn(),
+  eq: jest.fn(),
   insert: jest.fn(),
   maybeSingle: jest.fn(),
   single: jest.fn(),
