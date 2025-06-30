@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from '../supabase/types'
+import type { Database, Json } from '../supabase/types'
 import rateLimiter from '../../server/rate_limiter_memory'
 import { getSupabaseClient } from '../../server/supabaseClient'
 import { ensureAccessToken } from './tokens'
@@ -7,7 +7,7 @@ import crypto from 'crypto'
 
 export interface HubSpotContact {
   id: string
-  properties: Record<string, unknown>
+  properties: { [key: string]: Json }
 }
 
 export interface HubSpotSearchResponse {

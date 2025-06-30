@@ -8,10 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { SearchInput } from '@/components/ui/search-input';
+import type { Json } from '@/integrations/supabase/types';
 
 interface ContactResult {
   id: string;
-  properties: Record<string, unknown>;
+  properties: { [key: string]: Json };
 }
 
 const NewDeckFlow = () => {

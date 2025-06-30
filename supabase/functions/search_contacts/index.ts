@@ -9,9 +9,17 @@ const corsHeaders = {
 
 const rateLimiter = new RateLimiterMemory(10, 60000) // 10 requests per minute
 
+type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json }
+  | Json[]
+
 interface ContactRecord {
   id: string
-  properties: Record<string, unknown>
+  properties: { [key: string]: Json }
 }
 
 // Input validation function

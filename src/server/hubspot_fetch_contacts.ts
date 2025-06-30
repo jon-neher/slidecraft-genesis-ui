@@ -1,6 +1,6 @@
 
 import { type SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from '../integrations/supabase/types'
+import type { Database, Json } from '../integrations/supabase/types'
 import { ensureAccessToken } from '../integrations/hubspot/tokens'
 import rateLimiter from './rate_limiter_memory'
 import { getSupabaseClient } from './supabaseClient'
@@ -9,7 +9,7 @@ const supabase = getSupabaseClient()
 
 export interface HubSpotContact {
   id: string
-  properties: Record<string, unknown>
+  properties: { [key: string]: Json }
 }
 
 export interface HubSpotSearchResponse {

@@ -1,6 +1,6 @@
 
 import { type SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from '../integrations/supabase/types'
+import type { Database, Json } from '../integrations/supabase/types'
 
 import {
 } from './config'
@@ -10,7 +10,7 @@ import { searchContacts as hubspotSearch } from '../integrations/hubspot/client'
 
 export interface ContactRecord {
   id: string
-  properties: Record<string, unknown>
+  properties: { [key: string]: Json }
 }
 
 // Input validation function
