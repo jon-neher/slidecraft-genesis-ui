@@ -24,8 +24,9 @@ jest.mock('./rate_limiter_memory', () => ({
 let hubspotFetchContacts: typeof import('./hubspot_fetch_contacts').hubspotFetchContacts
 
 beforeEach(async () => {
-  upsertCache.mockClear()
-  upsertCursor.mockClear()
+  jest.clearAllMocks()
+  upsertCache.mockClear().mockResolvedValue({ error: null })
+  upsertCursor.mockClear().mockResolvedValue({ error: null })
   jest.resetModules()
   ;({ hubspotFetchContacts } = await import('./hubspot_fetch_contacts'))
 })

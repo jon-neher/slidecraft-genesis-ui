@@ -10,7 +10,9 @@ jest.mock('../integrations/hubspot/rateLimiter', () => {
   return { __esModule: true, default: new mod.RateLimiterMemory(100, 1000), RateLimiterMemory: mod.RateLimiterMemory };
 });
 import { RateLimiterMemory } from '../integrations/hubspot/rateLimiter'
+
 let searchContacts: typeof import('./search_contacts').searchContacts
+
 beforeAll(async () => {
   ;({ searchContacts } = await import('./search_contacts'))
 })
@@ -48,6 +50,7 @@ function makeFetch<T>(results: T[]) {
 
 describe('searchContacts', () => {
   beforeEach(() => {
+    jest.clearAllMocks()
     eqMock.mockReturnValue({ textSearch: textSearchMock, maybeSingle: maybeSingleMock })
     textSearchMock.mockReturnValue({ limit: limitMock })
     limitMock.mockResolvedValue({ data: [], error: null })

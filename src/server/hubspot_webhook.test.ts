@@ -12,6 +12,7 @@ jest.doMock('./supabaseClient', () => ({
 
 describe('hubspotWebhook', () => {
   beforeEach(() => {
+    jest.clearAllMocks()
     upsertMock.mockClear().mockResolvedValue({ error: null })
     fromMock.mockClear()
   })

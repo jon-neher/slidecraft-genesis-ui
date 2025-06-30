@@ -4,8 +4,8 @@ import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals
 let handleRequest: typeof import('./section_templates').handleRequest
 
 const builder = {
-  select: jest.fn(),
-  eq: jest.fn(),
+  select: jest.fn().mockReturnThis(),
+  eq: jest.fn().mockReturnThis(),
   maybeSingle: jest.fn(),
   insert: jest.fn(),
   update: jest.fn(),

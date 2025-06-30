@@ -1,17 +1,18 @@
+
 import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals'
 
 let handleRequest: typeof import('./slide_templates').handleRequest
 
 const builder = {
-  select: jest.fn(() => builder),
-  eq: jest.fn(() => builder),
+  select: jest.fn().mockReturnThis(),
+  eq: jest.fn().mockReturnThis(),
   maybeSingle: jest.fn(),
   single: jest.fn(),
-  insert: jest.fn(() => builder),
-  update: jest.fn(() => builder),
-  delete: jest.fn(() => builder),
+  insert: jest.fn().mockReturnThis(),
+  update: jest.fn().mockReturnThis(),
+  delete: jest.fn().mockReturnThis(),
 }
-let fromMock: ReturnType<typeof jest.fn>
+let fromMock: jest.MockedFunction<any>
 
 beforeAll(async () => {
   jest.doMock('@supabase/supabase-js', () => {
@@ -22,10 +23,14 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
+  jest.clearAllMocks()
   builder.select.mockReturnThis()
   builder.eq.mockReturnThis()
   builder.maybeSingle.mockResolvedValue({ data: null, error: null })
   builder.single.mockResolvedValue({ data: null, error: null })
+  builder.insert.mockReturnThis()
+  builder.update.mockReturnThis()
+  builder.delete.mockReturnThis()
 })
 
 describe('slideTemplates handleRequest', () => {

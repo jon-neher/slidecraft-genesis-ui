@@ -6,8 +6,8 @@ let createBlueprint: typeof import('./blueprints').createBlueprint
 let getUserBlueprints: typeof import('./blueprints').getUserBlueprints
 
 const mockBuilder = {
-  select: jest.fn(),
-  eq: jest.fn(),
+  select: jest.fn().mockReturnThis(),
+  eq: jest.fn().mockReturnThis(),
   insert: jest.fn(),
   maybeSingle: jest.fn(),
   single: jest.fn(),
@@ -22,21 +22,21 @@ const mockSupabase = {
   auth: mockAuthBuilder,
 }
 
+const mockOpenAI = {
+  chat: {
+    completions: {
+      create: jest.fn()
+    }
+  }
+}
+
 beforeAll(async () => {
   jest.doMock('@supabase/supabase-js', () => ({
     createClient: jest.fn(() => mockSupabase),
   }))
   
   jest.doMock('openai', () => ({
-    OpenAI: jest.fn(() => ({
-      chat: {
-        completions: {
-          create: jest.fn().mockResolvedValue({
-            choices: [{ message: { content: '["intro", "problem", "solution"]' } }]
-          })
-        }
-      }
-    }))
+    OpenAI: jest.fn(() => mockOpenAI)
   }))
   
   ;({ generateSections } = await import('./sections'))
@@ -51,6 +51,9 @@ beforeEach(() => {
   mockBuilder.single.mockResolvedValue({ data: null, error: null })
   mockBuilder.insert.mockResolvedValue({ data: null, error: null })
   mockAuthBuilder.getUser.mockResolvedValue({ data: { user: { id: 'test-user' } }, error: null })
+  mockOpenAI.chat.completions.create.mockResolvedValue({
+    choices: [{ message: { content: '["intro", "problem", "solution"]' } }]
+  })
 })
 
 describe('Full Flow Performance', () => {

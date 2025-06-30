@@ -4,12 +4,11 @@ import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals
 let handleRequest: typeof import('./decks_render').handleRequest
 
 const builder = {
-  select: jest.fn(),
-  eq: jest.fn(),
-  in: jest.fn(),
+  select: jest.fn().mockReturnThis(),
+  eq: jest.fn().mockReturnThis(),
+  in: jest.fn().mockReturnThis(),
   maybeSingle: jest.fn(),
   single: jest.fn(),
-  from: jest.fn(),
 }
 
 const authBuilder = {
