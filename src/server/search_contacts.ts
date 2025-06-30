@@ -1,12 +1,7 @@
 
-import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../integrations/supabase/types'
-
-import {
-  SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY,
-} from './config'
-import supabase from './supabaseClient'
+import supabase, { getSupabaseClient } from './supabaseClient'
 
 import { searchContacts as hubspotSearch } from '../integrations/hubspot/client'
 
@@ -115,9 +110,7 @@ export async function handleRequest(req: Request): Promise<Response> {
   const limit = parseInt(url.searchParams.get('limit') || '10', 10)
 
   const auth = req.headers.get('Authorization') || ''
-  const client = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-    global: { headers: { Authorization: auth } },
-  })
+  const client = getSupabaseClient(auth)
   
   const {
     data: { user },

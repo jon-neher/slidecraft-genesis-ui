@@ -1,8 +1,7 @@
-import { createClient } from '@supabase/supabase-js'
 import type { Database } from '../integrations/supabase/types'
-import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from './config'
+import { getSupabaseClient } from './supabaseClient'
 
-const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+const supabase = getSupabaseClient()
 
 export async function handleRequest(req: Request): Promise<Response> {
   const url = new URL(req.url)
