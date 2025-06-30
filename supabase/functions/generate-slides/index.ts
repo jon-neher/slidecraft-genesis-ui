@@ -1,10 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import OpenAI from 'npm:openai'
-import { createClient } from '@supabase/supabase-js'
-import type { Database } from '../../src/integrations/supabase/types.ts'
-import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from '../../src/server/config.ts'
-import { devLog } from '../../src/lib/dev-log.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
 
 const apiKey = Deno.env.get('OPENAI_API_KEY')
 const openai = new OpenAI({ apiKey })
@@ -28,7 +25,10 @@ serve(async (req) => {
       const prompt = url.searchParams.get('prompt') ?? ''
       const count = url.searchParams.get('slides') ?? '1'
       const auth = req.headers.get('Authorization') || ''
-      const authed = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
+      const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      
+      const authed = createClient(supabaseUrl, supabaseServiceKey, {
         global: { headers: { Authorization: auth } },
       })
       const { data: { user } } = await authed.auth.getUser()
@@ -36,11 +36,11 @@ serve(async (req) => {
         return new Response('Unauthorized', { status: 401, headers: corsHeaders })
       }
 
-      devLog('Received request with prompt:', prompt, 'slides:', count)
+      console.log('Received request with prompt:', prompt, 'slides:', count)
 
       try {
         const completion = await openai.chat.completions.create({
-          model: 'gpt-4.1-mini',
+          model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: 'Return a JSON array of slide objects with title, bullets[], images[]' },
             { role: 'user', content: `Prompt: ${prompt}\nSlides: ${count}` },

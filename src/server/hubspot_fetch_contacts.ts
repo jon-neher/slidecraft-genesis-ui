@@ -22,7 +22,7 @@ export async function hubspotFetchContacts(
   sb: SupabaseClient<Database> = supabase,
   fetchFn: typeof fetch = fetch,
 ): Promise<void> {
-  const accessToken = await ensureAccessToken(portal_id, sb, fetchFn)
+  const accessToken = await ensureAccessToken(portal_id, sb)
   await rateLimiter.take(portal_id)
 
   const body: Record<string, unknown> = {
