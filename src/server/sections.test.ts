@@ -1,23 +1,23 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 
 let handleRequest: typeof import('./sections').handleRequest
 
-const authMock = { getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'u1' } } })) }
+const authMock = { getUser: jest.fn(() => Promise.resolve({ data: { user: { id: 'u1' } } })) }
 
-const createMock = vi.fn()
+const createMock = jest.fn()
 
-vi.doMock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(() => ({ auth: authMock })),
+jest.doMock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({ auth: authMock })),
 }))
 
-vi.mock('openai', () => ({
+jest.mock('openai', () => ({
   default: class {
     chat = { completions: { create: createMock } }
   },
 }))
 
 beforeEach(async () => {
-  vi.resetModules()
+  jest.resetModules()
   createMock.mockClear()
   ;({ handleRequest } = await import('./sections'))
 })

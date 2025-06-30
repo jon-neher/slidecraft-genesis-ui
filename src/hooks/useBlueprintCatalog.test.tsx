@@ -1,6 +1,6 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { useBlueprintCatalog } from './useBlueprintCatalog';
 
 describe('useBlueprintCatalog', () => {
@@ -9,14 +9,13 @@ describe('useBlueprintCatalog', () => {
   );
 
   beforeEach(() => {
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('fetches blueprint catalog', async () => {
     const mockCatalog = [{ blueprint_id: '1', name: 'A', is_default: true, data: {} }];
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({ ok: true, json: async () => mockCatalog }) as unknown as typeof fetch
+    jest.spyOn(global, 'fetch').mockResolvedValue(
+      { ok: true, json: async () => mockCatalog } as unknown as Response
     );
 
     const { result } = renderHook(() => useBlueprintCatalog(true), { wrapper });

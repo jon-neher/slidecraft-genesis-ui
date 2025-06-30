@@ -2,6 +2,7 @@
 import { useSupabaseClient } from './useSupabaseClient';
 import { useUser } from '@clerk/clerk-react';
 import { useState, useCallback } from 'react';
+import type { PostgrestError } from '@supabase/supabase-js';
 import { SecurityValidator, AuditLogger } from '@/server/security';
 
 export const useSecureSupabase = () => {
@@ -11,9 +12,11 @@ export const useSecureSupabase = () => {
   const [error, setError] = useState<string | null>(null);
 
   const secureQuery = useCallback(async <T>(
-    operation: () => Promise<{ data: T | null; error: unknown }>,
+    operation: () => Promise<{ data: T | null; error: PostgrestError | null }>,
     operationType: string,
     validation?: (data: T) => boolean
+
+
   ) => {
     if (!user) {
       const errorMessage = 'Authentication required for this operation';

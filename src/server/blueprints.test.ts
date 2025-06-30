@@ -1,33 +1,33 @@
-import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
+import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals'
 
 let handleRequest: typeof import('./blueprints').handleRequest
 
-const insertMock = vi.fn()
-const updateMock = vi.fn()
-const deleteMock = vi.fn()
+const insertMock = jest.fn()
+const updateMock = jest.fn()
+const deleteMock = jest.fn()
 const builder = {
-  or: vi.fn().mockReturnThis(),
-  eq: vi.fn().mockReturnThis(),
+  or: jest.fn().mockReturnThis(),
+  eq: jest.fn().mockReturnThis(),
   then: (resolve: (v: unknown) => unknown) => Promise.resolve({ data: [], error: null }).then(resolve),
 }
 const orMock = builder.or
 const eqMock = builder.eq
 
-const fromMock = vi.fn(() => ({
-  select: vi.fn(() => builder),
+const fromMock = jest.fn(() => ({
+  select: jest.fn(() => builder),
   insert: insertMock,
   update: updateMock,
   delete: deleteMock,
-  maybeSingle: vi.fn(),
-  single: vi.fn(),
+  maybeSingle: jest.fn(),
+  single: jest.fn(),
 }))
 
 const authMock = {
-  getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'u1' } } })),
+  getUser: jest.fn(() => Promise.resolve({ data: { user: { id: 'u1' } } })),
 }
 
-vi.doMock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(() => ({
+jest.doMock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({
     from: fromMock,
     auth: authMock,
   })),
