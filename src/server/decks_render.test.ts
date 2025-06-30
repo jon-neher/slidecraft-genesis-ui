@@ -7,12 +7,12 @@ const builder = {
   select: jest.fn().mockReturnThis(),
   eq: jest.fn().mockReturnThis(),
   in: jest.fn().mockReturnThis(),
-  maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
-  single: jest.fn().mockResolvedValue({ data: null, error: null }),
+  maybeSingle: jest.fn() as jest.MockedFunction<any>,
+  single: jest.fn() as jest.MockedFunction<any>,
 }
 
 const authBuilder = {
-  getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user' } }, error: null }),
+  getUser: jest.fn() as jest.MockedFunction<any>,
 }
 
 let fromMock: jest.MockedFunction<any>

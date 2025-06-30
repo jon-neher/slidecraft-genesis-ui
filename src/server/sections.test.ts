@@ -5,9 +5,7 @@ import { generateSections } from './sections'
 const mockOpenAI = {
   chat: {
     completions: {
-      create: jest.fn().mockResolvedValue({
-        choices: [{ message: { content: '["intro", "problem", "solution"]' } }]
-      })
+      create: jest.fn() as jest.MockedFunction<any>
     }
   }
 }

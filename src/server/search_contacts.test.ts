@@ -22,9 +22,9 @@ jest.useFakeTimers()
 const fromMock = jest.fn()
 const textSearchMock = jest.fn()
 const eqMock = jest.fn()
-const limitMock = jest.fn()
-const maybeSingleMock = jest.fn()
-const upsertMock = jest.fn()
+const limitMock = jest.fn() as jest.MockedFunction<any>
+const maybeSingleMock = jest.fn() as jest.MockedFunction<any>
+const upsertMock = jest.fn() as jest.MockedFunction<any>
 const authMock = {
   getUser: jest.fn(() => Promise.resolve({ data: { user: { id: 'p1' } } }))
 }
@@ -41,7 +41,7 @@ const mockClient = {
   auth: authMock
 } as unknown as SupabaseClient<Database>
 
-function makeFetch<T>(results: T[]) {
+function makeFetch<T>(results: T[]): jest.MockedFunction<typeof fetch> {
   return jest.fn().mockResolvedValue({ 
     ok: true, 
     json: async () => ({ results }) 

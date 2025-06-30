@@ -1,8 +1,8 @@
 
 import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 
-const upsertCache = jest.fn()
-const upsertCursor = jest.fn()
+const upsertCache = jest.fn() as jest.MockedFunction<any>
+const upsertCursor = jest.fn() as jest.MockedFunction<any>
 
 jest.doMock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => ({

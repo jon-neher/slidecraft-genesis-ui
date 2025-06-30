@@ -2,7 +2,7 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 import { handleRequest } from './hubspot_webhook'
 
-const upsertMock = jest.fn()
+const upsertMock = jest.fn() as jest.MockedFunction<any>
 const fromMock = jest.fn(() => ({ upsert: upsertMock }))
 const mockClient = { from: fromMock }
 

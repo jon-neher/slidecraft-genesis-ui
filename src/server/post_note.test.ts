@@ -7,7 +7,7 @@ const mockClient = {
   from: jest.fn().mockReturnValue({
     select: jest.fn().mockReturnValue({
       eq: jest.fn().mockReturnValue({
-        maybeSingle: jest.fn().mockResolvedValue({ data: { access_token: 'mock-token' }, error: null })
+        maybeSingle: jest.fn() as jest.MockedFunction<any>
       })
     })
   })
@@ -22,6 +22,9 @@ describe('postNote', () => {
       ok: true,
       json: async () => ({ id: 'note-123' })
     } as Response)
+    
+    const mockSelectChain = (mockClient.from as jest.MockedFunction<any>)().select().eq()
+    mockSelectChain.maybeSingle.mockResolvedValue({ data: { access_token: 'mock-token' }, error: null })
   })
 
   it('posts note to HubSpot', async () => {

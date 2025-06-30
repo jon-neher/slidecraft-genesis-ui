@@ -6,8 +6,8 @@ let handleRequest: typeof import('./slide_templates').handleRequest
 const builder = {
   select: jest.fn().mockReturnThis(),
   eq: jest.fn().mockReturnThis(),
-  maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
-  single: jest.fn().mockResolvedValue({ data: null, error: null }),
+  maybeSingle: jest.fn() as jest.MockedFunction<any>,
+  single: jest.fn() as jest.MockedFunction<any>,
   insert: jest.fn().mockReturnThis(),
   update: jest.fn().mockReturnThis(),
   delete: jest.fn().mockReturnThis(),
