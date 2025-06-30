@@ -269,6 +269,33 @@ export type Database = {
         }
         Relationships: []
       }
+      section_templates: {
+        Row: {
+          created_at: string
+          default_templates: string[]
+          description: string | null
+          name: string
+          section_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_templates?: string[]
+          description?: string | null
+          name: string
+          section_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_templates?: string[]
+          description?: string | null
+          name?: string
+          section_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       slide_generations: {
         Row: {
           created_at: string
@@ -352,6 +379,33 @@ export type Database = {
           output_schema?: Json
           prompt_template?: string
           template_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      themes: {
+        Row: {
+          created_at: string
+          css: string
+          description: string | null
+          name: string
+          theme_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          css?: string
+          description?: string | null
+          name: string
+          theme_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          css?: string
+          description?: string | null
+          name?: string
+          theme_id?: string
           updated_at?: string
         }
         Relationships: []

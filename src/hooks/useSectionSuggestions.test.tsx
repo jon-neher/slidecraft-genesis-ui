@@ -3,7 +3,7 @@
 
 import { renderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
 import { useSectionSuggestions } from './useSectionSuggestions';
 import React from 'react';
 
@@ -18,7 +18,7 @@ const wrapper: React.FC<{children: React.ReactNode}> = ({ children }) => (
 
 describe('useSectionSuggestions', () => {
   beforeEach(() => {
-    global.fetch = jest.fn();
+    global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
   });
 
   afterEach(() => {
@@ -28,10 +28,10 @@ describe('useSectionSuggestions', () => {
   it('returns sections from mutation', async () => {
     const sections = ['a', 'b'];
     
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
       ok: true,
       json: async () => ({ sections }),
-    });
+    } as Response);
 
     const { result } = renderHook(() => useSectionSuggestions(), { wrapper });
     const data = await result.current.mutateAsync({ goal: 'g', audience: 'a', creative: false });

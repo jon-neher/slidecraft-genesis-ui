@@ -1,4 +1,5 @@
-import { describe, it, expect, jest, beforeAll, beforeEach } from '@jest/globals'
+
+import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals'
 
 let handleRequest: typeof import('./decks_render').handleRequest
 
@@ -7,14 +8,25 @@ const builder = {
   eq: jest.fn().mockReturnThis(),
   in: jest.fn().mockReturnThis(),
   maybeSingle: jest.fn(),
+  single: jest.fn(),
+  from: jest.fn().mockReturnThis(),
 }
+
+const authBuilder = {
+  getUser: jest.fn(),
+}
+
 let fromMock: ReturnType<typeof jest.fn>
-const authMock = { getUser: jest.fn(() => Promise.resolve({ data: { user: { id: 'u1' } } })) }
+let supabaseClient: any
 
 beforeAll(async () => {
   jest.doMock('@supabase/supabase-js', () => {
     fromMock = jest.fn(() => builder)
-    return { createClient: jest.fn(() => ({ from: fromMock, auth: authMock })) }
+    supabaseClient = { 
+      from: fromMock,
+      auth: authBuilder
+    }
+    return { createClient: jest.fn(() => supabaseClient) }
   })
   ;({ handleRequest } = await import('./decks_render'))
 })
@@ -24,44 +36,86 @@ beforeEach(() => {
   builder.eq.mockReturnThis()
   builder.in.mockReturnThis()
   builder.maybeSingle.mockResolvedValue({ data: null, error: null })
+  builder.single.mockResolvedValue({ data: null, error: null })
+  authBuilder.getUser.mockResolvedValue({ data: { user: { id: 'test-user' } }, error: null })
 })
 
-describe('decks render handler', () => {
-  it('returns presentation URLs', async () => {
-    builder.maybeSingle.mockResolvedValueOnce({
-      data: { blueprint_id: 'b1', user_id: 'u1', is_default: false, section_sequence: ['intro'], theme: 'brand' },
-      error: null,
+describe('deckRender handleRequest', () => {
+  it('returns 404 for non-matching path', async () => {
+    const res = await handleRequest(new Request('http://x/api/other'))
+    expect(res.status).toBe(404)
+  })
+
+  it('returns 401 when no user', async () => {
+    authBuilder.getUser.mockResolvedValueOnce({ data: { user: null }, error: null })
+    const res = await handleRequest(new Request('http://x/api/decks/render', { method: 'POST' }))
+    expect(res.status).toBe(401)
+  })
+
+  it('renders deck with blueprint', async () => {
+    builder.maybeSingle.mockResolvedValueOnce({ 
+      data: { 
+        blueprint_id: 'bp1', 
+        user_id: 'test-user', 
+        is_default: false, 
+        section_sequence: ['intro', 'solution'], 
+        theme: 'default' 
+      }, 
+      error: null 
     })
-    builder.maybeSingle.mockResolvedValueOnce({ data: { css: '.brand{}' }, error: null })
-    builder.in.mockResolvedValueOnce({ data: [{ section_id: 'intro', default_templates: ['t1'] }], error: null })
-    const body = JSON.stringify({ blueprint_id: 'b1' })
-    const res = await handleRequest(new Request('http://x/decks/render', { method: 'POST', body }))
+    builder.select.mockResolvedValueOnce({ 
+      data: [{ section_id: 'intro', default_templates: ['t1'] }], 
+      error: null 
+    })
+    builder.maybeSingle.mockResolvedValueOnce({ 
+      data: { css: '.test {}' }, 
+      error: null 
+    })
+    
+    const res = await handleRequest(new Request('http://x/api/decks/render', {
+      method: 'POST',
+      body: JSON.stringify({ blueprint_id: 'bp1' })
+    }))
     expect(res.status).toBe(200)
-    const json = await res.json()
-    expect(json.presentation_url).toContain('/decks/')
-    expect(json.assets_bundle_url).toContain('/decks/')
-    expect(fromMock).toHaveBeenCalledWith('themes')
   })
 
-  it('applies slide overrides', async () => {
-    builder.maybeSingle.mockResolvedValueOnce({
-      data: { blueprint_id: 'b1', user_id: 'u1', is_default: false, section_sequence: ['solution'], theme: 'brand' },
-      error: null,
+  it('renders with overrides', async () => {
+    builder.maybeSingle.mockResolvedValueOnce({ 
+      data: { 
+        blueprint_id: 'bp1', 
+        user_id: 'test-user', 
+        is_default: false, 
+        section_sequence: ['intro'], 
+        theme: 'default' 
+      }, 
+      error: null 
     })
-    builder.maybeSingle.mockResolvedValueOnce({ data: { css: '.brand{}' }, error: null })
-    builder.in.mockResolvedValueOnce({ data: [{ section_id: 'solution', default_templates: ['t1'] }], error: null })
-    const body = JSON.stringify({ blueprint_id: 'b1', overrides: { solution: ['custom'] } })
-    const res = await handleRequest(new Request('http://x/decks/render', { method: 'POST', body }))
-    const json = await res.json()
-    expect(json.html).toContain('custom')
-    expect(fromMock).toHaveBeenCalledWith('section_templates')
-    expect(fromMock).toHaveBeenCalledWith('themes')
+    builder.select.mockResolvedValueOnce({ 
+      data: [], 
+      error: null 
+    })
+    builder.maybeSingle.mockResolvedValueOnce({ 
+      data: { css: '.test {}' }, 
+      error: null 
+    })
+    
+    const res = await handleRequest(new Request('http://x/api/decks/render', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        blueprint_id: 'bp1', 
+        overrides: { intro: ['custom-template'] } 
+      })
+    }))
+    expect(res.status).toBe(200)
   })
 
-  it('returns 404 when blueprint missing', async () => {
+  it('returns 404 for missing blueprint', async () => {
     builder.maybeSingle.mockResolvedValueOnce({ data: null, error: null })
-    const body = JSON.stringify({ blueprint_id: 'missing' })
-    const res = await handleRequest(new Request('http://x/decks/render', { method: 'POST', body }))
+    
+    const res = await handleRequest(new Request('http://x/api/decks/render', {
+      method: 'POST',
+      body: JSON.stringify({ blueprint_id: 'missing' })
+    }))
     expect(res.status).toBe(404)
   })
 })

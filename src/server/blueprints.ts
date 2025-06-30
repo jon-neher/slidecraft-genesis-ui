@@ -1,3 +1,4 @@
+
 import type { Database } from '../integrations/supabase/types'
 import { getSupabaseClient } from './supabaseClient'
 
@@ -18,8 +19,8 @@ function parseBlueprintData(data: Record<string, unknown> | null | undefined) {
     section_sequence: section_sequence as string[],
     theme: theme as string,
     slide_library: slide_library as string[],
-    extra_metadata,
-    blueprint: data || {},
+    extra_metadata: extra_metadata as Database['public']['Tables']['blueprints']['Insert']['extra_metadata'],
+    blueprint: data as Database['public']['Tables']['blueprints']['Insert']['blueprint'],
   }
 }
 
@@ -113,7 +114,7 @@ export async function handleRequest(req: Request): Promise<Response> {
             section_sequence: parsed.section_sequence,
             theme: parsed.theme,
             slide_library: parsed.slide_library,
-            extra_metadata: parsed.extra_metadata as Database['public']['Tables']['blueprints']['Insert']['extra_metadata'],
+            extra_metadata: parsed.extra_metadata,
           })
           .select()
           .single()
@@ -148,7 +149,7 @@ export async function handleRequest(req: Request): Promise<Response> {
             section_sequence: orig.section_sequence,
             theme: orig.theme,
             slide_library: orig.slide_library,
-            extra_metadata: orig.extra_metadata as Database['public']['Tables']['blueprints']['Insert']['extra_metadata'],
+            extra_metadata: orig.extra_metadata,
           })
           .select()
           .single()
@@ -195,7 +196,7 @@ export async function handleRequest(req: Request): Promise<Response> {
               section_sequence: parsed.section_sequence,
               theme: parsed.theme,
               slide_library: parsed.slide_library,
-              extra_metadata: parsed.extra_metadata as Database['public']['Tables']['blueprints']['Update']['extra_metadata'],
+              extra_metadata: parsed.extra_metadata,
               updated_at: new Date().toISOString(),
             })
             .eq('blueprint_id', id)

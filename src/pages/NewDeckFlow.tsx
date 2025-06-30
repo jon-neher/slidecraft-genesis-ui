@@ -1,199 +1,268 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import { usePresentations } from '@/hooks/usePresentations';
-import { useSecureHubSpotData } from '@/hooks/useSecureHubSpotData';
-import type { ContactResult } from '@/integrations/hubspot/client';
 
-interface FormData {
-  title: string;
-  audience: string;
-  goals: string;
-  selectedContact: ContactResult | null;
-  notes: string;
-}
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Search, FileText, User, Building } from 'lucide-react';
+import { useSecureHubSpotData } from '@/hooks/useSecureHubSpotData';
+import { usePresentations } from '@/hooks/usePresentations';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
+import type { ContactRecord } from '@/integrations/hubspot/types';
 
 const NewDeckFlow = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { createPresentation } = usePresentations();
-  const { contacts, loading: contactsLoading } = useSecureHubSpotData();
+  const { searchContacts, loading: hubspotLoading, error: hubspotError } = useSecureHubSpotData();
   
-  const [formData, setFormData] = useState<FormData>({
-    title: '',
-    audience: '',
-    goals: '',
-    selectedContact: null,
-    notes: ''
-  });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<ContactRecord[]>([]);
+  const [selectedContact, setSelectedContact] = useState<ContactRecord | null>(null);
+  const [notes, setNotes] = useState('');
+  const [deckType, setDeckType] = useState('');
+  const [title, setTitle] = useState('');
 
-  const handleCreatePresentation = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
     
     try {
-      // Convert ContactResult to a serializable format for JSON storage
-      const contextData = formData.selectedContact && formData.notes ? {
-        contact: {
-          id: formData.selectedContact.id,
-          firstname: formData.selectedContact.properties?.firstname || '',
-          lastname: formData.selectedContact.properties?.lastname || '',
-          email: formData.selectedContact.properties?.email || '',
-          company: formData.selectedContact.properties?.company || '',
-          // Add other relevant properties as simple strings/numbers
-        },
-        notes: formData.notes,
-        audience: formData.audience,
-        goals: formData.goals
-      } : {
-        audience: formData.audience,
-        goals: formData.goals
+      const results = await searchContacts(searchQuery);
+      setSearchResults(results);
+    } catch (error) {
+      console.error('Search failed:', error);
+      toast({
+        title: 'Search Failed',
+        description: 'Unable to search contacts. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleCreateDeck = async () => {
+    if (!title || !selectedContact) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please provide a title and select a contact.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      // Convert ContactRecord to a serializable format
+      const contactData = {
+        id: selectedContact.id,
+        properties: selectedContact.properties,
+        createdAt: selectedContact.createdAt,
+        updatedAt: selectedContact.updatedAt,
+        archived: selectedContact.archived
+      };
+
+      const contextData = {
+        contact: contactData,
+        notes: notes,
+        deckType: deckType
       };
 
       await createPresentation({
-        title: formData.title,
+        title,
         context: contextData
       });
 
       toast({
         title: 'Success',
-        description: 'Deck creation started successfully',
+        description: 'Deck creation started. You can track progress in your dashboard.',
       });
 
       navigate('/dashboard');
     } catch (error) {
+      console.error('Failed to create deck:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to create deck',
+        title: 'Creation Failed',
+        description: 'Unable to create deck. Please try again.',
         variant: 'destructive',
       });
     }
   };
 
   return (
-    <>
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
-      <SignedIn>
-        <div className="min-h-screen bg-background p-6">
-          <div className="max-w-2xl mx-auto space-y-6">
-            <div className="text-center space-y-4">
-              <h1 className="text-3xl font-bold">Create New Deck</h1>
-              <p className="text-muted-foreground">
-                Let's gather some information to create your personalized presentation
-              </p>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Create New Deck</h1>
+        <p className="text-muted-foreground">
+          Search for a contact and create a personalized presentation deck
+        </p>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Contact Search */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Search className="h-5 w-5" />
+              Find Contact
+            </CardTitle>
+            <CardDescription>
+              Search for a contact from your HubSpot CRM
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                placeholder="Search by name, email, or company..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              />
+              <Button onClick={handleSearch} disabled={hubspotLoading}>
+                Search
+              </Button>
             </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Deck Details</CardTitle>
-                <CardDescription>
-                  Provide basic information about your presentation
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleCreatePresentation} className="space-y-4">
-                  <div>
-                    <Label htmlFor="title">Presentation Title</Label>
-                    <Input
-                      id="title"
-                      value={formData.title}
-                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                      placeholder="Enter your presentation title"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="audience">Target Audience</Label>
-                    <Input
-                      id="audience"
-                      value={formData.audience}
-                      onChange={(e) => setFormData(prev => ({ ...prev, audience: e.target.value }))}
-                      placeholder="Who is this presentation for?"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="goals">Goals & Objectives</Label>
-                    <Textarea
-                      id="goals"
-                      value={formData.goals}
-                      onChange={(e) => setFormData(prev => ({ ...prev, goals: e.target.value }))}
-                      placeholder="What do you want to achieve with this presentation?"
-                      rows={3}
-                      required
-                    />
-                  </div>
-
-                  {contacts && contacts.length > 0 && (
-                    <>
-                      <div>
-                        <Label htmlFor="contact">Select Contact (Optional)</Label>
-                        <Select onValueChange={(value) => {
-                          const contact = contacts.find(c => c.id === value);
-                          setFormData(prev => ({ ...prev, selectedContact: contact || null }));
-                        }}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Choose a contact to personalize for" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {contacts.map((contact) => (
-                              <SelectItem key={contact.id} value={contact.id}>
-                                {contact.properties?.firstname} {contact.properties?.lastname} 
-                                {contact.properties?.email && ` (${contact.properties.email})`}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      {formData.selectedContact && (
-                        <div>
-                          <Label htmlFor="notes">Additional Notes</Label>
-                          <Textarea
-                            id="notes"
-                            value={formData.notes}
-                            onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                            placeholder="Any specific points you'd like to address for this contact?"
-                            rows={3}
-                          />
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  <div className="flex gap-4">
-                    <Button type="button" variant="outline" onClick={() => navigate('/dashboard')} className="flex-1">
-                      Cancel
-                    </Button>
-                    <Button type="submit" className="flex-1">
-                      Create Deck
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-
-            {contactsLoading && (
-              <Card>
-                <CardContent className="text-center py-8">
-                  <p>Loading contacts...</p>
-                </CardContent>
-              </Card>
+            {hubspotError && (
+              <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                {hubspotError}
+              </div>
             )}
-          </div>
-        </div>
-      </SignedIn>
-    </>
+
+            {searchResults.length > 0 && (
+              <div className="space-y-2">
+                <Label>Search Results</Label>
+                <div className="max-h-60 overflow-y-auto space-y-2">
+                  {searchResults.map((contact) => (
+                    <div
+                      key={contact.id}
+                      className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                        selectedContact?.id === contact.id
+                          ? 'border-primary bg-primary/5'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                      onClick={() => setSelectedContact(contact)}
+                    >
+                      <div className="flex items-start gap-3">
+                        <User className="h-4 w-4 mt-1 text-muted-foreground" />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm">
+                            {contact.properties.firstname || contact.properties.lastname
+                              ? `${contact.properties.firstname || ''} ${contact.properties.lastname || ''}`.trim()
+                              : 'No name'}
+                          </p>
+                          {contact.properties.email && (
+                            <p className="text-xs text-muted-foreground">{contact.properties.email}</p>
+                          )}
+                          {contact.properties.company && (
+                            <div className="flex items-center gap-1 mt-1">
+                              <Building className="h-3 w-3" />
+                              <p className="text-xs text-muted-foreground">{contact.properties.company}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Deck Configuration */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Deck Configuration
+            </CardTitle>
+            <CardDescription>
+              Configure your presentation details
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="title">Deck Title</Label>
+              <Input
+                id="title"
+                placeholder="Enter deck title..."
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="deck-type">Deck Type</Label>
+              <Select value={deckType} onValueChange={setDeckType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select deck type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sales">Sales Presentation</SelectItem>
+                  <SelectItem value="demo">Product Demo</SelectItem>
+                  <SelectItem value="proposal">Business Proposal</SelectItem>
+                  <SelectItem value="follow-up">Follow-up Presentation</SelectItem>
+                  <SelectItem value="custom">Custom</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="notes">Additional Notes</Label>
+              <Textarea
+                id="notes"
+                placeholder="Add any specific requirements or context..."
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={3}
+              />
+            </div>
+
+            <Separator />
+
+            <Button 
+              onClick={handleCreateDeck} 
+              className="w-full"
+              disabled={!title || !selectedContact}
+            >
+              Create Deck
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Selected Contact Summary */}
+      {selectedContact && (
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Selected Contact</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-start gap-3">
+              <User className="h-5 w-5 mt-1" />
+              <div>
+                <p className="font-medium">
+                  {selectedContact.properties.firstname || selectedContact.properties.lastname
+                    ? `${selectedContact.properties.firstname || ''} ${selectedContact.properties.lastname || ''}`.trim()
+                    : 'No name'}
+                </p>
+                {selectedContact.properties.email && (
+                  <p className="text-sm text-muted-foreground">{selectedContact.properties.email}</p>
+                )}
+                {selectedContact.properties.company && (
+                  <p className="text-sm text-muted-foreground">{selectedContact.properties.company}</p>
+                )}
+                {selectedContact.properties.jobtitle && (
+                  <p className="text-sm text-muted-foreground">{selectedContact.properties.jobtitle}</p>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 };
 

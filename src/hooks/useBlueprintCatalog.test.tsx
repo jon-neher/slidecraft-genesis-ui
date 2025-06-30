@@ -3,7 +3,7 @@
 
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
 import { useBlueprintCatalog } from './useBlueprintCatalog';
 import React from 'react';
 
@@ -22,8 +22,8 @@ describe('useBlueprintCatalog', () => {
       },
     });
     
-    // Mock fetch globally
-    global.fetch = jest.fn();
+    // Mock fetch globally with proper typing
+    global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
   });
 
   afterEach(() => {
@@ -33,10 +33,10 @@ describe('useBlueprintCatalog', () => {
   it('fetches blueprint catalog', async () => {
     const mockCatalog = [{ blueprint_id: '1', name: 'A', is_default: true, data: {} }];
     
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
       ok: true,
       json: async () => mockCatalog,
-    });
+    } as Response);
 
     const { result } = renderHook(() => useBlueprintCatalog(true), { wrapper });
 
