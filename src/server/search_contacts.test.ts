@@ -40,7 +40,10 @@ const mockClient = {
 } as unknown as SupabaseClient<Database>
 
 function makeFetch<T>(results: T[]) {
-  return jest.fn().mockResolvedValue({ ok: true, json: async () => ({ results }) })
+  return jest.fn().mockResolvedValue({ 
+    ok: true, 
+    json: async () => ({ results }) 
+  }) as jest.MockedFunction<typeof fetch>
 }
 
 describe('searchContacts', () => {
@@ -49,11 +52,11 @@ describe('searchContacts', () => {
     textSearchMock.mockReturnValue({ limit: limitMock })
     limitMock.mockResolvedValue({ data: [], error: null })
     maybeSingleMock.mockResolvedValue({ data: { access_token: 'tok', refresh_token: 'ref', expires_at: new Date(Date.now()+3600e3).toISOString() }, error: null })
-    upsertMock.mockResolvedValue({})
+    upsertMock.mockResolvedValue({ error: null })
   })
 
   it('hits local only', async () => {
-    limitMock.mockResolvedValue({ data: Array.from({ length: 6 }, (_, i) => ({ id: `${i}`, properties: {} })), error: null })
+    limitMock.mockResolvedValue({ data: Array.from({ length: 6 }, (_, i) => ({ id: `${i}`, properties: {}, updated_at: '2024-01-01' })), error: null })
     const fetch = makeFetch([])
     const res = await searchContacts('p1', 'foo', 10, mockClient as SupabaseClient<Database>, fetch)
     expect(fetch).not.toHaveBeenCalled()
@@ -61,7 +64,7 @@ describe('searchContacts', () => {
   })
 
   it('hits remote when local < 5', async () => {
-    limitMock.mockResolvedValueOnce({ data: [{ id: '1', properties: {} }], error: null })
+    limitMock.mockResolvedValueOnce({ data: [{ id: '1', properties: {}, updated_at: '2024-01-01' }], error: null })
     const fetch = makeFetch([{ id: '1', properties: {} }, { id: '2', properties: {} }])
     const res = await searchContacts('p1', 'foo', 2, mockClient as SupabaseClient<Database>, fetch)
     expect(fetch).toHaveBeenCalled()

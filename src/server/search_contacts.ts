@@ -8,9 +8,13 @@ import { getSupabaseClient } from './supabaseClient'
 
 import { searchContacts as hubspotSearch } from '../integrations/hubspot/client'
 
+// Use the same ContactRecord interface as the integrations
 export interface ContactRecord {
   id: string
-  properties: Record<string, unknown>
+  properties: Record<string, string>
+  createdAt: string
+  updatedAt: string
+  archived: boolean
 }
 
 // Input validation function
@@ -49,7 +53,14 @@ export async function searchLocal(
     .textSearch('search_vector', q, { config: 'simple' })
     .limit(limit)
 
-  return (data as ContactRecord[]) || []
+  // Convert to ContactRecord format
+  return (data || []).map(contact => ({
+    id: contact.id,
+    properties: (contact.properties as Record<string, string>) || {},
+    createdAt: contact.updated_at || new Date().toISOString(),
+    updatedAt: contact.updated_at || new Date().toISOString(),
+    archived: false
+  }))
 }
 
 async function searchRemote(
@@ -74,7 +85,15 @@ async function searchRemote(
         }))
       )
   }
-  return rows.slice(0, limit)
+  
+  // Convert to ContactRecord format
+  return rows.slice(0, limit).map(contact => ({
+    id: contact.id,
+    properties: (contact.properties as Record<string, string>) || {},
+    createdAt: now,
+    updatedAt: now,
+    archived: false
+  }))
 }
 
 export async function searchContacts(

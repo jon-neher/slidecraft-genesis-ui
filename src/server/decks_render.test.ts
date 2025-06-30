@@ -53,22 +53,24 @@ describe('deckRender handleRequest', () => {
   })
 
   it('renders deck with blueprint', async () => {
-    builder.maybeSingle.mockResolvedValueOnce({ 
-      data: { 
-        blueprint_id: 'bp1', 
-        user_id: 'test-user', 
-        is_default: false, 
-        section_sequence: ['intro', 'solution'], 
-        theme: 'default' 
-      }, 
-      error: null 
-    })
+    builder.maybeSingle
+      .mockResolvedValueOnce({ 
+        data: { 
+          blueprint_id: 'bp1', 
+          user_id: 'test-user', 
+          is_default: false, 
+          section_sequence: ['intro', 'solution'], 
+          theme: 'default' 
+        }, 
+        error: null 
+      })
+      .mockResolvedValueOnce({ 
+        data: { css: '.test {}' }, 
+        error: null 
+      })
+    
     builder.select.mockResolvedValueOnce({ 
       data: [{ section_id: 'intro', default_templates: ['t1'] }], 
-      error: null 
-    })
-    builder.maybeSingle.mockResolvedValueOnce({ 
-      data: { css: '.test {}' }, 
       error: null 
     })
     
@@ -80,22 +82,24 @@ describe('deckRender handleRequest', () => {
   })
 
   it('renders with overrides', async () => {
-    builder.maybeSingle.mockResolvedValueOnce({ 
-      data: { 
-        blueprint_id: 'bp1', 
-        user_id: 'test-user', 
-        is_default: false, 
-        section_sequence: ['intro'], 
-        theme: 'default' 
-      }, 
-      error: null 
-    })
+    builder.maybeSingle
+      .mockResolvedValueOnce({ 
+        data: { 
+          blueprint_id: 'bp1', 
+          user_id: 'test-user', 
+          is_default: false, 
+          section_sequence: ['intro'], 
+          theme: 'default' 
+        }, 
+        error: null 
+      })
+      .mockResolvedValueOnce({ 
+        data: { css: '.test {}' }, 
+        error: null 
+      })
+    
     builder.select.mockResolvedValueOnce({ 
       data: [], 
-      error: null 
-    })
-    builder.maybeSingle.mockResolvedValueOnce({ 
-      data: { css: '.test {}' }, 
       error: null 
     })
     

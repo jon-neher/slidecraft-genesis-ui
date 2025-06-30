@@ -2,7 +2,7 @@
 import { useSupabaseClient } from './useSupabaseClient';
 import { useUser } from '@clerk/clerk-react';
 import { useState } from 'react';
-import type { ContactRecord } from '@/server/search_contacts';
+import type { ContactRecord } from '@/integrations/hubspot/types';
 
 export const useSecureHubSpotData = () => {
   const supabase = useSupabaseClient();

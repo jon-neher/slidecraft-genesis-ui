@@ -1,3 +1,4 @@
+
 import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 
 const upsertCache = jest.fn()
@@ -38,7 +39,7 @@ describe('hubspotFetchContacts', () => {
           { id: '1', properties: { hs_lastmodifieddate: '2024-01-01T00:00:00Z' } },
         ],
       }),
-    })
+    }) as jest.MockedFunction<typeof fetch>
 
     await hubspotFetchContacts('p1', undefined, undefined, fetchMock)
 

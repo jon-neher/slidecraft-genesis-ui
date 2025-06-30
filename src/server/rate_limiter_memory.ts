@@ -1,43 +1,38 @@
-export interface BucketState {
-  tokens: number;
-  resetAt: number;
+
+interface IRateLimiterMemory {
+  take(key: string): Promise<void>
 }
 
-function delay(ms: number) {
-  return new Promise<void>(resolve => setTimeout(resolve, ms));
-}
+export class RateLimiterMemory implements IRateLimiterMemory {
+  private requests: Map<string, number[]> = new Map()
+  private maxRequests: number
+  private windowMs: number
 
-export class RateLimiterMemory {
-  private buckets: Map<string, BucketState> = new Map();
-
-  constructor(private maxBurst = 100, private windowMs = 10_000) {}
-
-  private getState(id: string): BucketState {
-    const now = Date.now();
-    let state = this.buckets.get(id);
-    if (!state) {
-      state = { tokens: this.maxBurst, resetAt: now + this.windowMs };
-      this.buckets.set(id, state);
-    }
-    if (now >= state.resetAt) {
-      state.tokens = this.maxBurst;
-      state.resetAt = now + this.windowMs;
-    }
-    return state;
+  constructor(maxRequests: number, windowMs: number) {
+    this.maxRequests = maxRequests
+    this.windowMs = windowMs
   }
 
-  async take(id: string, cost = 1): Promise<void> {
-    const now = Date.now();
-    const state = this.getState(id);
-    if (state.tokens >= cost) {
-      state.tokens -= cost;
-      return;
+  async take(key: string): Promise<void> {
+    const now = Date.now()
+    const requests = this.requests.get(key) || []
+    
+    // Remove old requests outside the window
+    const validRequests = requests.filter(time => now - time < this.windowMs)
+    
+    if (validRequests.length >= this.maxRequests) {
+      const oldestRequest = Math.min(...validRequests)
+      const waitTime = this.windowMs - (now - oldestRequest)
+      if (waitTime > 0) {
+        await new Promise(resolve => setTimeout(resolve, waitTime))
+        return this.take(key) // Retry after waiting
+      }
     }
-    await delay(state.resetAt - now);
-    return this.take(id, cost);
+    
+    validRequests.push(now)
+    this.requests.set(key, validRequests)
   }
 }
 
-const rateLimiterMemory = new RateLimiterMemory();
-export default rateLimiterMemory;
-export { RateLimiterMemory };
+// Default instance
+export default new RateLimiterMemory(100, 1000)

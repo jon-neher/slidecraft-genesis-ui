@@ -1,35 +1,64 @@
 
-import { describe, it, expect, jest } from '@jest/globals'
+import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 import { postNote } from './post_note'
 
-// Mock the HubSpot client
-jest.mock('../integrations/hubspot/client', () => ({
-  postNote: jest.fn(async (input) => {
-    if (input.hubspot_object_id === 'error') {
-      return { error: 'Test error' }
-    }
-    return { noteId: 'test-note-id' }
-  }),
-}))
+const mockClient = {
+  from: jest.fn().mockReturnValue({
+    select: jest.fn().mockReturnValue({
+      eq: jest.fn().mockReturnValue({
+        maybeSingle: jest.fn().mockResolvedValue({ data: { access_token: 'mock-token' }, error: null })
+      })
+    })
+  })
+}
+
+const mockFetch = jest.fn()
 
 describe('postNote', () => {
-  it('should return noteId on success', async () => {
-    const result = await postNote({
-      portal_id: 'test-portal',
-      hubspot_object_id: 'test-contact-id',
-      app_record_url: 'http://example.com/app-record',
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 'note-123' })
     })
-
-    expect(result).toEqual({ noteId: 'test-note-id' })
   })
 
-  it('should return error on failure', async () => {
-    const result = await postNote({
+  it('posts note to HubSpot', async () => {
+    const input = {
       portal_id: 'test-portal',
-      hubspot_object_id: 'error',
-      app_record_url: 'http://example.com/app-record',
+      hubspot_object_id: 'contact-123',
+      app_record_url: 'https://app.example.com/record/1'
+    }
+
+    const result = await postNote(input, mockClient as any, mockFetch as any)
+    
+    expect(result).toEqual({ noteId: 'note-123' })
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.hubapi.com/crm/v3/objects/notes',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          'Authorization': 'Bearer mock-token',
+          'Content-Type': 'application/json'
+        })
+      })
+    )
+  })
+
+  it('handles errors gracefully', async () => {
+    mockFetch.mockResolvedValue({
+      ok: false,
+      json: async () => ({ error: 'API Error' })
     })
 
-    expect(result).toEqual({ error: 'Test error' })
+    const input = {
+      portal_id: 'test-portal',
+      hubspot_object_id: 'contact-123',
+      app_record_url: 'https://app.example.com/record/1'
+    }
+
+    const result = await postNote(input, mockClient as any, mockFetch as any)
+    
+    expect(result).toHaveProperty('error')
   })
 })
