@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from '@jest/globals';
@@ -12,3 +13,4 @@ describe('ModernFeatures', () => {
     expect(cards).toHaveLength(4);
   });
 });
+/** @jest-environment jsdom */

@@ -11,10 +11,11 @@ jest.doMock('@supabase/supabase-js', () => ({
 }))
 
 jest.mock('openai', () => ({
+  __esModule: true,
   default: class {
-    chat = { completions: { create: createMock } }
+    chat = { completions: { create: createMock } };
   },
-}))
+}));
 
 beforeEach(async () => {
   jest.resetModules()

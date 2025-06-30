@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 import { renderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
@@ -8,13 +10,24 @@ const wrapper: React.FC<{children: React.ReactNode}> = ({ children }) => (
 );
 
 describe('useSectionSuggestions', () => {
+  beforeAll(() => {
+    if (typeof global.fetch === 'undefined') {
+      Object.defineProperty(global, 'fetch', {
+        value: globalThis.fetch as typeof fetch,
+        writable: true,
+        configurable: true,
+      });
+    }
+  });
+  const fetchMock = jest.fn();
   beforeEach(() => {
     jest.restoreAllMocks();
+    (global as unknown as { fetch: typeof fetch }).fetch = fetchMock as unknown as typeof fetch;
   });
 
   it('returns sections from mutation', async () => {
     const sections = ['a', 'b'];
-    jest.spyOn(global, 'fetch').mockResolvedValue(
+    fetchMock.mockResolvedValueOnce(
       { ok: true, json: async () => ({ sections }) } as unknown as Response
     );
 

@@ -102,7 +102,9 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
 
 // When running in a Deno environment (Supabase Edge Functions), start the server.
 if (typeof Deno !== 'undefined') {
-  const { serve } = await import('https://deno.land/std@0.205.0/http/server.ts');
-  serve(hubspotOAuthCallback);
+  (async () => {
+    const { serve } = await import('https://deno.land/std@0.205.0/http/server.ts');
+    serve(hubspotOAuthCallback);
+  })();
 }
 
