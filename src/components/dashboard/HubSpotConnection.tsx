@@ -73,8 +73,10 @@ const HubSpotConnection = () => {
     setIsConnecting(true);
     
     try {
-      // Generate a cryptographically secure state parameter
-      const state = crypto.randomUUID();
+      // Generate a cryptographically secure state parameter using Web Crypto API
+      const array = new Uint8Array(16);
+      crypto.getRandomValues(array);
+      const state = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
 
       // Persist state mapping for validation on callback
       const { error: stateError } = await supabase
