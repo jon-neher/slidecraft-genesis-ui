@@ -9,54 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      blueprints: {
-        Row: {
-          blueprint: Json
-          goal: string
-          audience: string
-          section_sequence: string[]
-          theme: string
-          slide_library: string[]
-          extra_metadata: Json
-          blueprint_id: string
-          created_at: string
-          is_default: boolean
-          name: string
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          blueprint: Json
-          goal?: string
-          audience?: string
-          section_sequence?: string[]
-          theme?: string
-          slide_library?: string[]
-          extra_metadata?: Json
-          blueprint_id?: string
-          created_at?: string
-          is_default?: boolean
-          name: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          blueprint?: Json
-          goal?: string
-          audience?: string
-          section_sequence?: string[]
-          theme?: string
-          slide_library?: string[]
-          extra_metadata?: Json
-          blueprint_id?: string
-          created_at?: string
-          is_default?: boolean
-          name?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      },
       hubspot_contacts_cache: {
         Row: {
           id: string
@@ -352,51 +304,6 @@ export type Database = {
           output_schema?: Json
           prompt_template?: string
           template_id?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      section_templates: {
-        Row: {
-          section_id: string
-          purpose: string
-          default_templates: string[]
-          editable: boolean
-        }
-        Insert: {
-          section_id?: string
-          purpose: string
-          default_templates: string[]
-          editable?: boolean
-        }
-        Update: {
-          section_id?: string
-          purpose?: string
-          default_templates?: string[]
-          editable?: boolean
-        }
-        Relationships: []
-      }
-      themes: {
-        Row: {
-          theme_id: string
-          name: string
-          css: string
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          theme_id?: string
-          name: string
-          css: string
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          theme_id?: string
-          name?: string
-          css?: string
-          created_at?: string
           updated_at?: string
         }
         Relationships: []

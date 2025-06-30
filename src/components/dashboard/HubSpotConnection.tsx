@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -12,39 +12,92 @@ import { useUser } from '@clerk/clerk-react';
 const HubSpotConnection = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
   const { toast } = useToast();
   const supabase = useSupabaseClient();
   const { user } = useUser();
 
+  // Check connection status on component mount
+  useEffect(() => {
+    const checkConnectionStatus = async () => {
+      if (!user) {
+        setConnectionStatus('disconnected');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('hubspot_tokens')
+          .select('access_token, expires_at')
+          .eq('portal_id', user.id)
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error checking HubSpot connection:', error);
+          setConnectionStatus('disconnected');
+          return;
+        }
+
+        if (data && data.access_token) {
+          // Check if token is still valid
+          const expiresAt = data.expires_at ? new Date(data.expires_at) : null;
+          const isExpired = expiresAt && expiresAt.getTime() <= Date.now();
+          
+          setIsConnected(!isExpired);
+          setConnectionStatus(!isExpired ? 'connected' : 'disconnected');
+        } else {
+          setIsConnected(false);
+          setConnectionStatus('disconnected');
+        }
+      } catch (error) {
+        console.error('Error checking HubSpot connection:', error);
+        setConnectionStatus('disconnected');
+      }
+    };
+
+    checkConnectionStatus();
+  }, [user, supabase]);
+
   const handleConnect = async () => {
+    if (!user) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please log in to connect HubSpot.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsConnecting(true);
     
     try {
-      // Generate a unique state parameter for OAuth security
+      // Generate a cryptographically secure state parameter
       const state = crypto.randomUUID();
 
-
-      if (!user) {
-        throw new Error('User not authenticated');
-      }
-
       // Persist state mapping for validation on callback
-      await supabase.from('hubspot_oauth_states').insert({
-        state,
-        user_id: user.id,
-      });
+      const { error: stateError } = await supabase
+        .from('hubspot_oauth_states')
+        .insert({
+          state,
+          user_id: user.id,
+        });
+
+      if (stateError) {
+        throw new Error('Failed to initialize OAuth state');
+      }
       
       // Fetch the client id from the Supabase edge function
       const idRes = await fetch('/api/hubspot_client_id');
       if (!idRes.ok) {
-        throw new Error('Failed to load HubSpot client id');
+        throw new Error('Failed to load HubSpot client configuration');
       }
+      
       const { client_id } = await idRes.json();
       if (!client_id) {
-        throw new Error('Missing HubSpot client id');
+        throw new Error('Missing HubSpot client configuration');
       }
 
-      // Construct HubSpot OAuth URL
+      // Construct HubSpot OAuth URL with proper security parameters
       const hubspotAuthUrl = new URL('https://app.hubspot.com/oauth/authorize');
       hubspotAuthUrl.searchParams.set('client_id', client_id);
       hubspotAuthUrl.searchParams.set('scope', 'contacts');
@@ -57,20 +110,43 @@ const HubSpotConnection = () => {
       console.error('Error initiating HubSpot connection:', error);
       toast({
         title: 'Connection Error',
-        description: 'Failed to initiate HubSpot connection. Please try again.',
+        description: error instanceof Error ? error.message : 'Failed to initiate HubSpot connection. Please try again.',
         variant: 'destructive',
       });
       setIsConnecting(false);
     }
   };
 
-  const handleDisconnect = () => {
-    setIsConnected(false);
-    toast({
-      title: 'Disconnected',
-      description: 'HubSpot has been disconnected from your account.',
-    });
+  const handleDisconnect = async () => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('hubspot_tokens')
+        .delete()
+        .eq('portal_id', user.id);
+
+      if (error) {
+        throw error;
+      }
+
+      setIsConnected(false);
+      setConnectionStatus('disconnected');
+      toast({
+        title: 'Disconnected',
+        description: 'HubSpot has been disconnected from your account.',
+      });
+    } catch (error) {
+      console.error('Error disconnecting HubSpot:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to disconnect HubSpot. Please try again.',
+        variant: 'destructive',
+      });
+    }
   };
+
+  const displayStatus = connectionStatus === 'checking' ? isConnected : connectionStatus === 'connected';
 
   return (
     <Card className="w-full bg-white border border-gray-200">
@@ -85,7 +161,12 @@ const HubSpotConnection = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {isConnected ? (
+          {connectionStatus === 'checking' ? (
+            <Badge variant="secondary">
+              <div className="w-3 h-3 mr-1 animate-spin rounded-full border border-gray-400 border-t-transparent" />
+              Checking...
+            </Badge>
+          ) : displayStatus ? (
             <Badge variant="success">
               <CheckCircle className="w-3 h-3 mr-1" />
               Connected
@@ -101,14 +182,14 @@ const HubSpotConnection = () => {
       
       <CardContent className="space-y-4">
         <p className="text-sm text-gray-600 leading-relaxed">
-          {isConnected 
+          {displayStatus 
             ? 'Your HubSpot account is connected. You can now use contact data in your presentations.'
             : 'Connect your HubSpot account to automatically pull contact and company data into your presentations.'
           }
         </p>
         
         <div className="flex items-center gap-2 flex-wrap">
-          {isConnected ? (
+          {displayStatus ? (
             <>
               <Dialog>
                 <DialogTrigger asChild>
@@ -153,7 +234,7 @@ const HubSpotConnection = () => {
           ) : (
             <Button 
               onClick={handleConnect}
-              disabled={isConnecting}
+              disabled={isConnecting || connectionStatus === 'checking'}
               className="bg-electric-indigo text-ice-white hover:bg-electric-indigo/90 touch-target"
             >
               {isConnecting ? (
