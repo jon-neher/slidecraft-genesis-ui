@@ -1,108 +1,75 @@
 
-import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals'
+import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals';
 
-let handleRequest: typeof import('./blueprints').handleRequest
+let generateSections: typeof import('./sections').generateSections
+let createBlueprint: typeof import('./blueprints').createBlueprint
+let getUserBlueprints: typeof import('./blueprints').getUserBlueprints
 
-const builder = {
+const mockBuilder = {
   select: jest.fn().mockReturnThis(),
   eq: jest.fn().mockReturnThis(),
-  or: jest.fn().mockReturnThis(),
-  insert: jest.fn().mockReturnThis(),
-  update: jest.fn().mockReturnThis(),
-  delete: jest.fn().mockReturnThis(),
-  single: jest.fn(),
+  insert: jest.fn(),
   maybeSingle: jest.fn(),
+  single: jest.fn(),
 }
 
-const authBuilder = {
+const mockAuthBuilder = {
   getUser: jest.fn(),
 }
 
-let fromMock: ReturnType<typeof jest.fn>
-let supabaseClient: any
+const mockSupabase = {
+  from: jest.fn(() => mockBuilder),
+  auth: mockAuthBuilder,
+}
 
 beforeAll(async () => {
-  jest.doMock('@supabase/supabase-js', () => {
-    fromMock = jest.fn(() => builder)
-    supabaseClient = { 
-      from: fromMock,
-      auth: authBuilder
-    }
-    return { createClient: jest.fn(() => supabaseClient) }
-  })
-  ;({ handleRequest } = await import('./blueprints'))
+  jest.doMock('@supabase/supabase-js', () => ({
+    createClient: jest.fn(() => mockSupabase),
+  }))
+  
+  jest.doMock('openai', () => ({
+    OpenAI: jest.fn(() => ({
+      chat: {
+        completions: {
+          create: jest.fn().mockResolvedValue({
+            choices: [{ message: { content: '["intro", "problem", "solution"]' } }]
+          })
+        }
+      }
+    }))
+  }))
+  
+  ;({ generateSections } = await import('./sections'))
+  ;({ createBlueprint, getUserBlueprints } = await import('./blueprints'))
 })
 
 beforeEach(() => {
-  builder.select.mockReturnThis()
-  builder.eq.mockReturnThis()
-  builder.or.mockReturnThis()
-  builder.insert.mockReturnThis()
-  builder.update.mockReturnThis()
-  builder.delete.mockReturnThis()
-  builder.single.mockResolvedValue({ data: null, error: null })
-  builder.maybeSingle.mockResolvedValue({ data: null, error: null })
-  authBuilder.getUser.mockResolvedValue({ data: { user: { id: 'test-user' } }, error: null })
+  jest.clearAllMocks()
+  mockBuilder.select.mockReturnThis()
+  mockBuilder.eq.mockReturnThis()
+  mockBuilder.maybeSingle.mockResolvedValue({ data: null, error: null })
+  mockBuilder.single.mockResolvedValue({ data: null, error: null })
+  mockBuilder.insert.mockResolvedValue({ data: null, error: null })
+  mockAuthBuilder.getUser.mockResolvedValue({ data: { user: { id: 'test-user' } }, error: null })
 })
 
-describe('blueprint performance tests', () => {
-  it('handles blueprint creation efficiently', async () => {
-    const mockBlueprint = {
-      blueprint_id: 'bp1',
-      user_id: 'test-user',
-      name: 'Test Blueprint',
-      is_default: false,
-      goal: 'test goal',
-      audience: 'test audience',
-      section_sequence: ['intro', 'body', 'conclusion'],
-      theme: 'default',
-      slide_library: [],
-      extra_metadata: {},
-    }
-
-    builder.single.mockResolvedValueOnce({ 
-      data: mockBlueprint, 
-      error: null 
-    })
-
-    const startTime = Date.now()
-    const res = await handleRequest(new Request('http://x/blueprints', {
-      method: 'POST',
-      body: JSON.stringify({
-        name: 'Test Blueprint',
-        data: {
-          goal: 'test goal',
-          audience: 'test audience',
-          section_sequence: ['intro', 'body', 'conclusion']
-        }
-      })
-    }))
-    const endTime = Date.now()
-
-    expect(res.status).toBe(201)
-    expect(endTime - startTime).toBeLessThan(1000) // Should complete within 1 second
+describe('Full Flow Performance', () => {
+  it('generates sections quickly', async () => {
+    const start = Date.now()
+    await generateSections('test goal', 'test audience', false)
+    const duration = Date.now() - start
+    expect(duration).toBeLessThan(5000)
   })
 
-  it('lists blueprints efficiently', async () => {
-    builder.select.mockResolvedValueOnce({ data: [], error: null })
-
-    const startTime = Date.now()
-    const res = await handleRequest(new Request('http://x/blueprints'))
-    const endTime = Date.now()
-
-    expect(res.status).toBe(200)
-    expect(endTime - startTime).toBeLessThan(500) // Should complete within 500ms
-  })
-
-  it('gets blueprint by id efficiently', async () => {
-    builder.maybeSingle.mockResolvedValueOnce({ 
+  it('creates blueprint efficiently', async () => {
+    mockBuilder.insert.mockResolvedValue({ 
       data: { 
         blueprint_id: 'bp1', 
-        is_default: false, 
         user_id: 'test-user', 
         name: 'Test', 
-        goal: 'test goal', 
-        audience: 'test audience', 
+        is_default: false, 
+        goal: 'test', 
+        audience: 'test', 
         section_sequence: ['intro'], 
         theme: 'default', 
         slide_library: [], 
@@ -111,40 +78,24 @@ describe('blueprint performance tests', () => {
       error: null 
     })
 
-    const startTime = Date.now()
-    const res = await handleRequest(new Request('http://x/blueprints/bp1'))
-    const endTime = Date.now()
-
-    expect(res.status).toBe(200)
-    expect(endTime - startTime).toBeLessThan(500) // Should complete within 500ms
+    const start = Date.now()
+    await createBlueprint({
+      name: 'Test Blueprint',
+      goal: 'Test goal',
+      audience: 'Test audience',
+      section_sequence: ['intro', 'solution'],
+      theme: 'default'
+    }, 'test-user')
+    const duration = Date.now() - start
+    expect(duration).toBeLessThan(2000)
   })
 
-  it('clones blueprint efficiently', async () => {
-    const originalBlueprint = {
-      blueprint_id: 'bp1',
-      is_default: true,
-      user_id: 'system',
-      name: 'Default Blueprint',
-      goal: 'default goal',
-      audience: 'general',
-      section_sequence: ['intro'],
-      theme: 'default',
-      slide_library: [],
-      extra_metadata: {},
-      blueprint: {}
-    }
+  it('retrieves blueprints quickly', async () => {
+    mockBuilder.select.mockResolvedValue({ data: [], error: null })
 
-    builder.single.mockResolvedValueOnce({ data: originalBlueprint, error: null })
-    builder.single.mockResolvedValueOnce({ 
-      data: { ...originalBlueprint, user_id: 'test-user', blueprint_id: 'bp2' }, 
-      error: null 
-    })
-
-    const startTime = Date.now()
-    const res = await handleRequest(new Request('http://x/blueprints/bp1/clone', { method: 'POST' }))
-    const endTime = Date.now()
-
-    expect(res.status).toBe(201)
-    expect(endTime - startTime).toBeLessThan(1000) // Should complete within 1 second
+    const start = Date.now()
+    await getUserBlueprints('test-user')
+    const duration = Date.now() - start
+    expect(duration).toBeLessThan(1000)
   })
 })

@@ -151,4 +151,39 @@ export async function handleRequest(req: Request): Promise<Response> {
   })
 }
 
+export async function generateSections(goal: string, audience: string, creative: boolean): Promise<{ sections: string[] }> {
+  const g = goal.toLowerCase()
+  const a = audience.toLowerCase()
+  const rule =
+    !creative &&
+    ruleSet.find(r =>
+      r.goalPatterns.some(p => g.includes(p)) &&
+      r.audiencePatterns.some(p => a.includes(p))
+    )
+
+  let sections: string[]
+  if (rule) {
+    sections = rule.sections
+  } else {
+    try {
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4.1-nano',
+        max_tokens: 50,
+        messages: [
+          {
+            role: 'user',
+            content: `Suggest 5–7 section IDs for goal="${goal}" and audience="${audience}".`,
+          },
+        ],
+      })
+      sections = JSON.parse(completion.choices[0].message.content || '[]')
+    } catch (err) {
+      console.error('Section suggest error:', err)
+      sections = ['intro', 'context', 'analysis', 'recommendation', 'q_and_a']
+    }
+  }
+
+  return { sections }
+}
+
 export default { handleRequest }

@@ -1,6 +1,7 @@
 
 import { describe, it, expect, jest, beforeEach } from '@jest/globals'
 import { postNote } from './post_note'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 const mockClient = {
   from: jest.fn().mockReturnValue({
@@ -10,9 +11,9 @@ const mockClient = {
       })
     })
   })
-}
+} as unknown as SupabaseClient
 
-const mockFetch = jest.fn()
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>
 
 describe('postNote', () => {
   beforeEach(() => {
@@ -20,7 +21,7 @@ describe('postNote', () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ id: 'note-123' })
-    })
+    } as Response)
   })
 
   it('posts note to HubSpot', async () => {
@@ -30,7 +31,7 @@ describe('postNote', () => {
       app_record_url: 'https://app.example.com/record/1'
     }
 
-    const result = await postNote(input, mockClient as any, mockFetch as any)
+    const result = await postNote(input, mockClient, mockFetch)
     
     expect(result).toEqual({ noteId: 'note-123' })
     expect(mockFetch).toHaveBeenCalledWith(
@@ -49,7 +50,7 @@ describe('postNote', () => {
     mockFetch.mockResolvedValue({
       ok: false,
       json: async () => ({ error: 'API Error' })
-    })
+    } as Response)
 
     const input = {
       portal_id: 'test-portal',
@@ -57,7 +58,7 @@ describe('postNote', () => {
       app_record_url: 'https://app.example.com/record/1'
     }
 
-    const result = await postNote(input, mockClient as any, mockFetch as any)
+    const result = await postNote(input, mockClient, mockFetch)
     
     expect(result).toHaveProperty('error')
   })

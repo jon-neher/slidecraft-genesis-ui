@@ -22,7 +22,7 @@ describe('generateSections', () => {
   it('generates sections with valid response', async () => {
     mockOpenAI.chat.completions.create.mockResolvedValue({
       choices: [{ message: { content: '["intro", "problem", "solution"]' } }]
-    } as any)
+    })
 
     const result = await generateSections('Test goal', 'Test audience', false)
     expect(result.sections).toEqual(['intro', 'problem', 'solution'])
@@ -31,7 +31,7 @@ describe('generateSections', () => {
   it('handles invalid JSON response', async () => {
     mockOpenAI.chat.completions.create.mockResolvedValue({
       choices: [{ message: { content: 'invalid json' } }]
-    } as any)
+    })
 
     await expect(generateSections('Test goal', 'Test audience', false))
       .rejects.toThrow('Failed to parse OpenAI response')

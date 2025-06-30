@@ -32,6 +32,7 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
+  jest.clearAllMocks()
   builder.select.mockReturnThis()
   builder.eq.mockReturnThis()
   builder.maybeSingle.mockResolvedValue({ data: null, error: null })
