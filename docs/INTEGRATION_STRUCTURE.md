@@ -24,3 +24,9 @@ create a new set of handlers implementing the required operations and expose the
 via your preferred runtime (Edge Function or Express route). Because the Supabase
 and OAuth utilities are shared, most of the supporting code can be reused when
 adding future integrations.
+
+## Blueprint Examples
+
+A minimal blueprint JSON is provided in `examples/blueprint_minimal.json`. This
+file demonstrates the expected field format and is used by automated schema
+tests.

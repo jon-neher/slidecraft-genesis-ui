@@ -1,3 +1,7 @@
 {
-  
+  "section_sequence": {
+    "value": ["intro"],
+    "selection_source": "user",
+    "overrideable": true
+  }
 }
