@@ -67,6 +67,28 @@ interface CacheEntry {
 
 const cache = new Map<string, CacheEntry>()
 
+// Prepopulate cache for common demo scenarios
+const demoPairs = [
+  { goal: 'Quarterly Business Review', audience: 'executive team' },
+  { goal: 'Project Proposal', audience: 'stakeholder' },
+  { goal: 'Training', audience: 'new hire' },
+  { goal: 'Sales Pitch', audience: 'customer' },
+  { goal: 'Product Demo', audience: 'prospect' },
+]
+
+for (const { goal, audience } of demoPairs) {
+  const g = goal.toLowerCase()
+  const a = audience.toLowerCase()
+  const rule = ruleSet.find(r =>
+    r.goalPatterns.some(p => g.includes(p)) &&
+    r.audiencePatterns.some(p => a.includes(p))
+  )
+  if (rule) {
+    const key = `${g}|${a}|0`
+    cache.set(key, { sections: rule.sections, expires: Date.now() + 30 * 24 * 60 * 60 * 1000 })
+  }
+}
+
 const openai = new OpenAI()
 
 export async function handleRequest(req: Request): Promise<Response> {

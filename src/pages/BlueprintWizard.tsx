@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 
 interface Blueprint {
   blueprint_id: string
@@ -18,6 +20,7 @@ const BlueprintWizard = () => {
   const [selected, setSelected] = useState<Blueprint | null>(null)
   const [goal, setGoal] = useState('')
   const [audience, setAudience] = useState('')
+  const [creative, setCreative] = useState(false)
   const [sections, setSections] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
 
@@ -49,7 +52,7 @@ const BlueprintWizard = () => {
       const res = await fetch('/api/sections/suggest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goal, audience }),
+        body: JSON.stringify({ goal, audience, creative }),
       })
       const json = await res.json()
       setSections(json.sections || [])
@@ -112,6 +115,12 @@ const BlueprintWizard = () => {
           <CardContent className="space-y-4">
             <Input placeholder="Goal" value={goal} onChange={e => setGoal(e.target.value)} />
             <Input placeholder="Audience" value={audience} onChange={e => setAudience(e.target.value)} />
+            <div className="flex items-center space-x-2">
+              <Switch id="creative" checked={creative} onCheckedChange={setCreative} />
+              <Label htmlFor="creative" className="text-gray-600">
+                Need something less formulaic?
+              </Label>
+            </div>
             <div className="flex justify-between pt-4">
               <Button variant="secondary" onClick={() => setStep(0)}>
                 Back
