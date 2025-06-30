@@ -1,6 +1,5 @@
 
 import { useState } from 'react';
-import PptxGenJS from 'pptxgenjs';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
 import { DataScenario } from '../types';
 import type { SlideImage } from '@/components/SlideDeck';
@@ -13,11 +12,17 @@ interface BasicSlide {
 
 export const usePptxGeneration = () => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const supabase = useSupabaseClient();
 
   const generatePptx = async (scenario: DataScenario, slides: BasicSlide[]) => {
     try {
       setIsGenerating(true);
+      setError(null);
+
+      // Dynamic import to avoid build-time issues
+      const { default: PptxGenJS } = await import('pptxgenjs');
+      
       const pptx = new PptxGenJS();
 
       slides.forEach((s) => {
@@ -44,6 +49,7 @@ export const usePptxGeneration = () => {
       });
     } catch (error) {
       console.error('Error generating PPTX:', error);
+      setError(error instanceof Error ? error.message : 'Failed to generate PPTX');
     } finally {
       setIsGenerating(false);
     }
@@ -51,6 +57,7 @@ export const usePptxGeneration = () => {
 
   return {
     generatePptx,
-    isGenerating
+    isGenerating,
+    error
   };
 };

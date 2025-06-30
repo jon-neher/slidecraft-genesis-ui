@@ -1,7 +1,5 @@
-import React, { useEffect, useRef } from 'react'
-import Reveal from 'reveal.js'
-import 'reveal.js/dist/reveal.css'
-import 'reveal.js/dist/theme/black.css'
+
+import React, { useEffect, useRef, useState } from 'react'
 
 export interface SlideImage {
   src: string
@@ -23,21 +21,60 @@ interface SlideDeckProps {
 
 const SlideDeck = ({ slides }: SlideDeckProps) => {
   const deckRef = useRef<HTMLDivElement>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!deckRef.current) return
 
-    const deck = new Reveal(deckRef.current, {
-      pdfSeparateFragments: true,
-      pdfMaxPagesPerSlide: 1,
-    })
+    const loadReveal = async () => {
+      try {
+        setIsLoading(true)
+        
+        // Dynamic import to avoid build-time issues
+        const [{ default: Reveal }] = await Promise.all([
+          import('reveal.js'),
+          import('reveal.js/dist/reveal.css'),
+          import('reveal.js/dist/theme/black.css')
+        ])
 
-    deck.initialize()
+        const deck = new Reveal(deckRef.current!, {
+          pdfSeparateFragments: true,
+          pdfMaxPagesPerSlide: 1,
+        })
 
-    return () => {
-      deck.destroy()
+        await deck.initialize()
+
+        return () => {
+          deck.destroy()
+        }
+      } catch (err) {
+        console.error('Failed to load Reveal.js:', err)
+        setError('Failed to load presentation library')
+      } finally {
+        setIsLoading(false)
+      }
     }
+
+    loadReveal()
   }, [])
+
+  if (error) {
+    return (
+      <div className="p-6 text-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className="p-6 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-electric-indigo mx-auto"></div>
+        <p className="mt-2 text-slate-gray">Loading presentation...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="reveal" ref={deckRef}>
