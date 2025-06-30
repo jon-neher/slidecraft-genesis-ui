@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSupabaseClient } from './useSupabaseClient';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
@@ -13,7 +13,7 @@ export const useSlideTemplates = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchTemplates = async () => {
+  const fetchTemplates = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -34,7 +34,7 @@ export const useSlideTemplates = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase]);
 
   const createTemplate = async (templateData: SlideTemplateInsert) => {
     try {
@@ -121,7 +121,7 @@ export const useSlideTemplates = () => {
 
   useEffect(() => {
     fetchTemplates();
-  }, []);
+  }, [fetchTemplates]);
 
   return {
     templates,

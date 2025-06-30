@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSupabaseClient } from './useSupabaseClient';
 
 export interface DeckSummary {
@@ -14,7 +14,7 @@ export const useDecks = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchDecks = async () => {
+  const fetchDecks = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -42,9 +42,9 @@ export const useDecks = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase]);
 
-  const getSlides = async (deckId: string) => {
+  const getSlides = useCallback(async (deckId: string) => {
     try {
       setLoading(true);
       setError(null);
@@ -68,11 +68,11 @@ export const useDecks = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase]);
 
   useEffect(() => {
     fetchDecks();
-  }, []);
+  }, [fetchDecks]);
 
   return {
     decks,
