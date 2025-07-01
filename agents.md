@@ -25,12 +25,17 @@
 
 ### 🛠 Vite Configuration Requirements
 
+⚠️ **CRITICAL**: All Lovable projects MUST include `server: { port: 8080 }` in their Vite configuration.
+
 For successful Lovable publishing, projects must use compatible Vite configurations:
 
 ```typescript
 // ✅ Compatible Vite Config
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
+  server: {
+    port: 8080,
+  },
   resolve: {
     alias: { "@": "/src" }
   },
