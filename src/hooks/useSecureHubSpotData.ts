@@ -19,8 +19,9 @@ export const useSecureHubSpotData = () => {
     setError(null);
 
     try {
-      const endpoint = `search_contacts?q=${encodeURIComponent(query)}&limit=${limit}`;
-      const { data, error: functionError } = await supabase.functions.invoke(endpoint);
+      const { data, error: functionError } = await supabase.functions.invoke('search_contacts', {
+        body: { query, limit }
+      });
 
       if (functionError) {
         throw functionError;
