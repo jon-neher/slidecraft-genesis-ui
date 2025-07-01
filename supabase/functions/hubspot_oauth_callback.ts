@@ -11,6 +11,9 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'X-XSS-Protection': '1; mode=block',
 };
 
 function htmlError(msg: string) {
@@ -90,7 +93,16 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
       scope: scopeArray,
     });
 
+    // Enhanced cleanup - remove expired states and current state
     await supabase.from('hubspot_oauth_states').delete().eq('state', state);
+    await supabase.rpc('cleanup_expired_oauth_states');
+
+    // Log security event
+    await supabase.from('security_events').insert({
+      user_id: portalId,
+      event_type: 'oauth_token_exchange',
+      event_data: { scope: scopeArray },
+    });
 
     if (error) {
       throw new Error(error.message);

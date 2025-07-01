@@ -35,6 +35,9 @@ class RateLimiterMemory {
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'X-XSS-Protection': '1; mode=block',
 }
 
 const rateLimiter = new RateLimiterMemory(10, 60000) // 10 requests per minute
@@ -44,23 +47,29 @@ interface ContactRecord {
   properties: Record<string, unknown>
 }
 
-// Input validation function
+// Enhanced input validation function
 function validateSearchInput(query: string, limit: number): { isValid: boolean; error?: string } {
   if (typeof query !== 'string') {
     return { isValid: false, error: 'Query must be a string' }
   }
   
-  if (query.length > 100) {
-    return { isValid: false, error: 'Query too long' }
+  if (query.length > 1000) {
+    return { isValid: false, error: 'Query too long (max 1000 characters)' }
   }
   
   if (limit < 1 || limit > 50) {
     return { isValid: false, error: 'Limit must be between 1 and 50' }
   }
   
-  // Basic SQL injection protection
-  const sqlInjectionPattern = /(\b(union|select|insert|update|delete|drop|create|alter|exec|execute)\b)/i
+  // Enhanced SQL injection protection
+  const sqlInjectionPattern = /(\b(union|select|insert|update|delete|drop|create|alter|exec|execute|script|javascript|vbscript|onload|onerror)\b|--|\/\*|\*\/|;|'|"|<|>)/i
   if (sqlInjectionPattern.test(query)) {
+    return { isValid: false, error: 'Invalid query format' }
+  }
+  
+  // XSS protection
+  const xssPattern = /<[^>]*>|javascript:|data:|vbscript:/i
+  if (xssPattern.test(query)) {
     return { isValid: false, error: 'Invalid query format' }
   }
   
@@ -202,12 +211,15 @@ async function searchContacts(portalId: string, query: string, limit: number, su
     throw new Error(validation.error)
   }
 
-  const local = await searchLocal(portalId, query, limit, supabase)
+  // Sanitize query to prevent XSS
+  const sanitizedQuery = query.replace(/[<>'"&]/g, '')
+
+  const local = await searchLocal(portalId, sanitizedQuery, limit, supabase)
   const seen = new Set(local.map(r => r.id))
   const results = [...local]
   
   if (results.length < 5) {
-    const remote = await searchRemote(portalId, query, limit, supabase)
+    const remote = await searchRemote(portalId, sanitizedQuery, limit, supabase)
     for (const contact of remote) {
       if (!seen.has(contact.id)) {
         results.push(contact)
