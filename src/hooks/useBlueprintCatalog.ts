@@ -8,7 +8,7 @@ export interface Blueprint {
 }
 
 async function fetchCatalog(): Promise<Blueprint[]> {
-  const res = await fetch('/api/blueprints?includeDefaults=true');
+  const res = await fetch('https://igspkppkbqbbxffhdqlq.supabase.co/functions/v1/blueprints?includeDefaults=true');
   if (!res.ok) {
     throw new Error('Failed to load catalog');
   }

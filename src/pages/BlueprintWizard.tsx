@@ -31,7 +31,7 @@ const BlueprintWizard = () => {
     if (!selected) return
     setLoading(true)
     try {
-      const res = await fetch(`/api/blueprints/${selected.blueprint_id}/clone`, { method: 'POST' })
+      const res = await fetch(`https://igspkppkbqbbxffhdqlq.supabase.co/functions/v1/blueprints/${selected.blueprint_id}/clone`, { method: 'POST' })
       const json = await res.json()
       setSelected(json)
       setStep(1)
@@ -55,7 +55,7 @@ const BlueprintWizard = () => {
     if (!selected) return
     setLoading(true)
     try {
-      await fetch(`/api/blueprints/${selected.blueprint_id}`, {
+      await fetch(`https://igspkppkbqbbxffhdqlq.supabase.co/functions/v1/blueprints/${selected.blueprint_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

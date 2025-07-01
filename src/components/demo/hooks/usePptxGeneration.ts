@@ -24,12 +24,14 @@ export const usePptxGeneration = () => {
       // Create a simple JSON export instead
       const jsonData = JSON.stringify(slides, null, 2);
       const blob = new Blob([jsonData], { type: "application/json" });
-
-      const deckId = scenario.id;
-
-      await supabase.storage.from('pptx').upload(`${deckId}.json`, blob, {
-        contentType: 'application/json',
-      });
+      
+      // Create download link for the JSON file
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${scenario.id}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error generating PPTX:', error);
       setError(error instanceof Error ? error.message : 'Failed to generate PPTX');

@@ -11,7 +11,7 @@ export interface SectionSuggestResponse {
 }
 
 async function suggestSections(payload: SectionSuggestPayload): Promise<SectionSuggestResponse> {
-  const res = await fetch('/api/sections/suggest', {
+  const res = await fetch('https://igspkppkbqbbxffhdqlq.supabase.co/functions/v1/sections', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),

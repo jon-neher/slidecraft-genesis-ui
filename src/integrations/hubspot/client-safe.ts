@@ -14,7 +14,7 @@ export class HubSpotClientSafe {
 
   async searchContacts(query: string, limit: number = 10): Promise<ContactRecord[]> {
     // This will be handled by the Edge Function
-    const response = await fetch(`/api/search-contacts?portal_id=${this.portalId}&q=${encodeURIComponent(query)}&limit=${limit}`);
+    const response = await fetch(`https://igspkppkbqbbxffhdqlq.supabase.co/functions/v1/search_contacts?portal_id=${this.portalId}&q=${encodeURIComponent(query)}&limit=${limit}`);
     
     if (!response.ok) {
       throw new Error('Failed to search contacts');
@@ -25,7 +25,7 @@ export class HubSpotClientSafe {
 
   async postNote(objectId: string, noteBody: string, appRecordUrl: string): Promise<{ noteId: string }> {
     // This will be handled by the Edge Function
-    const response = await fetch('/api/post-note', {
+    const response = await fetch('https://igspkppkbqbbxffhdqlq.supabase.co/functions/v1/post_note', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

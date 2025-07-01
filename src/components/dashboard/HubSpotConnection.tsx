@@ -91,7 +91,7 @@ const HubSpotConnection = () => {
       }
       
       // Fetch the client id from the Supabase edge function
-      const idRes = await fetch('/api/hubspot_client_id');
+      const idRes = await fetch('https://igspkppkbqbbxffhdqlq.supabase.co/functions/v1/hubspot_client_id');
       if (!idRes.ok) {
         throw new Error('Failed to load HubSpot client configuration');
       }
@@ -105,7 +105,7 @@ const HubSpotConnection = () => {
       const hubspotAuthUrl = new URL('https://app.hubspot.com/oauth/authorize');
       hubspotAuthUrl.searchParams.set('client_id', client_id);
       hubspotAuthUrl.searchParams.set('scope', 'contacts');
-      hubspotAuthUrl.searchParams.set('redirect_uri', `${window.location.origin}/api/hubspot_oauth_callback`);
+      hubspotAuthUrl.searchParams.set('redirect_uri', 'https://igspkppkbqbbxffhdqlq.supabase.co/functions/v1/hubspot_oauth_callback');
       hubspotAuthUrl.searchParams.set('state', state);
       
       // Redirect to HubSpot OAuth

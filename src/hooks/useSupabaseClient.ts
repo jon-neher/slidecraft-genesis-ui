@@ -10,13 +10,18 @@ export const useSupabaseClient = () => {
 
   const supabase = useMemo(() => {
     return createClient(supabaseUrl, supabaseAnonKey, {
-      global: {
-        headers: session?.getToken
-          ? {
-              Authorization: `Bearer ${session.getToken()}`,
-            }
-          : {},
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
       },
+      global: {
+        headers: {
+          'x-client-info': 'lovable-app',
+        },
+      },
+      ...(session?.getToken && {
+        accessToken: () => session.getToken(),
+      }),
     });
   }, [session]);
 
