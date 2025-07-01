@@ -41,6 +41,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/present/:id" element={<PresentDeck />} />
             <Route path="/edit/:id" element={<EditDeck />} />
+            <Route path="/view/:id" element={<PresentDeck />} />
             <Route path="/new-deck" element={<NewDeckFlow />} />
             <Route path="/new-blueprint" element={<BlueprintWizard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
