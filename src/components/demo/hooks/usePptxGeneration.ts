@@ -20,32 +20,15 @@ export const usePptxGeneration = () => {
       setIsGenerating(true);
       setError(null);
 
-      // Dynamic import to avoid build-time issues
-      const { default: PptxGenJS } = await import('pptxgenjs');
-      
-      const pptx = new PptxGenJS();
-
-      slides.forEach((s) => {
-        const slide = pptx.addSlide();
-        slide.addText(s.title, { x: 0.5, y: 0.5, fontSize: 24 });
-        s.bullets?.forEach((b, i) => {
-          slide.addText(b, { x: 0.5, y: 1 + i * 0.5, fontSize: 16, bullet: true });
-        });
-        s.images?.forEach((img) => {
-          slide.addImage({ path: img.src, x: img.x, y: img.y, w: img.w, h: img.h });
-        });
-      });
-
-      // Generate the PPTX file as ArrayBuffer using the correct WriteProps format
-      const arrayBuffer = await pptx.write({ outputType: 'arraybuffer' }) as ArrayBuffer;
-      const blob = new Blob([arrayBuffer], {
-        type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-      });
+      // Simple placeholder - PPTX generation disabled for publishing compatibility
+      // Create a simple JSON export instead
+      const jsonData = JSON.stringify(slides, null, 2);
+      const blob = new Blob([jsonData], { type: "application/json" });
 
       const deckId = scenario.id;
 
-      await supabase.storage.from('pptx').upload(`${deckId}.pptx`, blob, {
-        contentType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      await supabase.storage.from('pptx').upload(`${deckId}.json`, blob, {
+        contentType: 'application/json',
       });
     } catch (error) {
       console.error('Error generating PPTX:', error);

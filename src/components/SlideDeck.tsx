@@ -1,4 +1,6 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 /** Slide image positioning data */
 export interface SlideImage {
@@ -21,71 +23,84 @@ interface SlideDeckProps {
   slides: Slide[];
 }
 
-const SpectacleDeck = lazy(async () => {
-  const spectacle = await import("spectacle");
-  return { default: spectacle.Deck };
-});
-
-const SpectacleSlide = lazy(async () => {
-  const spectacle = await import("spectacle");
-  return { default: spectacle.Slide };
-});
-
 /**
- * Presentation deck using Spectacle for navigation and keyboard support.
- *
- * - Left/Right arrows and Space advance slides.
- * - Home/End keys jump to first/last slide.
+ * Simple presentation deck with navigation controls.
  */
 const SlideDeck = ({ slides }: SlideDeckProps) => {
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      const deck = document.querySelector("[data-spectacle-deck]") as any;
-      if (!deck || !("slideIndex" in deck)) return;
-      if (e.key === "Home") {
-        deck.slideIndex = 0;
-      }
-      if (e.key === "End") {
-        deck.slideIndex = slides.length - 1;
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [slides.length]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  if (!slides.length) {
+    return <div className="p-6 text-center">No slides available</div>;
+  }
+
+  const slide = slides[currentSlide];
 
   return (
-    <Suspense
-      fallback={<div className="p-6 text-center">Loading presentation...</div>}
-    >
-      <SpectacleDeck>
-        {slides.map((slide, i) => (
-          <SpectacleSlide key={i}>
-            <div className="p-6 bg-white text-slate-gray relative h-full">
-              <h2 className="text-xl font-bold mb-4">{slide.title}</h2>
-              <ul className="list-disc pl-5 space-y-1 mb-4">
-                {slide.bullets.map((b, idx) => (
-                  <li key={idx}>{b}</li>
-                ))}
-              </ul>
-              {slide.images.map((img, idx) => (
-                <img
-                  key={idx}
-                  src={img.src}
-                  alt="slide"
-                  style={{
-                    position: "absolute",
-                    left: `${img.x * 100}%`,
-                    top: `${img.y * 100}%`,
-                    width: `${img.w * 100}%`,
-                    height: `${img.h * 100}%`,
-                  }}
-                />
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Slide Content */}
+      <div className="flex-1 p-8 flex items-center justify-center">
+        <div className="max-w-4xl w-full bg-card rounded-lg shadow-lg p-8">
+          <h2 className="text-3xl font-bold mb-6 text-foreground">{slide.title}</h2>
+          {slide.bullets.length > 0 && (
+            <ul className="list-disc pl-6 space-y-3 text-lg text-muted-foreground mb-6">
+              {slide.bullets.map((bullet, idx) => (
+                <li key={idx}>{bullet}</li>
               ))}
-            </div>
-          </SpectacleSlide>
-        ))}
-      </SpectacleDeck>
-    </Suspense>
+            </ul>
+          )}
+          {slide.images.map((img, idx) => (
+            <img
+              key={idx}
+              src={img.src}
+              alt={`Slide image ${idx + 1}`}
+              className="max-w-full h-auto rounded-lg"
+              style={{
+                position: "relative",
+                width: `${Math.min(img.w * 100, 100)}%`,
+                height: "auto",
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <div className="p-4 border-t bg-card">
+        <div className="flex items-center justify-between max-w-4xl mx-auto">
+          <Button
+            variant="outline"
+            onClick={prevSlide}
+            disabled={currentSlide === 0}
+            className="flex items-center gap-2"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Previous
+          </Button>
+          
+          <span className="text-sm text-muted-foreground">
+            {currentSlide + 1} of {slides.length}
+          </span>
+          
+          <Button
+            variant="outline"
+            onClick={nextSlide}
+            disabled={currentSlide === slides.length - 1}
+            className="flex items-center gap-2"
+          >
+            Next
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 

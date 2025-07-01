@@ -36,7 +36,6 @@ export default defineConfig(({ mode }) => ({
     "process.env.NODE_ENV": JSON.stringify(mode),
   },
   optimizeDeps: {
-    exclude: ["spectacle", "pptxgenjs"],
     include: [
       "@clerk/clerk-react",
       "@supabase/supabase-js",
