@@ -68,16 +68,16 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.hubspot_fetch_contacts]
-verify_jwt = false
+verify_jwt = true
 
 [functions.post_note]
-verify_jwt = false
+verify_jwt = true
 
 [functions.hubspot_tokens]
-verify_jwt = false
+verify_jwt = true
 
 [functions.search_contacts]
-verify_jwt = false
+verify_jwt = true
 
 [functions.sections]
 verify_jwt = true
