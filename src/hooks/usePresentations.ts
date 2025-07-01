@@ -4,9 +4,9 @@ import { useUser } from '@clerk/clerk-react';
 import { useSupabaseClient } from './useSupabaseClient';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
-type Presentation = Tables<'presentations'>;
-type PresentationInsert = TablesInsert<'presentations'>;
-type PresentationUpdate = TablesUpdate<'presentations'>;
+type Presentation = Tables<'presentations_generated'>;
+type PresentationInsert = TablesInsert<'presentations_generated'>;
+type PresentationUpdate = TablesUpdate<'presentations_generated'>;
 
 export const usePresentations = () => {
   const { user } = useUser();
@@ -23,7 +23,7 @@ export const usePresentations = () => {
       setError(null);
 
       const { data, error: fetchError } = await supabase
-        .from('presentations')
+        .from('presentations_generated')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -48,7 +48,7 @@ export const usePresentations = () => {
       setError(null);
 
       const { data, error: createError } = await supabase
-        .from('presentations')
+        .from('presentations_generated')
         .insert({
           user_id: user.id,
           ...presentationData
@@ -79,7 +79,7 @@ export const usePresentations = () => {
       setError(null);
 
       const { data, error: updateError } = await supabase
-        .from('presentations')
+        .from('presentations_generated')
         .update({
           ...updates,
           updated_at: new Date().toISOString()
@@ -113,7 +113,7 @@ export const usePresentations = () => {
       setError(null);
 
       const { error: deleteError } = await supabase
-        .from('presentations')
+        .from('presentations_generated')
         .delete()
         .eq('presentation_id', presentationId);
 

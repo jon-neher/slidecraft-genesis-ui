@@ -192,12 +192,12 @@ export type Database = {
             foreignKeyName: "presentation_plans_presentation_id_fkey"
             columns: ["presentation_id"]
             isOneToOne: false
-            referencedRelation: "presentations"
+            referencedRelation: "presentations_generated"
             referencedColumns: ["presentation_id"]
           },
         ]
       }
-      presentations: {
+      presentations_generated: {
         Row: {
           completed_at: string | null
           context: Json | null
@@ -241,6 +241,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      presentations_revisions: {
+        Row: {
+          presentation_id: string
+          version: number
+          slides: Json
+          created_at: string
+          created_by: string
+        }
+        Insert: {
+          presentation_id: string
+          version: number
+          slides: Json
+          created_at?: string
+          created_by: string
+        }
+        Update: {
+          presentation_id?: string
+          version?: number
+          slides?: Json
+          created_at?: string
+          created_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "presentations_revisions_presentation_id_fkey",
+            columns: ["presentation_id"],
+            isOneToOne: false,
+            referencedRelation: "presentations_generated",
+            referencedColumns: ["presentation_id"],
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -341,7 +373,7 @@ export type Database = {
             foreignKeyName: "slide_generations_presentation_id_fkey"
             columns: ["presentation_id"]
             isOneToOne: false
-            referencedRelation: "presentations"
+            referencedRelation: "presentations_generated"
             referencedColumns: ["presentation_id"]
           },
           {
