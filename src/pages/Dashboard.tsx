@@ -18,16 +18,15 @@ import { devLog } from '@/lib/dev-log';
 const Dashboard = () => {
   const { isSignedIn } = useAuth();
   
-  // Development mode bypass - check if we're in Lovable preview environment
-  const isDevelopment = typeof window !== 'undefined' && (
-    window.location.hostname.includes('lovableproject.com') || 
-    window.location.hostname === 'localhost'
-  );
-
-  // Additional check for build/static environments  
+  // Check for build/static environments where window isn't available
   const isStaticBuild = typeof window === 'undefined';
 
-  devLog('Dashboard - isDevelopment:', isDevelopment, 'hostname:', typeof window !== 'undefined' ? window.location.hostname : 'server');
+  devLog(
+    'Dashboard - isStaticBuild:',
+    isStaticBuild,
+    'hostname:',
+    typeof window !== 'undefined' ? window.location.hostname : 'server'
+  );
 
   const navigate = useNavigate();
 
@@ -90,9 +89,9 @@ const Dashboard = () => {
     </div>
   );
 
-  // In development mode or static build, bypass authentication
-  if (isDevelopment || isStaticBuild) {
-    devLog('Dashboard - Rendering in development/static mode');
+  // During static builds, bypass authentication and avoid Clerk components
+  if (isStaticBuild) {
+    devLog('Dashboard - Rendering in static build mode');
     return <DashboardContent />;
   }
 
