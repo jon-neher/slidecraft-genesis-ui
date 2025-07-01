@@ -244,33 +244,33 @@ export type Database = {
       }
       presentations_revisions: {
         Row: {
-          presentation_id: string
-          version: number
-          slides: Json
           created_at: string
           created_by: string
+          presentation_id: string
+          slides: Json
+          version: number
         }
         Insert: {
-          presentation_id: string
-          version: number
-          slides: Json
           created_at?: string
           created_by: string
+          presentation_id: string
+          slides: Json
+          version: number
         }
         Update: {
-          presentation_id?: string
-          version?: number
-          slides?: Json
           created_at?: string
           created_by?: string
+          presentation_id?: string
+          slides?: Json
+          version?: number
         }
         Relationships: [
           {
-            foreignKeyName: "presentations_revisions_presentation_id_fkey",
-            columns: ["presentation_id"],
-            isOneToOne: false,
-            referencedRelation: "presentations_generated",
-            referencedColumns: ["presentation_id"],
+            foreignKeyName: "presentations_revisions_presentation_id_fkey"
+            columns: ["presentation_id"]
+            isOneToOne: false
+            referencedRelation: "presentations_generated"
+            referencedColumns: ["presentation_id"]
           },
         ]
       }
