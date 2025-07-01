@@ -27,11 +27,11 @@ public = true
 objects_path = "buckets/fonts"
 
 [auth]
-site_url = "http://localhost:3000"
+site_url = "https://igspkppkbqbbxffhdqlq.supabase.co"
 additional_redirect_urls = [
   "https://*-supabase.vercel.app/*/*",
   "https://supabase.com/*/*",
-  "http://localhost:3000/*/*",
+  "https://*.lovable.app/*/*",
 ]
 jwt_expiry = 3600
 enable_signup = true
