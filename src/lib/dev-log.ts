@@ -1,6 +1,6 @@
 
-// Client-side development check using Vite environment variables
-export const isDev = import.meta.env?.DEV ?? true;
+// Client-side development check
+export const isDev = false;
 
 export function devLog(...args: unknown[]): void {
   if (isDev) {
