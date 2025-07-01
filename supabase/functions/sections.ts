@@ -1,8 +1,14 @@
+
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
 import OpenAI from 'npm:openai'
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
 function getSupabaseClient(auth?: string) {
   return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, auth ? { global: { headers: { Authorization: auth } } } : {})
@@ -73,18 +79,29 @@ for (const { goal, audience } of demoPairs) {
 const openai = new OpenAI()
 
 export async function handleRequest(req: Request): Promise<Response> {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders })
+  }
+
   const url = new URL(req.url)
   const path = url.pathname.replace(/^\/+|\/+$/g, '')
 
   const normalized = path.replace(/^api\//, '')
   if (normalized !== 'sections/suggest' || req.method !== 'POST') {
-    return new Response('Not found', { status: 404 })
+    return new Response('Not found', { 
+      status: 404,
+      headers: corsHeaders
+    })
   }
 
   const auth = req.headers.get('Authorization') || ''
   const client = getSupabaseClient(auth)
   const { data: { user } } = await client.auth.getUser()
-  if (!user) return new Response('Unauthorized', { status: 401 })
+  if (!user) return new Response('Unauthorized', { 
+    status: 401,
+    headers: corsHeaders
+  })
 
   const { goal = '', audience = '', creative = false } = await req.json()
 
@@ -92,7 +109,7 @@ export async function handleRequest(req: Request): Promise<Response> {
   const cached = cache.get(key)
   if (cached && cached.expires > Date.now()) {
     return new Response(JSON.stringify({ sections: cached.sections }), {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
   }
 
@@ -122,7 +139,7 @@ export async function handleRequest(req: Request): Promise<Response> {
 
   cache.set(key, { sections, expires: Date.now() + 24 * 60 * 60 * 1000 })
   return new Response(JSON.stringify({ sections }), {
-    headers: { 'Content-Type': 'application/json' }
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
   })
 }
 

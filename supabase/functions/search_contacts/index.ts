@@ -1,5 +1,4 @@
-
-import { createClient, type SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient, type SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
 
 // Include RateLimiterMemory class directly in the edge function
 class RateLimiterMemory {

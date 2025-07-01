@@ -1,7 +1,13 @@
+
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
 function getSupabaseClient(auth?: string) {
   return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, auth ? { global: { headers: { Authorization: auth } } } : {})
@@ -63,19 +69,30 @@ function rowToResponse(row: Record<string, any>) {
 }
 
 export async function handleRequest(req: Request): Promise<Response> {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders })
+  }
+
   const { method, url } = req
   const parsed = new URL(url)
   const auth = req.headers.get('Authorization') || ''
   const client = getSupabaseClient(auth)
   const { data: { user } } = await client.auth.getUser()
-  if (!user) return new Response('Unauthorized', { status: 401 })
+  if (!user) return new Response('Unauthorized', { 
+    status: 401,
+    headers: corsHeaders
+  })
 
   const path = parsed.pathname.replace(/\/+/, '/').replace(/^\/+|\/+$/g, '')
   const segments = path.split('/')
 
   try {
     if (segments[0] !== 'blueprints') {
-      return new Response('Not found', { status: 404 })
+      return new Response('Not found', { 
+        status: 404,
+        headers: corsHeaders
+      })
     }
 
     if (segments.length === 1) {
@@ -94,7 +111,7 @@ export async function handleRequest(req: Request): Promise<Response> {
         const { data, error } = await query
         if (error) throw error
         return new Response(JSON.stringify(data.map(rowToResponse)), {
-          headers: { 'Content-Type': 'application/json' }
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         })
       }
 
@@ -118,7 +135,7 @@ export async function handleRequest(req: Request): Promise<Response> {
           .single()
         if (error) throw error
         return new Response(JSON.stringify(rowToResponse(data)), {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 201
         })
       }
@@ -132,8 +149,14 @@ export async function handleRequest(req: Request): Promise<Response> {
           .select('*')
           .eq('blueprint_id', id)
           .single()
-        if (error) return new Response('Not Found', { status: 404 })
-        if (!orig.is_default) return new Response('Not Found', { status: 404 })
+        if (error) return new Response('Not Found', { 
+          status: 404,
+          headers: corsHeaders
+        })
+        if (!orig.is_default) return new Response('Not Found', { 
+          status: 404,
+          headers: corsHeaders
+        })
         const { data, error: insertError } = await client
           .from('blueprints')
           .insert({
@@ -151,7 +174,7 @@ export async function handleRequest(req: Request): Promise<Response> {
           .single()
         if (insertError) throw insertError
         return new Response(JSON.stringify(rowToResponse(data)), {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 201
         })
       }
@@ -163,12 +186,18 @@ export async function handleRequest(req: Request): Promise<Response> {
             .select('*')
             .eq('blueprint_id', id)
             .maybeSingle()
-          if (error || !data) return new Response('Not Found', { status: 404 })
+          if (error || !data) return new Response('Not Found', { 
+            status: 404,
+            headers: corsHeaders
+          })
           if (!data.is_default && data.user_id !== user.id) {
-            return new Response('Not Found', { status: 404 })
+            return new Response('Not Found', { 
+              status: 404,
+              headers: corsHeaders
+            })
           }
           return new Response(JSON.stringify(rowToResponse(data)), {
-            headers: { 'Content-Type': 'application/json' }
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           })
         }
 
@@ -178,8 +207,14 @@ export async function handleRequest(req: Request): Promise<Response> {
             .select('is_default')
             .eq('blueprint_id', id)
             .maybeSingle()
-          if (error || !existing) return new Response('Not Found', { status: 404 })
-          if (existing.is_default) return new Response('Forbidden', { status: 403 })
+          if (error || !existing) return new Response('Not Found', { 
+            status: 404,
+            headers: corsHeaders
+          })
+          if (existing.is_default) return new Response('Forbidden', { 
+            status: 403,
+            headers: corsHeaders
+          })
           const body = await req.json()
           const parsedData = parseBlueprintData(body.data)
           const { error: upError } = await client
@@ -198,7 +233,10 @@ export async function handleRequest(req: Request): Promise<Response> {
             .eq('blueprint_id', id)
             .eq('user_id', user.id)
           if (upError) throw upError
-          return new Response(null, { status: 200 })
+          return new Response(null, { 
+            status: 200,
+            headers: corsHeaders
+          })
         }
 
         if (method === 'DELETE') {
@@ -207,23 +245,41 @@ export async function handleRequest(req: Request): Promise<Response> {
             .select('is_default, user_id')
             .eq('blueprint_id', id)
             .maybeSingle()
-          if (error || !existing) return new Response('Not Found', { status: 404 })
-          if (existing.is_default) return new Response('Forbidden', { status: 403 })
-          if (existing.user_id !== user.id) return new Response('Not Found', { status: 404 })
+          if (error || !existing) return new Response('Not Found', { 
+            status: 404,
+            headers: corsHeaders
+          })
+          if (existing.is_default) return new Response('Forbidden', { 
+            status: 403,
+            headers: corsHeaders
+          })
+          if (existing.user_id !== user.id) return new Response('Not Found', { 
+            status: 404,
+            headers: corsHeaders
+          })
           const { error: delError } = await client
             .from('blueprints')
             .delete()
             .eq('blueprint_id', id)
           if (delError) throw delError
-          return new Response(null, { status: 204 })
+          return new Response(null, { 
+            status: 204,
+            headers: corsHeaders
+          })
         }
       }
     }
 
-    return new Response('Not found', { status: 404 })
+    return new Response('Not found', { 
+      status: 404,
+      headers: corsHeaders
+    })
   } catch (err) {
     console.error('Blueprint handler error:', err)
-    return new Response('Internal server error', { status: 500 })
+    return new Response('Internal server error', { 
+      status: 500,
+      headers: corsHeaders
+    })
   }
 }
 

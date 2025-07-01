@@ -79,6 +79,12 @@ verify_jwt = false
 [functions.search_contacts]
 verify_jwt = false
 
+[functions.sections]
+verify_jwt = true
+
+[functions.blueprints]
+verify_jwt = true
+
 [functions.generate-slides]
 verify_jwt = true
 
