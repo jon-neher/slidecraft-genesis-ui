@@ -1,3 +1,4 @@
+
 # Supabase configuration for Slidecraft
 # Generated for local development
 project_id = "igspkppkbqbbxffhdqlq"
@@ -71,5 +72,14 @@ verify_jwt = false
 
 [functions.post_note]
 verify_jwt = false
+
+[functions.hubspot_tokens]
+verify_jwt = false
+
+[functions.search_contacts]
+verify_jwt = false
+
+[functions.generate-slides]
+verify_jwt = true
 
 # Authenticated edge functions use default verify_jwt = true

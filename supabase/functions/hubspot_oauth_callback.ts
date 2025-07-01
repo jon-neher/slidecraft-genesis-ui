@@ -1,4 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
@@ -7,11 +8,21 @@ const HUBSPOT_CLIENT_SECRET = Deno.env.get('HUBSPOT_CLIENT_SECRET') ?? '';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
 function htmlError(msg: string) {
   return `<html><body><h1>OAuth Error</h1><p>${msg}</p></body></html>`;
 }
 
 export async function hubspotOAuthCallback(request: Request): Promise<Response> {
+  // Handle CORS preflight requests
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   const state = searchParams.get('state') ?? '';
@@ -19,7 +30,7 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
   if (!code) {
     return new Response(htmlError('Missing code parameter'), {
       status: 400,
-      headers: { 'Content-Type': 'text/html' },
+      headers: { ...corsHeaders, 'Content-Type': 'text/html' },
     });
   }
 
@@ -36,7 +47,7 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
     if (stateError || !stateData) {
       return new Response(htmlError('Invalid state parameter'), {
         status: 400,
-        headers: { 'Content-Type': 'text/html' },
+        headers: { ...corsHeaders, 'Content-Type': 'text/html' },
       });
     }
 
@@ -87,17 +98,15 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
 
     return new Response(null, {
       status: 302,
-      headers: { Location: '/dashboard' },
+      headers: { ...corsHeaders, Location: '/dashboard' },
     });
   } catch (err) {
     console.error('OAuth callback error:', err);
     return new Response(htmlError('HubSpot token exchange failed'), {
       status: 500,
-      headers: { 'Content-Type': 'text/html' },
+      headers: { ...corsHeaders, 'Content-Type': 'text/html' },
     });
   }
 }
 
-
 Deno.serve(hubspotOAuthCallback);
-
