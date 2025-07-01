@@ -1,6 +1,7 @@
+
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
 
-let hubspotOAuthCallback: typeof import('./supabase/functions/hubspot_oauth_callback').hubspotOAuthCallback;
+let hubspotOAuthCallback: typeof import('./hubspot_oauth_callback').hubspotOAuthCallback;
 
 let selectResult: { data: { user_id: string } | null; error: null };
 const upsertMock = jest.fn().mockResolvedValue({ error: null });
@@ -39,7 +40,7 @@ describe('hubspotOAuthCallback', () => {
     deleteMock.mockClear();
     jest.resetModules();
     (global as any).Deno = { env: { get: () => '' }, serve: jest.fn() };
-    ({ hubspotOAuthCallback } = await import('./supabase/functions/hubspot_oauth_callback'));
+    ({ hubspotOAuthCallback } = await import('./hubspot_oauth_callback'));
   });
 
   afterEach(() => {
