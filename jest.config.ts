@@ -9,6 +9,7 @@ const config: JestConfigWithTsJest = {
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^https://esm.sh/@supabase/supabase-js@.*$': '@supabase/supabase-js',
   },
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   testMatch: ['**/*.{test,spec}.{js,ts,jsx,tsx}'],

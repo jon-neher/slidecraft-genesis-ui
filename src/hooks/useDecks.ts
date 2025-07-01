@@ -20,7 +20,7 @@ export const useDecks = () => {
       setError(null);
 
       const { data, error: fetchError } = await supabase
-        .from('presentations')
+        .from('presentations_generated')
         .select('presentation_id, title, created_at')
         .order('created_at', { ascending: false });
 
@@ -49,18 +49,31 @@ export const useDecks = () => {
       setLoading(true);
       setError(null);
 
-      // Get slide generations for this presentation
-      const { data, error: fetchError } = await supabase
-        .from('slide_generations')
-        .select('parsed_content')
+      // Get latest slide revision for this presentation
+      const { data: latest, error: fetchError } = await supabase
+        .from('presentations_revisions')
+        .select('slides, version')
         .eq('presentation_id', deckId)
-        .order('slide_index');
+        .order('version', { ascending: false })
+        .limit(1)
+        .single();
 
-      if (fetchError) {
+      if (fetchError && fetchError.code !== 'PGRST116') {
         throw fetchError;
       }
 
-      return data ? data.map(slide => slide.parsed_content) : null;
+      if (latest) {
+        return latest.slides;
+      }
+
+      const { data: v1 } = await supabase
+        .from('presentations_revisions')
+        .select('slides')
+        .eq('presentation_id', deckId)
+        .eq('version', 1)
+        .maybeSingle();
+
+      return v1?.slides ?? null;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       console.error('Error fetching deck slides:', err);

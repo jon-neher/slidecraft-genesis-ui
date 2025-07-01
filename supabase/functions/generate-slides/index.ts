@@ -50,7 +50,7 @@ serve(async (req) => {
         const slides = JSON.parse(completion.choices[0].message.content ?? '')
 
         const { data: pres, error: presError } = await authed
-          .from('presentations')
+          .from('presentations_generated')
           .insert({ user_id: user.id, title: prompt })
           .select('presentation_id')
           .single()
