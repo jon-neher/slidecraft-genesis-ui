@@ -6,6 +6,7 @@ import {
   RedirectToSignIn,
   UserProfile,
 } from '@clerk/clerk-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { brandColors } from '@/lib/color-validation';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import QuickSelectHeader from '@/components/dashboard/QuickSelectHeader';
@@ -18,7 +19,16 @@ const navItems = [
 ];
 
 const ProfileContent = () => {
-  const [activeTab, setActiveTab] = React.useState('account');
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const activeTab = location.pathname.includes('security') ? 'security' : 'account';
+
+  React.useEffect(() => {
+    if (location.pathname === '/profile') {
+      navigate('/profile/account', { replace: true });
+    }
+  }, [location.pathname, navigate]);
 
   return (
     <div className="min-h-screen bg-ice-white">
@@ -36,7 +46,7 @@ const ProfileContent = () => {
             <div className="flex flex-col items-center p-6 bg-background">
               <Tabs
                 value={activeTab}
-                onValueChange={(val) => setActiveTab(val)}
+                onValueChange={(val) => navigate(`/profile/${val}`)}
                 className="w-full max-w-xl"
               >
                 <TabsList className="mb-6 bg-white border border-gray-200">
@@ -53,7 +63,8 @@ const ProfileContent = () => {
               </Tabs>
 
               <UserProfile
-                routing="virtual"
+                routing="path"
+                path="/profile"
                 appearance={{
                   variables: {
                     colorPrimary: brandColors['electric-indigo'],
@@ -63,7 +74,8 @@ const ProfileContent = () => {
                     fontFamily: 'Inter, sans-serif',
                   },
                   elements: {
-                    card: 'bg-white border border-gray-200',
+                    rootBox: 'shadow-none bg-transparent p-0',
+                    card: 'shadow-none bg-transparent border-none p-0',
                     headerTitle: 'text-slate-gray',
                     navbar: 'hidden',
                   },
