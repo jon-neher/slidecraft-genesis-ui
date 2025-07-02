@@ -9,7 +9,7 @@ export async function ensureAccessToken(
     throw new Error('Supabase client is required');
   }
 
-  const { data, error } = await client.functions.invoke('hubspot_tokens', {
+  const { data, error } = await client.functions.invoke('hubspot_token_manager', {
     body: { portal_id: portalId }
   });
 

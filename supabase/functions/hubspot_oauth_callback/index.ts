@@ -1,4 +1,3 @@
-
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
@@ -20,7 +19,7 @@ function htmlError(msg: string) {
   return `<html><body><h1>OAuth Error</h1><p>${msg}</p></body></html>`;
 }
 
-export async function hubspotOAuthCallback(request: Request): Promise<Response> {
+Deno.serve(async (request: Request): Promise<Response> => {
   // Handle CORS preflight requests
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -151,6 +150,4 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
       headers: { ...corsHeaders, 'Content-Type': 'text/html' },
     });
   }
-}
-
-Deno.serve(hubspotOAuthCallback);
+});

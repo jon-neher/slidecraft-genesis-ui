@@ -91,7 +91,7 @@ export const useHubSpotConnection = () => {
       // Construct HubSpot OAuth URL with proper security parameters
       const hubspotAuthUrl = new URL('https://app.hubspot.com/oauth/authorize');
       hubspotAuthUrl.searchParams.set('client_id', clientData.client_id);
-      hubspotAuthUrl.searchParams.set('scope', 'crm.objects.contacts.read notes.write');
+      hubspotAuthUrl.searchParams.set('scope', 'crm.objects.contacts.write oauth crm.objects.companies.read crm.objects.deals.read crm.objects.leads.read crm.objects.leads.write crm.objects.contacts.read');
       hubspotAuthUrl.searchParams.set('redirect_uri', `${window.location.origin}/hubspot/callback`);
       hubspotAuthUrl.searchParams.set('state', state);
       hubspotAuthUrl.searchParams.set('response_type', 'code');
