@@ -1,21 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Play, 
-  Edit, 
-  Share, 
-  Download, 
-  Eye, 
-  Calendar, 
-  BarChart3,
-  Users,
-  Clock,
-  Zap,
-  TrendingUp
-} from 'lucide-react';
+import { BarChart3, Download, Share, Zap } from 'lucide-react';
+import MetricsGrid from './analytics/MetricsGrid';
+import EngagementChart from './analytics/EngagementChart';
+import ActivityFeed from './analytics/ActivityFeed';
 
 interface PresentationAnalytics {
   views: number;
@@ -32,36 +22,6 @@ interface AnalyticsDashboardProps {
 }
 
 const AnalyticsDashboard = ({ presentationId, analytics, onClose }: AnalyticsDashboardProps) => {
-  const metrics = [
-    {
-      label: 'Total Views',
-      value: analytics.views.toLocaleString(),
-      icon: Eye,
-      color: 'text-electric-indigo',
-      bgColor: 'bg-electric-indigo/10'
-    },
-    {
-      label: 'Avg. Time Spent',
-      value: analytics.avgTimeSpent,
-      icon: Clock,
-      color: 'text-neon-mint',
-      bgColor: 'bg-neon-mint/10'
-    },
-    {
-      label: 'Completion Rate',
-      value: `${analytics.completionRate}%`,
-      icon: TrendingUp,
-      color: 'text-soft-coral',
-      bgColor: 'bg-soft-coral/10'
-    },
-    {
-      label: 'Shares',
-      value: analytics.shares.toString(),
-      icon: Users,
-      color: 'text-slate-gray',
-      bgColor: 'bg-slate-gray/10'
-    }
-  ];
 
   return (
     <motion.div
@@ -90,66 +50,9 @@ const AnalyticsDashboard = ({ presentationId, analytics, onClose }: AnalyticsDas
 
         {/* Metrics Grid */}
         <div className="p-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            {metrics.map((metric, index) => (
-              <motion.div
-                key={metric.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card>
-                  <CardContent className="p-4 text-center">
-                    <div className={`w-12 h-12 ${metric.bgColor} rounded-lg flex items-center justify-center mx-auto mb-3`}>
-                      <metric.icon className={`w-6 h-6 ${metric.color}`} />
-                    </div>
-                    <h3 className="text-2xl font-bold text-slate-gray mb-1">{metric.value}</h3>
-                    <p className="text-sm text-slate-gray/70">{metric.label}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Engagement Chart Placeholder */}
-          <Card className="mb-6">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-slate-gray mb-4 flex items-center">
-                <TrendingUp className="w-5 h-5 mr-2" />
-                Engagement Over Time
-              </h3>
-              <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-                <div className="text-center">
-                  <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-500">Chart visualization coming soon</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Recent Activity */}
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-slate-gray mb-4 flex items-center">
-                <Calendar className="w-5 h-5 mr-2" />
-                Recent Activity
-              </h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Eye className="w-4 h-4 text-electric-indigo" />
-                  <span className="text-sm text-slate-gray">Last viewed {analytics.lastViewed}</span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Share className="w-4 h-4 text-neon-mint" />
-                  <span className="text-sm text-slate-gray">Shared 3 times this week</span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Edit className="w-4 h-4 text-soft-coral" />
-                  <span className="text-sm text-slate-gray">Last edited 2 days ago</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <MetricsGrid analytics={analytics} />
+          <EngagementChart />
+          <ActivityFeed lastViewed={analytics.lastViewed} />
         </div>
 
         {/* Actions */}
