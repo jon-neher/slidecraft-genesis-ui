@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Home, FileText, Settings, Sparkles, X } from 'lucide-react';
+import { Home, FileText, Settings, Sparkles, X, Plug } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   Sidebar, 
@@ -18,6 +18,7 @@ import { useTouchGestures } from '@/hooks/use-touch-gestures';
 
 const navigationItems = [
   { title: 'Dashboard', icon: Home, url: '/dashboard', active: true },
+  { title: 'Integrations', icon: Plug, url: '/integrations' },
   { title: 'Projects', icon: FileText, url: '/dashboard/projects' },
   { title: 'Templates', icon: FileText, url: '/dashboard/templates' },
   { title: 'Settings', icon: Settings, url: '/dashboard/settings' },

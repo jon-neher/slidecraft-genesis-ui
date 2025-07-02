@@ -12,6 +12,7 @@ import EditDeck from "./pages/EditDeck";
 import NewDeckFlow from "./pages/NewDeckFlow";
 import BlueprintWizard from "./pages/BlueprintWizard";
 import NotFound from "./pages/NotFound";
+import Integrations from "./pages/Integrations";
 import PublishErrorBoundary from "./components/PublishErrorBoundary";
 
 const queryClient = new QueryClient({
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/view/:id" element={<PresentDeck />} />
             <Route path="/new-deck" element={<NewDeckFlow />} />
             <Route path="/new-blueprint" element={<BlueprintWizard />} />
+            <Route path="/integrations" element={<Integrations />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
