@@ -56,12 +56,12 @@ const ProfileContent = () => {
                 onValueChange={(val) => navigate(`/profile/${val}`)}
                 className="w-full max-w-4xl mx-auto"
               >
-                <TabsList className="grid w-full grid-cols-2 mb-8 bg-white border border-gray-200 rounded-lg h-12">
+                <TabsList className="grid w-full grid-cols-2 mb-8 bg-white border border-gray-200 rounded-lg h-12 p-1">
                   {navItems.map((item) => (
                     <TabsTrigger
                       key={item.value}
                       value={item.value}
-                      className="text-slate-gray font-medium data-[state=active]:bg-electric-indigo data-[state=active]:text-ice-white rounded-md transition-all duration-200"
+                      className="text-slate-gray font-medium data-[state=active]:bg-electric-indigo data-[state=active]:text-ice-white rounded-md transition-all duration-200 h-10"
                     >
                       {item.label}
                     </TabsTrigger>
@@ -70,75 +70,71 @@ const ProfileContent = () => {
 
                 {/* Account Tab Content */}
                 <TabsContent value="account" className="space-y-6">
-                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-200">
-                      <h3 className="text-lg font-semibold text-slate-gray">Account Settings</h3>
-                      <p className="text-sm text-gray-600 mt-1">Manage your account information and preferences</p>
-                    </div>
-                    <div className="p-6">
-                      <UserProfile
-                        routing="hash"
-                        appearance={{
-                          variables: {
-                            colorPrimary: brandColors['electric-indigo'],
-                            colorBackground: brandColors['ice-white'],
-                            colorText: brandColors['slate-gray'],
-                            colorTextSecondary: brandColors['gray-600'],
-                            fontFamily: 'Inter, sans-serif',
-                            borderRadius: '8px',
-                          },
-                          elements: {
-                            rootBox: 'shadow-none bg-transparent p-0 w-full',
-                            card: 'shadow-none bg-transparent border-none p-0 w-full',
-                            headerTitle: 'text-slate-gray text-xl font-semibold',
-                            headerSubtitle: 'text-gray-600',
-                            navbar: 'hidden',
-                            navbarMobileMenuButton: 'hidden',
-                            profileSectionPrimaryButton: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white',
-                            formButtonPrimary: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white',
-                            formFieldInput: 'border-gray-200 focus:border-electric-indigo focus:ring-electric-indigo/20',
-                            dividerLine: 'bg-gray-200',
-                          },
-                        }}
-                      />
-                    </div>
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <UserProfile
+                      routing="virtual"
+                      appearance={{
+                        variables: {
+                          colorPrimary: brandColors['electric-indigo'],
+                          colorBackground: '#FFFFFF',
+                          colorText: brandColors['slate-gray'],
+                          colorTextSecondary: brandColors['gray-600'],
+                          fontFamily: 'Inter, sans-serif',
+                          borderRadius: '12px',
+                        },
+                        elements: {
+                          rootBox: 'w-full',
+                          card: 'shadow-none bg-white border-none w-full rounded-none',
+                          headerTitle: 'hidden',
+                          headerSubtitle: 'hidden', 
+                          navbar: 'hidden',
+                          navbarMobileMenuButton: 'hidden',
+                          profileSectionPrimaryButton: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white border-0 rounded-lg font-medium',
+                          formButtonPrimary: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white border-0 rounded-lg font-medium',
+                          formFieldInput: 'border-gray-200 focus:border-electric-indigo focus:ring-2 focus:ring-electric-indigo/20 rounded-lg bg-white',
+                          dividerLine: 'bg-gray-100',
+                          profileSection: 'p-6',
+                          profileSectionTitle: 'text-lg font-semibold text-slate-gray mb-4',
+                          profileSectionContent: 'space-y-4',
+                          accordionTriggerButton: 'hover:bg-gray-50 rounded-lg',
+                        },
+                      }}
+                    />
                   </div>
                 </TabsContent>
 
                 {/* Security Tab Content */}
                 <TabsContent value="security" className="space-y-6">
-                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-200">
-                      <h3 className="text-lg font-semibold text-slate-gray">Security Settings</h3>
-                      <p className="text-sm text-gray-600 mt-1">Manage your password, two-factor authentication, and security preferences</p>
-                    </div>
-                    <div className="p-6">
-                      <UserProfile
-                        routing="hash"
-                        appearance={{
-                          variables: {
-                            colorPrimary: brandColors['electric-indigo'],
-                            colorBackground: brandColors['ice-white'],
-                            colorText: brandColors['slate-gray'],
-                            colorTextSecondary: brandColors['gray-600'],
-                            fontFamily: 'Inter, sans-serif',
-                            borderRadius: '8px',
-                          },
-                          elements: {
-                            rootBox: 'shadow-none bg-transparent p-0 w-full',
-                            card: 'shadow-none bg-transparent border-none p-0 w-full',
-                            headerTitle: 'text-slate-gray text-xl font-semibold',
-                            headerSubtitle: 'text-gray-600',
-                            navbar: 'hidden',
-                            navbarMobileMenuButton: 'hidden',
-                            profileSectionPrimaryButton: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white',
-                            formButtonPrimary: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white',
-                            formFieldInput: 'border-gray-200 focus:border-electric-indigo focus:ring-electric-indigo/20',
-                            dividerLine: 'bg-gray-200',
-                          },
-                        }}
-                      />
-                    </div>
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <UserProfile
+                      routing="virtual"
+                      appearance={{
+                        variables: {
+                          colorPrimary: brandColors['electric-indigo'],
+                          colorBackground: '#FFFFFF',
+                          colorText: brandColors['slate-gray'],
+                          colorTextSecondary: brandColors['gray-600'],
+                          fontFamily: 'Inter, sans-serif',
+                          borderRadius: '12px',
+                        },
+                        elements: {
+                          rootBox: 'w-full',
+                          card: 'shadow-none bg-white border-none w-full rounded-none',
+                          headerTitle: 'hidden',
+                          headerSubtitle: 'hidden',
+                          navbar: 'hidden',
+                          navbarMobileMenuButton: 'hidden',
+                          profileSectionPrimaryButton: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white border-0 rounded-lg font-medium',
+                          formButtonPrimary: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white border-0 rounded-lg font-medium',
+                          formFieldInput: 'border-gray-200 focus:border-electric-indigo focus:ring-2 focus:ring-electric-indigo/20 rounded-lg bg-white',
+                          dividerLine: 'bg-gray-100',
+                          profileSection: 'p-6',
+                          profileSectionTitle: 'text-lg font-semibold text-slate-gray mb-4',
+                          profileSectionContent: 'space-y-4',
+                          accordionTriggerButton: 'hover:bg-gray-50 rounded-lg',
+                        },
+                      }}
+                    />
                   </div>
                 </TabsContent>
               </Tabs>
