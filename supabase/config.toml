@@ -88,4 +88,7 @@ verify_jwt = true
 [functions.generate-slides]
 verify_jwt = true
 
+[functions.clerk-webhook]
+verify_jwt = false
+
 # Authenticated edge functions use default verify_jwt = true
