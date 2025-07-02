@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Slide } from '@/components/SlideDeck';
-import { useSupabaseClient } from '@/hooks/useSupabaseClient';
 import { useKeyboardNavigation } from './hooks/useKeyboardNavigation';
 import { usePresentationActions } from './hooks/usePresentationActions';
-import { convertPuckToSlides } from './utils/slideDataConverter';
+import { usePresentationState } from './hooks/usePresentationState';
+import { PresentationMode } from './types';
 import PresentMode from './modes/PresentMode';
 import EditMode from './modes/EditMode';
 import ViewMode from './modes/ViewMode';
 import OverviewMode from './modes/OverviewMode';
-
-export type PresentationMode = 'view' | 'edit' | 'present' | 'overview';
 
 interface EnhancedSlideDeckProps {
   slides: Slide[];
@@ -25,17 +23,23 @@ interface EnhancedSlideDeckProps {
 const EnhancedSlideDeck = ({ 
   slides, 
   presentationId, 
-  mode = 'view', 
+  mode: initialMode = 'view', 
   onModeChange, 
   onSave 
 }: EnhancedSlideDeckProps) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [slideData, setSlideData] = useState<any>(null);
-  const supabase = useSupabaseClient();
+  const {
+    currentSlide,
+    setCurrentSlide,
+    slideData,
+    mode: internalMode
+  } = usePresentationState(initialMode);
+
+  // Use external mode if provided, otherwise use internal
+  const currentMode = onModeChange ? initialMode : internalMode;
 
   // Use custom hooks
   useKeyboardNavigation({
-    mode,
+    mode: currentMode,
     slidesLength: slides.length,
     currentSlide,
     setCurrentSlide,
@@ -44,7 +48,7 @@ const EnhancedSlideDeck = ({
 
   const { handleDuplicateSlide, handleDeleteSlide, handleExportPDF } = usePresentationActions(presentationId);
 
-  if (mode === 'edit') {
+  if (currentMode === 'edit') {
     return (
       <EditMode 
         slideData={slideData} 
@@ -54,7 +58,7 @@ const EnhancedSlideDeck = ({
     );
   }
 
-  if (mode === 'present') {
+  if (currentMode === 'present') {
     return (
       <PresentMode
         slides={slides}
@@ -65,7 +69,7 @@ const EnhancedSlideDeck = ({
     );
   }
 
-  if (mode === 'overview') {
+  if (currentMode === 'overview') {
     return (
       <OverviewMode
         slides={slides}
