@@ -13,6 +13,7 @@ import NewDeckFlow from "./pages/NewDeckFlow";
 import BlueprintWizard from "./pages/BlueprintWizard";
 import NotFound from "./pages/NotFound";
 import Integrations from "./pages/Integrations";
+import HubSpotCallback from "./pages/HubSpotCallback";
 import PublishErrorBoundary from "./components/PublishErrorBoundary";
 
 const queryClient = new QueryClient({
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/new-deck" element={<NewDeckFlow />} />
             <Route path="/new-blueprint" element={<BlueprintWizard />} />
             <Route path="/integrations" element={<Integrations />} />
+            <Route path="/hubspot/callback" element={<HubSpotCallback />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

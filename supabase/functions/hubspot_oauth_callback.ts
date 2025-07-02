@@ -26,14 +26,37 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
     return new Response(null, { headers: corsHeaders });
   }
 
-  const { searchParams } = new URL(request.url);
-  const code = searchParams.get('code');
-  const state = searchParams.get('state') ?? '';
+  // Handle both GET (from HubSpot redirect) and POST (from frontend)
+  let code: string | null = null;
+  let state: string | null = null;
 
-  if (!code) {
-    return new Response(htmlError('Missing code parameter'), {
+  if (request.method === 'GET') {
+    const { searchParams } = new URL(request.url);
+    code = searchParams.get('code');
+    state = searchParams.get('state');
+    
+    // Redirect to frontend callback page
+    const callbackUrl = new URL('/hubspot/callback', 'https://igspkppkbqbbxffhdqlq.lovable.app');
+    callbackUrl.searchParams.set('code', code || '');
+    callbackUrl.searchParams.set('state', state || '');
+    
+    return new Response(null, {
+      status: 302,
+      headers: { ...corsHeaders, Location: callbackUrl.toString() },
+    });
+  }
+
+  // Handle POST from frontend
+  if (request.method === 'POST') {
+    const body = await request.json();
+    code = body.code;
+    state = body.state;
+  }
+
+  if (!code || !state) {
+    return new Response(JSON.stringify({ error: 'Missing code or state parameter' }), {
       status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'text/html' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 
@@ -108,6 +131,15 @@ export async function hubspotOAuthCallback(request: Request): Promise<Response> 
       throw new Error(error.message);
     }
 
+    // Return success response for POST requests (from frontend)
+    if (request.method === 'POST') {
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Redirect for GET requests (shouldn't reach here due to earlier redirect)
     return new Response(null, {
       status: 302,
       headers: { ...corsHeaders, Location: '/dashboard' },
