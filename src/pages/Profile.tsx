@@ -24,6 +24,8 @@ const ProfileContent = () => {
   const navigate = useNavigate();
 
   const activeTab = location.pathname.includes('security') ? 'security' : 'account';
+  
+  console.log('Profile activeTab:', activeTab, 'pathname:', location.pathname);
 
   React.useEffect(() => {
     if (location.pathname === '/profile') {
@@ -68,75 +70,42 @@ const ProfileContent = () => {
                   ))}
                 </TabsList>
 
-                {/* Account Tab Content */}
-                <TabsContent value="account" className="space-y-6">
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <UserProfile
-                      routing="virtual"
-                      appearance={{
-                        variables: {
-                          colorPrimary: brandColors['electric-indigo'],
-                          colorBackground: '#FFFFFF',
-                          colorText: brandColors['slate-gray'],
-                          colorTextSecondary: brandColors['gray-600'],
-                          fontFamily: 'Inter, sans-serif',
-                          borderRadius: '12px',
-                        },
-                        elements: {
-                          rootBox: 'w-full',
-                          card: 'shadow-none bg-white border-none w-full rounded-none',
-                          headerTitle: 'hidden',
-                          headerSubtitle: 'hidden', 
-                          navbar: 'hidden',
-                          navbarMobileMenuButton: 'hidden',
-                          profileSectionPrimaryButton: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white border-0 rounded-lg font-medium',
-                          formButtonPrimary: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white border-0 rounded-lg font-medium',
-                          formFieldInput: 'border-gray-200 focus:border-electric-indigo focus:ring-2 focus:ring-electric-indigo/20 rounded-lg bg-white',
-                          dividerLine: 'bg-gray-100',
-                          profileSection: 'p-6',
-                          profileSectionTitle: 'text-lg font-semibold text-slate-gray mb-4',
-                          profileSectionContent: 'space-y-4',
-                          accordionTriggerButton: 'hover:bg-gray-50 rounded-lg',
-                        },
-                      }}
-                    />
-                  </div>
-                </TabsContent>
-
-                {/* Security Tab Content */}
-                <TabsContent value="security" className="space-y-6">
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <UserProfile
-                      routing="virtual"
-                      appearance={{
-                        variables: {
-                          colorPrimary: brandColors['electric-indigo'],
-                          colorBackground: '#FFFFFF',
-                          colorText: brandColors['slate-gray'],
-                          colorTextSecondary: brandColors['gray-600'],
-                          fontFamily: 'Inter, sans-serif',
-                          borderRadius: '12px',
-                        },
-                        elements: {
-                          rootBox: 'w-full',
-                          card: 'shadow-none bg-white border-none w-full rounded-none',
-                          headerTitle: 'hidden',
-                          headerSubtitle: 'hidden',
-                          navbar: 'hidden',
-                          navbarMobileMenuButton: 'hidden',
-                          profileSectionPrimaryButton: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white border-0 rounded-lg font-medium',
-                          formButtonPrimary: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white border-0 rounded-lg font-medium',
-                          formFieldInput: 'border-gray-200 focus:border-electric-indigo focus:ring-2 focus:ring-electric-indigo/20 rounded-lg bg-white',
-                          dividerLine: 'bg-gray-100',
-                          profileSection: 'p-6',
-                          profileSectionTitle: 'text-lg font-semibold text-slate-gray mb-4',
-                          profileSectionContent: 'space-y-4',
-                          accordionTriggerButton: 'hover:bg-gray-50 rounded-lg',
-                        },
-                      }}
-                    />
-                  </div>
-                </TabsContent>
+                {/* Single UserProfile with controlled routing */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden min-h-[600px]">
+                  <UserProfile
+                    routing="path"
+                    path="/profile"
+                    appearance={{
+                      variables: {
+                        colorPrimary: brandColors['electric-indigo'],
+                        colorBackground: '#FFFFFF',
+                        colorText: brandColors['slate-gray'],
+                        colorTextSecondary: brandColors['gray-600'],
+                        fontFamily: 'Inter, sans-serif',
+                        borderRadius: '12px',
+                      },
+                      elements: {
+                        rootBox: 'w-full h-full min-h-[600px]',
+                        card: 'shadow-none bg-white border-none w-full h-full rounded-none min-h-[600px]',
+                        headerTitle: 'hidden',
+                        headerSubtitle: 'hidden', 
+                        navbar: `bg-white border-b border-gray-100 p-4`,
+                        navbarMobileMenuButton: 'hidden',
+                        navbarButton: `text-slate-gray hover:text-electric-indigo hover:bg-electric-indigo/5 rounded-lg px-3 py-2 font-medium transition-colors`,
+                        navbarButtonActive: `text-electric-indigo bg-electric-indigo/10 rounded-lg px-3 py-2 font-medium`,
+                        profileSectionPrimaryButton: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white border-0 rounded-lg font-medium px-4 py-2',
+                        formButtonPrimary: 'bg-electric-indigo hover:bg-electric-indigo/90 text-ice-white border-0 rounded-lg font-medium px-4 py-2',
+                        formFieldInput: 'border-gray-200 focus:border-electric-indigo focus:ring-2 focus:ring-electric-indigo/20 rounded-lg bg-white',
+                        dividerLine: 'bg-gray-100',
+                        profileSection: 'p-6 w-full',
+                        profileSectionTitle: 'text-lg font-semibold text-slate-gray mb-4',
+                        profileSectionContent: 'space-y-4 w-full',
+                        accordionTriggerButton: 'hover:bg-gray-50 rounded-lg w-full',
+                        pageScrollBox: 'w-full h-full',
+                      },
+                    }}
+                  />
+                </div>
               </Tabs>
             </div>
           </SidebarInset>
