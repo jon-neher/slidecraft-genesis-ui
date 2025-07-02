@@ -1,5 +1,4 @@
 import React from 'react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   SignedIn,
   SignedOut,
@@ -12,13 +11,7 @@ import QuickSelectHeader from '@/components/dashboard/QuickSelectHeader';
 import LeftNav from '@/components/dashboard/LeftNav';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
-const navItems = [
-  { label: 'Account', value: 'account' },
-  { label: 'Security', value: 'security' }
-];
-
 const ProfileContent = () => {
-  const [activeTab, setActiveTab] = React.useState('account');
 
   return (
     <div className="min-h-screen bg-ice-white">
@@ -34,24 +27,6 @@ const ProfileContent = () => {
             </ErrorBoundary>
 
             <div className="flex flex-col items-center p-6 bg-background">
-              <Tabs
-                value={activeTab}
-                onValueChange={(val) => setActiveTab(val)}
-                className="w-full max-w-xl"
-              >
-                <TabsList className="mb-6 bg-white border border-gray-200">
-                  {navItems.map((item) => (
-                    <TabsTrigger
-                      key={item.value}
-                      value={item.value}
-                      className="text-slate-gray data-[state=active]:bg-electric-indigo data-[state=active]:text-ice-white"
-                    >
-                      {item.label}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </Tabs>
-
               <UserProfile
                 routing="virtual"
                 appearance={{
@@ -65,7 +40,9 @@ const ProfileContent = () => {
                   elements: {
                     card: 'bg-white border border-gray-200',
                     headerTitle: 'text-slate-gray',
-                    navbar: 'hidden',
+                    navbar: 'border-b border-gray-200',
+                    navbarButton:
+                      'text-gray-600 data-[active=true]:bg-electric-indigo data-[active=true]:text-ice-white',
                   },
                 }}
               />
