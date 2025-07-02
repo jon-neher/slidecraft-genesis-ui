@@ -155,12 +155,41 @@ rollupOptions: {
 - **CSS**: Critical CSS inlining
 - **JavaScript**: Tree shaking and dead code elimination
 
-## 🎨 Features
+- **Advanced Slide Editor**: Drag-and-drop presentation builder with Puck.js (MIT licensed)
+- **Multi-Mode Presentations**: View, Edit, Present, and Overview modes
+- **Template System**: Professional slide templates and themes
+- **Analytics Dashboard**: Presentation engagement tracking
+- **Version Control**: Automatic slide revision history
 
-- **Modern Landing Page** with hero animations and waitlist forms
-- **Dashboard** for browsing deck templates and viewing recent activity
-- **Supabase & HubSpot integration** powering OAuth and contact search
-- **Smooth Animations** using Framer Motion
+## Presentation System
+
+This application features a sophisticated slide presentation system with the following capabilities:
+
+### Core Features
+- **Drag-and-Drop Editor**: Built with Puck.js for visual slide creation
+- **Multiple Viewing Modes**:
+  - **View Mode**: Standard presentation viewing
+  - **Edit Mode**: Visual drag-and-drop editor
+  - **Present Mode**: Fullscreen presentation with keyboard controls
+  - **Overview Mode**: Grid view of all slides
+- **Template Gallery**: Professional slide templates and themes
+- **Analytics**: Presentation engagement and performance metrics
+- **Version Control**: Automatic revision history with Supabase
+
+### Technical Architecture
+- **Frontend**: React + TypeScript + Tailwind CSS
+- **Editor**: Puck.js (MIT licensed - commercial safe)
+- **Database**: Supabase with row-level security
+- **State Management**: Custom hooks and modular components
+- **Animations**: Framer Motion for smooth transitions
+
+### Key Technologies
+- React 18 with TypeScript
+- Puck.js for drag-and-drop editing
+- Supabase for backend and authentication
+- Tailwind CSS for styling
+- Framer Motion for animations
+- Shadcn/ui components
 - **Performance Optimized** with transform-only animations
 - **Responsive Layout** that adapts cleanly across breakpoints
 - **Security Hardened** with comprehensive input validation and audit logging

@@ -1,3 +1,24 @@
+/**
+ * PUCK-BASED SLIDE EDITOR
+ * 
+ * This component integrates @measured/puck for drag-and-drop slide editing.
+ * 
+ * COMMERCIAL LICENSING NOTICE:
+ * - Puck is MIT licensed - safe for commercial use
+ * - Always verify license compatibility when updating Puck
+ * - Current version: 0.19.1 (MIT)
+ * 
+ * INTEGRATION PATTERNS FOR AI AGENTS:
+ * - The slideConfig in puckConfig.ts defines available components
+ * - Data flows: Puck data -> slideDataConverter -> Slide format
+ * - onSave callback handles persistence to Supabase
+ * - Component registration happens in puckConfig.ts
+ * 
+ * DO NOT:
+ * - Replace Puck with another editor without license review
+ * - Modify the data flow without updating slideDataConverter
+ * - Remove the slideConfig - it's required for Puck components
+ */
 import React from 'react';
 import { Puck, Config } from '@measured/puck';
 import { slideConfig } from './puckConfig';

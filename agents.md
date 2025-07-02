@@ -392,6 +392,149 @@ import.meta.env.VITE_KEY → 'your-actual-key'
 4. Fix TypeScript errors completely
 5. Optimize bundle with code splitting
 
+## Presentation System Architecture
+
+### Overview
+We have implemented a sophisticated slide presentation system with drag-and-drop editing capabilities. This system is modular, commercially licensed, and follows strict architectural patterns.
+
+### Key Components
+
+#### 1. Puck.js Integration
+- **Library**: @measured/puck v0.19.1 (MIT License - Commercial Safe)
+- **Purpose**: Drag-and-drop slide editor
+- **Location**: `src/components/editor/SlideEditor.tsx`
+- **Configuration**: `src/components/editor/puckConfig.ts`
+- **CRITICAL**: Always verify license compatibility when updating Puck
+
+#### 2. Multi-Mode Presentation System
+Located in `src/components/presentation/`:
+
+```
+presentation/
+├── EnhancedSlideDeck.tsx          # Mode router - keep minimal
+├── PresentationController.tsx     # High-level API (use this in pages)
+├── types.ts                       # TypeScript definitions
+├── modes/                         # Individual presentation modes
+│   ├── PresentMode.tsx           # Fullscreen presentation
+│   ├── EditMode.tsx              # Editor wrapper
+│   ├── ViewMode.tsx              # Standard view
+│   └── OverviewMode.tsx          # Grid overview
+├── hooks/                         # Reusable logic
+│   ├── usePresentationState.ts
+│   ├── useKeyboardNavigation.ts
+│   └── usePresentationActions.ts
+├── utils/                         # Pure functions
+│   └── slideDataConverter.ts     # Critical: Puck ↔ Slide conversion
+└── analytics/                     # Analytics components
+```
+
+#### 3. Data Flow Architecture
+```
+Puck Editor Data → slideDataConverter → Slide[] → SlideDeck Rendering
+                     ↑ CRITICAL CONVERSION POINT ↑
+```
+
+#### 4. Database Integration
+- **Table**: `presentations_revisions` - stores Puck data as JSONB
+- **Versioning**: Each save creates a new revision
+- **RLS**: Row-level security ensures user isolation
+
+### Commercial Licensing Guidelines
+
+#### Safe Libraries (MIT/BSD)
+- @measured/puck (MIT) ✅
+- framer-motion (MIT) ✅
+- React ecosystem (MIT) ✅
+
+#### License Verification Process
+1. Check package.json for license field
+2. Verify on npm/GitHub for license file
+3. Ensure compatibility with commercial use
+4. Document license in code comments
+
+#### Red Flags
+- GPL/AGPL licenses (copyleft)
+- "Non-commercial use only" clauses
+- Unclear or missing license information
+
+### Breaking Change Prevention Rules
+
+#### DO NOT:
+1. Merge mode components back into EnhancedSlideDeck.tsx
+2. Remove the modular file structure
+3. Change the slideDataConverter without extensive testing
+4. Replace Puck without license review
+5. Modify the PresentationMode type without updating all modes
+
+#### DO:
+1. Use PresentationController in pages, not EnhancedSlideDeck directly
+2. Keep components focused on single responsibilities
+3. Add new functionality as separate modules
+4. Test data conversion thoroughly
+5. Maintain TypeScript strict mode compliance
+
+### Database Patterns
+
+#### Presentations Schema
+```sql
+-- presentations_generated: Main presentation metadata
+-- presentations_revisions: Version-controlled Puck data (JSONB)
+-- RLS policies: User-scoped access control
+```
+
+#### Data Persistence Pattern
+```typescript
+// Save new revision
+const { data: latestRevision } = await supabase
+  .from("presentations_revisions")
+  .select("version")
+  .eq("presentation_id", id)
+  .order("version", { ascending: false })
+  .limit(1)
+  .maybeSingle();
+
+const nextVersion = (latestRevision?.version || 0) + 1;
+// Insert new revision with incremented version
+```
+
+### Testing Requirements
+
+#### Critical Test Points
+1. **Data Conversion**: Puck data ↔ Slide format
+2. **Mode Switching**: All 4 modes work correctly
+3. **Keyboard Navigation**: Presentation controls
+4. **Data Persistence**: Supabase integration
+5. **License Compliance**: All dependencies verified
+
+#### Integration Test Pattern
+```typescript
+// Test the critical data flow
+const puckData = { content: [/* test data */] };
+const slides = convertPuckToSlides(puckData);
+// Verify slide format matches expectations
+```
+
+### Future AI Agent Guidelines
+
+#### When Adding Features
+1. Create new files rather than extending existing ones
+2. Follow the established directory structure
+3. Use the existing hooks for common functionality
+4. Add proper TypeScript definitions
+5. Update this documentation
+
+#### When Debugging
+1. Check the slideDataConverter first for data issues
+2. Verify mode props are passed correctly
+3. Ensure keyboard navigation isn't conflicting
+4. Check Supabase RLS policies for data access issues
+
+#### When Updating Dependencies
+1. Verify license compatibility
+2. Test the slideDataConverter thoroughly
+3. Check for breaking changes in Puck API
+4. Update documentation if interfaces change
+
 ---
 
 **Remember**: Lovable provides powerful static hosting with full-stack capabilities through Supabase. Focus on client-side React applications with Edge Functions for backend logic, and always use the approved brand color palette for consistent, professional results.

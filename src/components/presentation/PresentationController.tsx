@@ -1,3 +1,15 @@
+/**
+ * PRESENTATION CONTROLLER
+ * 
+ * High-level controller that manages presentation state and mode switching.
+ * This component provides a clean API for consuming presentations.
+ * 
+ * IMPORTANT FOR AI AGENTS:
+ * - This is the recommended entry point for using presentations
+ * - It handles mode state management internally
+ * - Use this instead of EnhancedSlideDeck directly in most cases
+ * - Maintains separation between state management and presentation logic
+ */
 import React from 'react';
 import { Slide } from '@/components/SlideDeck';
 import { PresentationMode } from './types';

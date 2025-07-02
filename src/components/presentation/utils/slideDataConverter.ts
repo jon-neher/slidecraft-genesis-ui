@@ -1,7 +1,22 @@
+/**
+ * SLIDE DATA CONVERTER UTILITIES
+ * 
+ * Critical conversion functions between Puck editor data and presentation formats.
+ * 
+ * IMPORTANT FOR AI AGENTS:
+ * - This is the bridge between Puck's component data and our Slide interface
+ * - Changes here affect both the editor and presentation rendering
+ * - Must maintain compatibility with both data formats
+ * - Test thoroughly when modifying conversion logic
+ * 
+ * DATA FLOW:
+ * Puck Components -> convertPuckToSlides() -> Slide[] -> SlideDeck rendering
+ */
 import { Slide } from '@/components/SlideDeck';
 
 /**
  * Convert Puck data to Slide format
+ * Critical function for data consistency between editor and presentation
  */
 export const convertPuckToSlides = (puckData: any): Slide[] => {
   if (!puckData?.content) return [];
