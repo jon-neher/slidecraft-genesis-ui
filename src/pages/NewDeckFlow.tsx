@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,36 +8,44 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Search, FileText, User, Building } from 'lucide-react';
-import { useSecureHubSpotData } from '@/hooks/useSecureHubSpotData';
+import { useNewDeckForm } from '@/hooks/useNewDeckForm';
 import { useIntegrationConnection } from '@/hooks/useIntegrationConnection';
 import { usePresentations } from '@/hooks/usePresentations';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import type { ContactRecord } from '@/integrations/hubspot/types';
 
 const NewDeckFlow = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { createPresentation } = usePresentations();
   const { isConnected: hubspotConnected } = useIntegrationConnection('hubspot');
-  const { searchContacts, loading: hubspotLoading, error: hubspotError } = useSecureHubSpotData();
-  
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<ContactRecord[]>([]);
-  const [selectedContact, setSelectedContact] = useState<ContactRecord | null>(null);
-  const [notes, setNotes] = useState('');
-  const [deckType, setDeckType] = useState('');
-  const [title, setTitle] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const {
+    searchQuery,
+    setSearchQuery,
+    searchResults,
+    selectedContact,
+    setSelectedContact,
+    notes,
+    setNotes,
+    deckType,
+    setDeckType,
+    title,
+    setTitle,
+    file,
+    setFile,
+    searchContacts,
+    hubspotLoading,
+    hubspotError,
+  } = useNewDeckForm();
+
   const { uploadFile, uploading } = useFileUpload();
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
     
     try {
-      const results = await searchContacts(searchQuery);
-      setSearchResults(results);
+      await searchContacts(searchQuery);
     } catch (error) {
       console.error('Search failed:', error);
       toast({
