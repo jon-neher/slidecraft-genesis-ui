@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { Search, FileText, User, Building } from 'lucide-react';
 import { useSecureHubSpotData } from '@/hooks/useSecureHubSpotData';
+import { useIntegrationConnection } from '@/hooks/useIntegrationConnection';
 import { usePresentations } from '@/hooks/usePresentations';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -18,6 +19,7 @@ const NewDeckFlow = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { createPresentation } = usePresentations();
+  const { isConnected: hubspotConnected } = useIntegrationConnection('hubspot');
   const { searchContacts, loading: hubspotLoading, error: hubspotError } = useSecureHubSpotData();
   
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,29 +46,30 @@ const NewDeckFlow = () => {
   };
 
   const handleCreateDeck = async () => {
-    if (!title || !selectedContact) {
+    if (!title) {
       toast({
         title: 'Missing Information',
-        description: 'Please provide a title and select a contact.',
+        description: 'Please provide a title.',
         variant: 'destructive',
       });
       return;
     }
 
     try {
-      // Convert ContactRecord to a serializable format
-      const contactData = {
-        id: selectedContact.id,
-        properties: selectedContact.properties,
-        createdAt: selectedContact.createdAt,
-        updatedAt: selectedContact.updatedAt,
-        archived: selectedContact.archived
-      };
+      const contactData = selectedContact
+        ? {
+            id: selectedContact.id,
+            properties: selectedContact.properties,
+            createdAt: selectedContact.createdAt,
+            updatedAt: selectedContact.updatedAt,
+            archived: selectedContact.archived
+          }
+        : null;
 
       const contextData = {
         contact: contactData,
-        notes: notes,
-        deckType: deckType
+        notes,
+        deckType
       };
 
       await createPresentation({
@@ -95,12 +98,15 @@ const NewDeckFlow = () => {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Create New Deck</h1>
         <p className="text-muted-foreground">
-          Search for a contact and create a personalized presentation deck
+          {hubspotConnected
+            ? 'Search for a contact and create a personalized presentation deck'
+            : 'Create a personalized presentation deck'}
         </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Contact Search */}
+        {hubspotConnected && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -170,6 +176,7 @@ const NewDeckFlow = () => {
             )}
           </CardContent>
         </Card>
+        )}
 
         {/* Deck Configuration */}
         <Card>
@@ -222,10 +229,10 @@ const NewDeckFlow = () => {
 
             <Separator />
 
-            <Button 
-              onClick={handleCreateDeck} 
+            <Button
+              onClick={handleCreateDeck}
               className="w-full"
-              disabled={!title || !selectedContact}
+              disabled={!title || (hubspotConnected && !selectedContact)}
             >
               Create Deck
             </Button>
