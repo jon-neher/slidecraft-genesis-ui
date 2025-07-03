@@ -136,15 +136,6 @@ const InteractiveDemo = () => {
               transition={{ delay: 0.5 }}
               className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 mt-6 lg:mt-8 text-xs sm:text-sm text-slate-gray/60 px-4"
             >
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-neon-mint rounded-full animate-pulse" />
-                <span>12,453 presentations generated</span>
-              </div>
-              <div className="hidden sm:block w-1 h-4 bg-slate-gray/20" />
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-electric-indigo rounded-full animate-pulse" />
-                <span>Average time: 8 seconds</span>
-              </div>
             </motion.div>
           )}
         </motion.div>
