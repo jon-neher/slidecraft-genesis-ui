@@ -4,6 +4,8 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import ThreadingAnimation from './ThreadingAnimation';
 import ClerkWaitlistForm from './ClerkWaitlistForm';
 import { Button } from './ui/button';
+import { SignedIn } from '@clerk/clerk-react';
+import { Link } from 'react-router-dom';
 import { containerVariants, itemVariants } from '../lib/variants';
 const ModernHero = () => {
   const handleWatchDemo = () => {
@@ -45,10 +47,18 @@ const ModernHero = () => {
           </motion.div>
 
           {/* Secondary CTA */}
-          <motion.div variants={itemVariants} className="flex justify-center mb-16">
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-16"
+          >
             <Button variant="outline" className="btn-secondary" onClick={handleWatchDemo}>
               Watch Demo
             </Button>
+            <SignedIn>
+              <Button asChild className="btn-primary">
+                <Link to="/dashboard">Go to Dashboard</Link>
+              </Button>
+            </SignedIn>
           </motion.div>
         </div>
       </motion.div>
