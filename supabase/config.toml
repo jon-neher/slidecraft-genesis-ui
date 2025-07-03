@@ -26,6 +26,10 @@ file_size_limit = "50MiB"
 public = true
 objects_path = "buckets/fonts"
 
+[storage.buckets.uploads]
+public = false
+objects_path = "buckets/uploads"
+
 [auth]
 site_url = "https://igspkppkbqbbxffhdqlq.supabase.co"
 additional_redirect_urls = [

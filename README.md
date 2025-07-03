@@ -175,6 +175,7 @@ This application features a sophisticated slide presentation system with the fol
 - **Template Gallery**: Professional slide templates and themes
 - **Analytics**: Presentation engagement and performance metrics
 - **Version Control**: Automatic revision history with Supabase
+- **File Uploads**: Attach reference documents for AI-powered deck creation
 
 ### Technical Architecture
 - **Frontend**: React + TypeScript + Tailwind CSS

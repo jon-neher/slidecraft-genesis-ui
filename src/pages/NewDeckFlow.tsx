@@ -11,6 +11,7 @@ import { Search, FileText, User, Building } from 'lucide-react';
 import { useSecureHubSpotData } from '@/hooks/useSecureHubSpotData';
 import { useIntegrationConnection } from '@/hooks/useIntegrationConnection';
 import { usePresentations } from '@/hooks/usePresentations';
+import { useFileUpload } from '@/hooks/useFileUpload';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import type { ContactRecord } from '@/integrations/hubspot/types';
@@ -28,6 +29,8 @@ const NewDeckFlow = () => {
   const [notes, setNotes] = useState('');
   const [deckType, setDeckType] = useState('');
   const [title, setTitle] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const { uploadFile, uploading } = useFileUpload();
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -66,10 +69,12 @@ const NewDeckFlow = () => {
           }
         : null;
 
+      const uploadedUrl = file ? await uploadFile(file) : null;
       const contextData = {
         contact: contactData,
         notes,
-        deckType
+        deckType,
+        fileUrl: uploadedUrl
       };
 
       await createPresentation({
@@ -227,14 +232,24 @@ const NewDeckFlow = () => {
               />
             </div>
 
+            <div>
+              <Label htmlFor="reference-file">Reference File</Label>
+              <Input
+                id="reference-file"
+                type="file"
+                accept=".txt,.pdf,.doc,.docx,.md,.rtf"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+              />
+            </div>
+
             <Separator />
 
             <Button
               onClick={handleCreateDeck}
               className="w-full"
-              disabled={!title || (hubspotConnected && !selectedContact)}
+              disabled={!title || uploading || (hubspotConnected && !selectedContact)}
             >
-              Create Deck
+              {uploading ? 'Uploading...' : 'Create Deck'}
             </Button>
           </CardContent>
         </Card>
