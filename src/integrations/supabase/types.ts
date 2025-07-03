@@ -162,6 +162,57 @@ export type Database = {
         }
         Relationships: []
       }
+      presentation_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          input_id: string
+          job_id: string
+          presentation_id: string | null
+          processing_steps: Json | null
+          started_at: string | null
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          input_id: string
+          job_id?: string
+          presentation_id?: string | null
+          processing_steps?: Json | null
+          started_at?: string | null
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          input_id?: string
+          job_id?: string
+          presentation_id?: string | null
+          processing_steps?: Json | null
+          started_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "presentation_jobs_input_id_fkey"
+            columns: ["input_id"]
+            isOneToOne: false
+            referencedRelation: "presentations_input"
+            referencedColumns: ["input_id"]
+          },
+          {
+            foreignKeyName: "presentation_jobs_presentation_id_fkey"
+            columns: ["presentation_id"]
+            isOneToOne: false
+            referencedRelation: "presentations_generated"
+            referencedColumns: ["presentation_id"]
+          },
+        ]
+      }
       presentation_plans: {
         Row: {
           created_at: string
@@ -207,6 +258,8 @@ export type Database = {
           created_at: string
           generated_file_url: string | null
           generation_status: Database["public"]["Enums"]["presentation_status_enum"]
+          input_id: string | null
+          job_id: string | null
           presentation_id: string
           requested_at: string
           started_at: string | null
@@ -221,6 +274,8 @@ export type Database = {
           created_at?: string
           generated_file_url?: string | null
           generation_status?: Database["public"]["Enums"]["presentation_status_enum"]
+          input_id?: string | null
+          job_id?: string | null
           presentation_id?: string
           requested_at?: string
           started_at?: string | null
@@ -235,12 +290,71 @@ export type Database = {
           created_at?: string
           generated_file_url?: string | null
           generation_status?: Database["public"]["Enums"]["presentation_status_enum"]
+          input_id?: string | null
+          job_id?: string | null
           presentation_id?: string
           requested_at?: string
           started_at?: string | null
           thumbnail_url?: string | null
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "presentations_generated_input_id_fkey"
+            columns: ["input_id"]
+            isOneToOne: false
+            referencedRelation: "presentations_input"
+            referencedColumns: ["input_id"]
+          },
+          {
+            foreignKeyName: "presentations_generated_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "presentation_jobs"
+            referencedColumns: ["job_id"]
+          },
+        ]
+      }
+      presentations_input: {
+        Row: {
+          audience_info: Json | null
+          context: Json | null
+          created_at: string
+          description: string | null
+          input_id: string
+          presentation_type: string | null
+          slide_count_preference: number | null
+          status: string
+          template_preferences: Json | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          audience_info?: Json | null
+          context?: Json | null
+          created_at?: string
+          description?: string | null
+          input_id?: string
+          presentation_type?: string | null
+          slide_count_preference?: number | null
+          status?: string
+          template_preferences?: Json | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          audience_info?: Json | null
+          context?: Json | null
+          created_at?: string
+          description?: string | null
+          input_id?: string
+          presentation_type?: string | null
+          slide_count_preference?: number | null
+          status?: string
+          template_preferences?: Json | null
+          title?: string
           user_id?: string
         }
         Relationships: []
