@@ -1,10 +1,8 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SignedIn, SignedOut, SignInButton, SignUpButton, SignOutButton, UserButton } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, ArrowRight } from 'lucide-react';
-
 const formVariants = {
   hidden: {
     opacity: 0,
@@ -35,7 +33,6 @@ const successVariants = {
     rotateY: 0
   }
 };
-
 const ClerkWaitlistForm = () => {
   return <motion.div variants={formVariants} initial="hidden" animate="visible" className="max-w-md mx-auto px-4">
       <SignedOut>
@@ -47,14 +44,14 @@ const ClerkWaitlistForm = () => {
         }}>
             <SignUpButton mode="modal">
               <Button className="electric-gradient text-navy-950 font-semibold px-6 sm:px-8 py-3 h-11 sm:h-12 text-sm sm:text-base w-full relative overflow-hidden group">
-                <motion.span className="relative z-10 flex items-center justify-center gap-2" initial={{
+                <motion.span initial={{
                 y: 0
               }} whileHover={{
                 y: -2
               }} transition={{
                 type: "spring",
                 stiffness: 300
-              }}>
+              }} className="relative z-10 flex items-center justify-center gap-2 text-slate-50">
                   Join Waitlist
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </motion.span>
@@ -130,5 +127,4 @@ const ClerkWaitlistForm = () => {
       </SignedIn>
     </motion.div>;
 };
-
 export default ClerkWaitlistForm;
