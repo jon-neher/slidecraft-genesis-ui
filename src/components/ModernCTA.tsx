@@ -28,10 +28,6 @@ const ModernCTA = () => {
                   <span className="text-gradient">presentations?</span>
                 </h2>
                 
-                <p className="text-xl text-slate-gray/70 mb-12 max-w-2xl mx-auto">
-                  Join thousands of professionals already using Threadline
-                </p>
-
                 <div className="max-w-md mx-auto">
                   <SignUpButton mode="modal">
                     <Button className="btn-primary h-14 px-8 group">
