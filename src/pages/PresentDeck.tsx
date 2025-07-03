@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useSupabaseClient } from "@/hooks/useSupabaseClient";
 import PresentationController from "@/components/presentation/PresentationController";
 import { PresentationMode } from "@/components/presentation/types";
@@ -10,10 +10,12 @@ import { toast } from "sonner";
 const PresentDeck = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const supabase = useSupabaseClient();
   const [slides, setSlides] = useState<Slide[]>([]);
   const [loading, setLoading] = useState(true);
-  const [mode, setMode] = useState<PresentationMode>('present');
+  const initialModeParam = searchParams.get('mode') as PresentationMode | null;
+  const [mode, setMode] = useState<PresentationMode>(initialModeParam || 'present');
   const [presentation, setPresentation] = useState<any>(null);
 
   useEffect(() => {
