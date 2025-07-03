@@ -76,7 +76,15 @@ export type Database = {
           properties?: Json | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "hubspot_contacts_cache_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "hubspot_tokens"
+            referencedColumns: ["portal_id"]
+          },
+        ]
       }
       hubspot_events_raw: {
         Row: {
@@ -97,7 +105,15 @@ export type Database = {
           raw?: Json | null
           received_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "hubspot_events_raw_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "hubspot_tokens"
+            referencedColumns: ["portal_id"]
+          },
+        ]
       }
       hubspot_oauth_states: {
         Row: {
@@ -118,7 +134,15 @@ export type Database = {
           state?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "hubspot_oauth_states_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hubspot_sync_cursors: {
         Row: {
@@ -136,7 +160,15 @@ export type Database = {
           object_type?: string
           portal_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "hubspot_sync_cursors_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "hubspot_tokens"
+            referencedColumns: ["portal_id"]
+          },
+        ]
       }
       hubspot_tokens: {
         Row: {
@@ -160,7 +192,15 @@ export type Database = {
           refresh_token?: string | null
           scope?: string[] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "hubspot_tokens_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       presentation_jobs: {
         Row: {
