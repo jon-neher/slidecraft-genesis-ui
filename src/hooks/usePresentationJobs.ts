@@ -70,21 +70,29 @@ export const usePresentationJobs = () => {
     slide_count_preference?: number;
   }) => {
     try {
+      console.log('Starting presentation request with input:', input);
+      
       if (!session) {
+        console.error('No active session found');
         throw new Error('No active session');
       }
 
+      console.log('Getting token from session...');
       const token = await session.getToken();
       if (!token) {
+        console.error('Failed to get authentication token');
         throw new Error('Failed to get authentication token');
       }
 
+      console.log('Token retrieved, calling function...');
       const { data, error } = await supabase.functions.invoke('process-presentation-request', {
         body: input,
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
+
+      console.log('Function response:', { data, error });
 
       if (error) throw error;
 
