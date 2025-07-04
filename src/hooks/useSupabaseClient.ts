@@ -19,9 +19,7 @@ export const useSupabaseClient = () => {
           'x-client-info': 'lovable-app',
         },
       },
-      ...(session?.getToken && {
-        accessToken: () => session.getToken(),
-      }),
+      accessToken: session?.getToken ? () => session.getToken() : undefined,
     });
   }, [session]);
 
