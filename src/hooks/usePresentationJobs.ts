@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
+import { useSession } from '@clerk/clerk-react';
 import { useToast } from '@/hooks/use-toast';
 
 export interface PresentationInput {
@@ -32,6 +33,7 @@ export const usePresentationJobs = () => {
   const [jobs, setJobs] = useState<PresentationJob[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient();
+  const { session } = useSession();
   const { toast } = useToast();
 
   const fetchJobs = async () => {
@@ -68,8 +70,20 @@ export const usePresentationJobs = () => {
     slide_count_preference?: number;
   }) => {
     try {
+      if (!session) {
+        throw new Error('No active session');
+      }
+
+      const token = await session.getToken();
+      if (!token) {
+        throw new Error('Failed to get authentication token');
+      }
+
       const { data, error } = await supabase.functions.invoke('process-presentation-request', {
-        body: input
+        body: input,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
       if (error) throw error;
