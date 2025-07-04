@@ -1,0 +1,98 @@
+[
+  {
+    "name": "title_slide",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Main heading of the presentation"
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "Subheading or tagline",
+          "optional": true
+        }
+      },
+      "required": ["title"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "section_header",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "section_title": {
+          "type": "string",
+          "description": "Heading for this section"
+        }
+      },
+      "required": ["section_title"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "bullet_list",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Title or prompt for the list"
+        },
+        "bullets": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "An array of bullet-point items"
+        }
+      },
+      "required": ["title", "bullets"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "image_slide",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Caption or heading for the image"
+        },
+        "image_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the image to display"
+        },
+        "caption": {
+          "type": "string",
+          "description": "Optional caption text",
+          "optional": true
+        }
+      },
+      "required": ["title", "image_url"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "conclusion_slide",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "summary_points": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Key takeaways or action items"
+        }
+      },
+      "required": ["summary_points"],
+      "additionalProperties": false
+    }
+  }
+]
