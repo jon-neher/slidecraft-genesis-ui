@@ -40,36 +40,8 @@ export const usePresentations = () => {
     }
   }, [user, supabase]);
 
-  const createPresentation = async (presentationData: Omit<PresentationInsert, 'user_id'>) => {
-    if (!user) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const { data, error: createError } = await supabase
-        .from('presentations_generated')
-        .insert({
-          user_id: user.id,
-          ...presentationData
-        })
-        .select()
-        .single();
-
-      if (createError) {
-        throw createError;
-      }
-
-      setPresentations(prev => [data, ...prev]);
-      return data;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      console.error('Error creating presentation:', err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+  // createPresentation removed - use usePresentationJobs.createPresentationRequest() instead
+  // This ensures presentations go through proper job processing pipeline
 
   const updatePresentation = async (presentationId: string, updates: PresentationUpdate) => {
     if (!user) return;
@@ -145,7 +117,7 @@ export const usePresentations = () => {
     presentations,
     loading,
     error,
-    createPresentation,
+    // createPresentation removed - use usePresentationJobs instead
     updatePresentation,
     deletePresentation,
     refetch: fetchPresentations

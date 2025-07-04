@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { Search, FileText, User, Building } from 'lucide-react';
 import { useNewDeckForm } from '@/hooks/useNewDeckForm';
 import { useIntegrationConnection } from '@/hooks/useIntegrationConnection';
-import { usePresentations } from '@/hooks/usePresentations';
+import { usePresentationJobs } from '@/hooks/usePresentationJobs';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -18,7 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 const NewDeckFlow = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { createPresentation } = usePresentations();
+  const { createPresentationRequest } = usePresentationJobs();
   const { isConnected: hubspotConnected } = useIntegrationConnection('hubspot');
   const {
     searchQuery,
@@ -85,9 +85,11 @@ const NewDeckFlow = () => {
         fileUrl: uploadedUrl
       };
 
-      await createPresentation({
+      await createPresentationRequest({
         title,
-        context: contextData
+        description: notes || undefined,
+        context: contextData,
+        presentation_type: deckType
       });
 
       toast({

@@ -8,6 +8,7 @@ import TouchCard from '@/components/ui/touch-card';
 import PresentationFilterBar from './shared/PresentationFilterBar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { usePresentations } from '@/hooks/usePresentations';
+import { useSupabaseClient } from '@/hooks/useSupabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { Eye, Play, Clock, CheckCircle, AlertCircle, FileText, Calendar } from 'lucide-react';
 import { devLog } from '@/lib/dev-log';
@@ -16,7 +17,31 @@ const DeckGallery = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('Recent');
   const isMobile = useIsMobile();
-  const { presentations, loading, error } = usePresentations();
+  const { presentations, loading, error, refetch } = usePresentations();
+  const supabase = useSupabaseClient();
+  
+  // Set up real-time subscription for presentation updates
+  React.useEffect(() => {
+    const channel = supabase
+      .channel('presentation-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'presentations_generated'
+        },
+        () => {
+          // Refetch presentations when any change occurs
+          refetch();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetch, supabase]);
   const navigate = useNavigate();
 
   const handlePresentationView = (presentationId: string) => {
