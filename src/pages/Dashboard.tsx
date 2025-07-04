@@ -9,7 +9,6 @@ import QuickSelectHeader from '@/components/dashboard/QuickSelectHeader';
 import ContextPane from '@/components/dashboard/ContextPane';
 import DeckGallery from '@/components/dashboard/DeckGallery';
 import ActivityPanel from '@/components/dashboard/ActivityPanel';
-import DeckList from '@/components/dashboard/DeckList';
 import FloatingActionButton from '@/components/ui/floating-action-button';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { devLog } from '@/lib/dev-log';
@@ -62,9 +61,6 @@ const Dashboard = () => {
                 <div className="lg:w-80 w-full space-y-6">
                   <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Activity Error</div>}>
                     <ActivityPanel />
-                  </ErrorBoundary>
-                  <ErrorBoundary fallback={<div className="p-4 bg-gray-100">Decks Error</div>}>
-                    <DeckList />
                   </ErrorBoundary>
                 </div>
               </div>
