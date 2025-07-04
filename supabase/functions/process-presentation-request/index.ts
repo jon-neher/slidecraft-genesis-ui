@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
 
@@ -15,14 +16,16 @@ serve(async (req) => {
   try {
     const auth = req.headers.get('Authorization') || ''
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     
-    const authed = createClient(supabaseUrl, supabaseServiceKey, {
+    // Use anon key with user's JWT for proper RLS authentication
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: auth } },
     })
 
-    const { data: { user } } = await authed.auth.getUser()
+    const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
+      console.error('No authenticated user found')
       return new Response('Unauthorized', { status: 401, headers: corsHeaders })
     }
 
@@ -39,7 +42,7 @@ serve(async (req) => {
     console.log('Processing presentation request for user:', user.id)
 
     // Store the user input
-    const { data: inputData, error: inputError } = await authed
+    const { data: inputData, error: inputError } = await supabase
       .from('presentations_input')
       .insert({
         user_id: user.id,
@@ -64,7 +67,7 @@ serve(async (req) => {
     }
 
     // Create a processing job
-    const { data: jobData, error: jobError } = await authed
+    const { data: jobData, error: jobError } = await supabase
       .from('presentation_jobs')
       .insert({
         input_id: inputData.input_id,
@@ -88,7 +91,7 @@ serve(async (req) => {
 
     // Trigger the orchestrator function asynchronously
     try {
-      await authed.functions.invoke('ai-presentation-orchestrator', {
+      await supabase.functions.invoke('ai-presentation-orchestrator', {
         body: { job_id: jobData.job_id }
       })
     } catch (error) {

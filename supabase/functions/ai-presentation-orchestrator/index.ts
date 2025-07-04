@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
 import OpenAI from 'npm:openai'
@@ -19,6 +20,8 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     
+    // For orchestrator, we use service role since it needs to update job statuses
+    // This function is called internally and doesn't rely on user RLS policies
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
     const { job_id } = await req.json()
 
