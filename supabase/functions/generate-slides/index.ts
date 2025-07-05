@@ -25,16 +25,27 @@ serve(async (req) => {
       const prompt = url.searchParams.get('prompt') ?? ''
       const count = url.searchParams.get('slides') ?? '1'
       const auth = req.headers.get('Authorization') || ''
+      const token = auth.replace(/^Bearer\s+/i, '')
       const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
       const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-      
-      const authed = createClient(supabaseUrl, supabaseServiceKey, {
-        global: { headers: { Authorization: auth } },
-      })
-      const { data: { user } } = await authed.auth.getUser()
-      if (!user) {
+
+      function getSub(h: string): string | null {
+        try {
+          const payload = JSON.parse(atob(h.split('.')[1]))
+          return payload.sub ?? null
+        } catch {
+          return null
+        }
+      }
+
+      const userId = getSub(token)
+      if (!userId) {
         return new Response('Unauthorized', { status: 401, headers: corsHeaders })
       }
+
+      const authed = createClient(supabaseUrl, supabaseServiceKey, {
+        accessToken: () => Promise.resolve(token),
+      })
 
       console.log('Received request with prompt:', prompt, 'slides:', count)
 
@@ -51,7 +62,7 @@ serve(async (req) => {
 
         const { data: pres, error: presError } = await authed
           .from('presentations_generated')
-          .insert({ user_id: user.id, title: prompt })
+          .insert({ user_id: userId, title: prompt })
           .select('presentation_id')
           .single()
 

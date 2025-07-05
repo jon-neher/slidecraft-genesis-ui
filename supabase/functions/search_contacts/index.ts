@@ -244,6 +244,7 @@ Deno.serve(async (req) => {
     const limit = parseInt(url.searchParams.get('limit') || '10', 10)
 
     const auth = req.headers.get('Authorization') || ''
+    const token = auth.replace(/^Bearer\s+/i, '')
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
@@ -251,22 +252,31 @@ Deno.serve(async (req) => {
       throw new Error('Missing Supabase configuration')
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-      global: { headers: { Authorization: auth } },
-    })
+    function getSub(h: string): string | null {
+      try {
+        const payload = JSON.parse(atob(h.split('.')[1]))
+        return payload.sub ?? null
+      } catch {
+        return null
+      }
+    }
 
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      return new Response('Unauthorized', { 
-        status: 401, 
-        headers: corsHeaders 
+    const userId = getSub(token)
+    if (!userId) {
+      return new Response('Unauthorized', {
+        status: 401,
+        headers: corsHeaders,
       })
     }
 
-    // Rate limiting per user
-    await rateLimiter.take(user.id)
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      accessToken: () => Promise.resolve(token),
+    })
 
-    const results = await searchContacts(user.id, query, limit, supabase)
+    // Rate limiting per user
+    await rateLimiter.take(userId)
+
+    const results = await searchContacts(userId, query, limit, supabase)
     
     return new Response(JSON.stringify(results), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
