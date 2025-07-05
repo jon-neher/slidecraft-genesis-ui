@@ -17,8 +17,10 @@ export const useSupabaseClient = () => {
       global: {
         headers: {
           'x-client-info': 'lovable-app',
+          ...(session && { 'Authorization': `Bearer ${session.getToken()}` }),
         },
       },
+      accessToken: session ? () => session.getToken() : undefined,
     });
   }, [session]);
 

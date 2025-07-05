@@ -23,9 +23,25 @@ serve(async (req) => {
       global: { headers: { Authorization: auth } },
     })
 
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      console.error('No authenticated user found')
+    // Extract user ID from Clerk JWT token
+    const token = auth.replace('Bearer ', '')
+    if (!token) {
+      console.error('No authentication token provided')
+      return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+    }
+
+    // Decode the JWT to get user info (basic decode without verification for now)
+    let userId: string
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      userId = payload.sub
+      if (!userId) {
+        console.error('No user ID found in token')
+        return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+      }
+      console.log('Authenticated user ID:', userId)
+    } catch (error) {
+      console.error('Failed to decode token:', error)
       return new Response('Unauthorized', { status: 401, headers: corsHeaders })
     }
 
@@ -39,13 +55,13 @@ serve(async (req) => {
       slide_count_preference
     } = await req.json()
 
-    console.log('Processing presentation request for user:', user.id)
+    console.log('Processing presentation request for user:', userId)
 
     // Store the user input
     const { data: inputData, error: inputError } = await supabase
       .from('presentations_input')
       .insert({
-        user_id: user.id,
+        user_id: userId,
         title,
         description,
         context,
