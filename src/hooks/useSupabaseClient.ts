@@ -1,12 +1,12 @@
 import { useMemo } from "react";
-import { useSession } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = 'https://igspkppkbqbbxffhdqlq.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlnc3BrcHBrYnFiYnhmZmhkcWxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzMDEyNjUsImV4cCI6MjA2NTg3NzI2NX0.ilzySO3FegN_Ry21cBngROOasL_mZbNkF3OMMneCPFk';
 
 export const useSupabaseClient = () => {
-  const { session } = useSession();
+  const { getToken } = useAuth();
 
   const supabase = useMemo(() => {
     return createClient(supabaseUrl, supabaseAnonKey, {
@@ -19,9 +19,9 @@ export const useSupabaseClient = () => {
           'x-client-info': 'lovable-app',
         },
       },
-      accessToken: session ? () => session.getToken() : undefined,
+      accessToken: getToken,
     });
-  }, [session]);
+  }, [getToken]);
 
   return supabase;
 };

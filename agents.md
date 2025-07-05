@@ -223,15 +223,15 @@ When integrating Clerk with Supabase, follow these exact patterns:
 **✅ Correct Supabase Client Configuration:**
 ```typescript
 import { createClient } from '@supabase/supabase-js'
-import { useSession } from '@clerk/clerk-react'
+import { useAuth } from '@clerk/clerk-react'
 
-const { session } = useSession()
+const { getToken } = useAuth()
 
 const client = createClient(
   supabaseUrl,
   supabaseAnonKey,
   {
-    accessToken: session ? () => session.getToken() : undefined,
+    accessToken: getToken,
   },
 )
 ```
@@ -241,7 +241,7 @@ const client = createClient(
 // DON'T use Bearer headers - this causes auth conflicts
 global: {
   headers: {
-    'Authorization': `Bearer ${session.getToken()}`,
+    'Authorization': `Bearer ${await getToken()}`,
   },
 },
 ```
