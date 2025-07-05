@@ -15,22 +15,29 @@ serve(async (req) => {
 
   try {
     const auth = req.headers.get('Authorization') || ''
+    const token = auth.replace(/^Bearer\s+/i, '')
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-    
-    // Use anon key with user's JWT for proper RLS authentication
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: auth } },
-    })
 
-    // Get authenticated user using Supabase's built-in auth
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      console.error('Authentication failed:', authError)
+    function getSub(h: string): string | null {
+      try {
+        const payload = JSON.parse(atob(h.split('.')[1]))
+        return payload.sub ?? null
+      } catch {
+        return null
+      }
+    }
+
+    const userId = getSub(token)
+    if (!userId) {
+      console.error('Authentication failed: invalid token')
       return new Response('Unauthorized', { status: 401, headers: corsHeaders })
     }
 
-    const userId = user.id
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      accessToken: () => Promise.resolve(token),
+    })
+
     console.log('Authenticated user ID:', userId)
 
     const {

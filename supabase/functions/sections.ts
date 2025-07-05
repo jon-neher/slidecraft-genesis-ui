@@ -10,8 +10,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-function getSupabaseClient(auth?: string) {
-  return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, auth ? { global: { headers: { Authorization: auth } } } : {})
+function getSupabaseClient(token?: string) {
+  return createClient(
+    SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY,
+    token ? { accessToken: () => Promise.resolve(token) } : {}
+  )
 }
 
 interface Rule {
@@ -96,12 +100,26 @@ export async function handleRequest(req: Request): Promise<Response> {
   }
 
   const auth = req.headers.get('Authorization') || ''
-  const client = getSupabaseClient(auth)
-  const { data: { user } } = await client.auth.getUser()
-  if (!user) return new Response('Unauthorized', { 
-    status: 401,
-    headers: corsHeaders
-  })
+  const token = auth.replace(/^Bearer\s+/i, '')
+
+  function getSub(h: string): string | null {
+    try {
+      const payload = JSON.parse(atob(h.split('.')[1]))
+      return payload.sub ?? null
+    } catch {
+      return null
+    }
+  }
+
+  const userId = getSub(token)
+  if (!userId) {
+    return new Response('Unauthorized', {
+      status: 401,
+      headers: corsHeaders,
+    })
+  }
+
+  const client = getSupabaseClient(token)
 
   const { goal = '', audience = '', creative = false } = await req.json()
 

@@ -9,8 +9,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-function getSupabaseClient(auth?: string) {
-  return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, auth ? { global: { headers: { Authorization: auth } } } : {})
+function getSupabaseClient(token?: string) {
+  return createClient(
+    SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY,
+    token ? { accessToken: () => Promise.resolve(token) } : {}
+  )
 }
 
 function parseBlueprintData(data: Record<string, unknown> | null | undefined) {
@@ -77,12 +81,26 @@ export async function handleRequest(req: Request): Promise<Response> {
   const { method, url } = req
   const parsed = new URL(url)
   const auth = req.headers.get('Authorization') || ''
-  const client = getSupabaseClient(auth)
-  const { data: { user } } = await client.auth.getUser()
-  if (!user) return new Response('Unauthorized', { 
-    status: 401,
-    headers: corsHeaders
-  })
+  const token = auth.replace(/^Bearer\s+/i, '')
+
+  function getSub(h: string): string | null {
+    try {
+      const payload = JSON.parse(atob(h.split('.')[1]))
+      return payload.sub ?? null
+    } catch {
+      return null
+    }
+  }
+
+  const userId = getSub(token)
+  if (!userId) {
+    return new Response('Unauthorized', {
+      status: 401,
+      headers: corsHeaders,
+    })
+  }
+
+  const client = getSupabaseClient(token)
 
   const path = parsed.pathname.replace(/\/+/, '/').replace(/^\/+|\/+$/g, '')
   const segments = path.split('/')
@@ -100,9 +118,9 @@ export async function handleRequest(req: Request): Promise<Response> {
         const includeDefaults = parsed.searchParams.get('includeDefaults') === 'true'
         const query = client.from('blueprints').select('*')
         if (includeDefaults) {
-          query.or(`is_default.eq.true,user_id.eq.${user.id}`)
+          query.or(`is_default.eq.true,user_id.eq.${userId}`)
         } else {
-          query.eq('user_id', user.id)
+          query.eq('user_id', userId)
         }
         const themeFilter = parsed.searchParams.get('theme')
         if (themeFilter) {
@@ -121,7 +139,7 @@ export async function handleRequest(req: Request): Promise<Response> {
         const { data, error } = await client
           .from('blueprints')
           .insert({
-            user_id: user.id,
+            user_id: userId,
             name: body.name,
             blueprint: parsedData.blueprint,
             goal: parsedData.goal,
@@ -160,7 +178,7 @@ export async function handleRequest(req: Request): Promise<Response> {
         const { data, error: insertError } = await client
           .from('blueprints')
           .insert({
-            user_id: user.id,
+            user_id: userId,
             name: orig.name,
             blueprint: orig.blueprint,
             goal: orig.goal,
@@ -190,7 +208,7 @@ export async function handleRequest(req: Request): Promise<Response> {
             status: 404,
             headers: corsHeaders
           })
-          if (!data.is_default && data.user_id !== user.id) {
+          if (!data.is_default && data.user_id !== userId) {
             return new Response('Not Found', { 
               status: 404,
               headers: corsHeaders
@@ -231,7 +249,7 @@ export async function handleRequest(req: Request): Promise<Response> {
               updated_at: new Date().toISOString()
             })
             .eq('blueprint_id', id)
-            .eq('user_id', user.id)
+            .eq('user_id', userId)
           if (upError) throw upError
           return new Response(null, { 
             status: 200,
@@ -253,7 +271,7 @@ export async function handleRequest(req: Request): Promise<Response> {
             status: 403,
             headers: corsHeaders
           })
-          if (existing.user_id !== user.id) return new Response('Not Found', { 
+          if (existing.user_id !== userId) return new Response('Not Found', {
             status: 404,
             headers: corsHeaders
           })
