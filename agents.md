@@ -214,6 +214,71 @@ rollupOptions: {
 - **CSS**: Critical CSS inlining for above-fold content
 - **JavaScript**: Tree shaking and dead code elimination
 
+## Clerk + Supabase Authentication Integration
+
+### Critical Configuration Requirements
+
+When integrating Clerk with Supabase, follow these exact patterns:
+
+**✅ Correct Supabase Client Configuration:**
+```typescript
+import { createClient } from '@supabase/supabase-js'
+import { useSession } from '@clerk/clerk-react'
+
+const { session } = useSession()
+
+const client = createClient(
+  supabaseUrl,
+  supabaseAnonKey,
+  {
+    accessToken: session ? () => session.getToken() : undefined,
+  },
+)
+```
+
+**❌ Common Mistakes to Avoid:**
+```typescript
+// DON'T use Bearer headers - this causes auth conflicts
+global: {
+  headers: {
+    'Authorization': `Bearer ${session.getToken()}`,
+  },
+},
+```
+
+### Authentication Error Handling
+
+**Integration Connection Patterns:**
+- Handle 401 errors gracefully for optional integrations
+- Use `PGRST301` error code detection for RLS failures
+- Allow core functionality without optional integrations
+- Log connection issues as info, not errors
+
+**RLS Policy Compatibility:**
+- Use `auth.uid()` or `(auth.jwt() ->> 'sub')` in RLS policies
+- Ensure Clerk's `sub` claim is properly recognized
+- Test authentication flow after any RLS changes
+
+### Integration Best Practices
+
+**Optional Integration Handling:**
+```typescript
+// Graceful error handling for optional integrations
+try {
+  const { data, error } = await supabase
+    .from('integration_table')
+    .select('*');
+    
+  if (error && error.code === 'PGRST301') {
+    console.log('Integration not available (auth error)');
+    return null; // Graceful fallback
+  }
+} catch (err) {
+  console.log('Integration not available:', err.message);
+  return null; // Don't block core functionality
+}
+```
+
 ## Backend Integration with Supabase
 
 ### Edge Functions Development

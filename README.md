@@ -219,6 +219,40 @@ This application features a sophisticated slide presentation system with the fol
 - **Focus**: Pulsing borders and gentle scaling
 - **Performance**: Transform-only animations with `will-change`
 
+## 🔐 Clerk + Supabase Integration
+
+### Authentication Configuration
+
+This project uses Clerk for authentication with Supabase as the backend. The integration is configured to pass Clerk session tokens directly to Supabase:
+
+```typescript
+import { createClient } from '@supabase/supabase-js'
+import { useSession } from '@clerk/clerk-react'
+
+const { session } = useSession()
+
+const client = createClient(
+  'https://your-project.supabase.co',
+  'your-anon-key',
+  {
+    accessToken: () => session?.getToken(),
+  },
+)
+```
+
+**Critical Configuration Rules:**
+- ✅ **DO**: Use the `accessToken` configuration key
+- ❌ **DON'T**: Use Bearer headers in `global.headers`
+- ✅ **DO**: Keep RLS enabled and scope access using Clerk's `sub` claim
+- ✅ **DO**: Use `auth.uid()` or `(auth.jwt() ->> 'sub')` in RLS policies
+
+### Error Handling
+
+The integration includes graceful error handling for optional integrations (like HubSpot):
+- 401 errors from RLS policies are handled gracefully
+- Integration connection checks fail silently when not configured
+- Core functionality works without optional integrations
+
 ## 🔧 Development Setup
 
 ### Prerequisites
