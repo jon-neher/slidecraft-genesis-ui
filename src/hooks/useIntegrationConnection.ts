@@ -42,6 +42,13 @@ export const useIntegrationConnection = (integration: IntegrationName) => {
         .eq(config.portalField, user.id)
         .maybeSingle();
 
+      // Handle authentication errors gracefully (401 errors from RLS)
+      if (error && error.code === 'PGRST301') {
+        console.log(`${integration} integration not available (auth error)`);
+        setIsConnected(false);
+        return false;
+      }
+
       if (error || !data) {
         setIsConnected(false);
         return false;
@@ -56,7 +63,8 @@ export const useIntegrationConnection = (integration: IntegrationName) => {
       setIsConnected(connected);
       return connected;
     } catch (err) {
-      console.error('Error checking integration connection:', err);
+      // Gracefully handle any authentication or connection errors
+      console.log(`${integration} integration not available:`, err.message || err);
       setIsConnected(false);
       return false;
     } finally {

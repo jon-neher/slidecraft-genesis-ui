@@ -19,7 +19,7 @@ const NewDeckFlow = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { createPresentationRequest } = usePresentationJobs();
-  const { isConnected: hubspotConnected } = useIntegrationConnection('hubspot');
+  const { isConnected: hubspotConnected, isChecking } = useIntegrationConnection('hubspot');
   const {
     searchQuery,
     setSearchQuery,
