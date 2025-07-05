@@ -20,34 +20,29 @@ serve(async (req) => {
   try {
     const url = new URL(req.url)
     
-    // Check if this is a GET request to /generate
     if (req.method === 'GET' && url.pathname === '/generate') {
       const prompt = url.searchParams.get('prompt') ?? ''
       const count = url.searchParams.get('slides') ?? '1'
-      const auth = req.headers.get('Authorization') || ''
-      const token = auth.replace(/^Bearer\s+/i, '')
+      const authHeader = req.headers.get('Authorization') || ''
+      const token = authHeader.replace(/^Bearer\s+/i, '')
       const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
       const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 
-      function getSub(h: string): string | null {
-        try {
-          const payload = JSON.parse(atob(h.split('.')[1]))
-          return payload.sub ?? null
-        } catch {
-          return null
-        }
-      }
-
-      const userId = getSub(token)
-      if (!userId) {
-        return new Response('Unauthorized', { status: 401, headers: corsHeaders })
-      }
-
+      // Create Supabase client with proper token handling
       const authed = createClient(supabaseUrl, supabaseServiceKey, {
         accessToken: () => Promise.resolve(token),
       })
 
-      console.log('Received request with prompt:', prompt, 'slides:', count)
+      // Get authenticated user using Supabase auth
+      const { data: { user }, error: authError } = await authed.auth.getUser()
+      
+      if (authError || !user) {
+        console.error('Authentication failed:', authError?.message)
+        return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+      }
+
+      const userId = user.id
+      console.log('Received request with prompt:', prompt, 'slides:', count, 'user:', userId)
 
       try {
         const completion = await openai.chat.completions.create({

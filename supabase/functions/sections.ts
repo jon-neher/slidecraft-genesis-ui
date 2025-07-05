@@ -102,24 +102,21 @@ export async function handleRequest(req: Request): Promise<Response> {
   const auth = req.headers.get('Authorization') || ''
   const token = auth.replace(/^Bearer\s+/i, '')
 
-  function getSub(h: string): string | null {
-    try {
-      const payload = JSON.parse(atob(h.split('.')[1]))
-      return payload.sub ?? null
-    } catch {
-      return null
-    }
-  }
+  // Create Supabase client with proper token handling
+  const client = getSupabaseClient(token)
 
-  const userId = getSub(token)
-  if (!userId) {
+  // Get authenticated user using Supabase auth
+  const { data: { user }, error: authError } = await client.auth.getUser()
+  
+  if (authError || !user) {
+    console.error('Authentication failed:', authError?.message)
     return new Response('Unauthorized', {
       status: 401,
       headers: corsHeaders,
     })
   }
 
-  const client = getSupabaseClient(token)
+  const userId = user.id
 
   const { goal = '', audience = '', creative = false } = await req.json()
 

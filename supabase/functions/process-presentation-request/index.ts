@@ -14,30 +14,25 @@ serve(async (req) => {
   }
 
   try {
-    const auth = req.headers.get('Authorization') || ''
-    const token = auth.replace(/^Bearer\s+/i, '')
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    const authHeader = req.headers.get('Authorization') ?? ''
+    const token = authHeader.replace(/^Bearer\s+/i, '')
 
-    function getSub(h: string): string | null {
-      try {
-        const payload = JSON.parse(atob(h.split('.')[1]))
-        return payload.sub ?? null
-      } catch {
-        return null
-      }
-    }
-
-    const userId = getSub(token)
-    if (!userId) {
-      console.error('Authentication failed: invalid token')
-      return new Response('Unauthorized', { status: 401, headers: corsHeaders })
-    }
-
+    // Create Supabase client with proper token handling
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       accessToken: () => Promise.resolve(token),
     })
 
+    // Get authenticated user using Supabase auth
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    
+    if (authError || !user) {
+      console.error('Authentication failed:', authError?.message)
+      return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+    }
+
+    const userId = user.id
     console.log('Authenticated user ID:', userId)
 
     const {
