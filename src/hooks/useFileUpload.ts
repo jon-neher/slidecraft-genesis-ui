@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useSupabaseClient } from './useSupabaseClient';
-import { useSession } from '@clerk/clerk-react';
+import { useAuth } from '@clerk/clerk-react';
 
 export const useFileUpload = () => {
   const supabase = useSupabaseClient();
-  const { session } = useSession();
+  const { getToken, userId } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -13,13 +13,11 @@ export const useFileUpload = () => {
       setUploading(true);
       setError(null);
       
-      if (!session) {
+      if (!userId) {
         throw new Error('No authentication session');
       }
-      
-      const token = await session.getToken();
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const userId = payload.sub;
+
+      const token = await getToken();
       
       const filePath = `${userId}/${Date.now()}-${file.name}`;
       const { error: uploadError } = await supabase.storage

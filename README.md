@@ -223,19 +223,19 @@ This application features a sophisticated slide presentation system with the fol
 
 ### Authentication Configuration
 
-This project uses Clerk for authentication with Supabase as the backend. The integration is configured to pass Clerk session tokens directly to Supabase:
+This project uses Clerk for authentication with Supabase as the backend. The native integration passes Clerk tokens to Supabase using a helper hook:
 
 ```typescript
 import { createClient } from '@supabase/supabase-js'
-import { useSession } from '@clerk/clerk-react'
+import { useAuth } from '@clerk/clerk-react'
 
-const { session } = useSession()
+const { getToken } = useAuth()
 
 const client = createClient(
   'https://your-project.supabase.co',
   'your-anon-key',
   {
-    accessToken: () => session?.getToken(),
+    accessToken: getToken,
   },
 )
 ```
