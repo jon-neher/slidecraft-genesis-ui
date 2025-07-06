@@ -240,6 +240,8 @@ const client = createClient(
 )
 ```
 
+Edge Functions verify this token using `verifyToken` before forwarding it in the Authorization header of the Supabase client.
+
 **Critical Configuration Rules:**
 - ✅ **DO**: Use the `accessToken` configuration key
 - ❌ **DON'T**: Use Bearer headers in `global.headers`
@@ -333,7 +335,7 @@ supabase/
 
 This project implements comprehensive security measures:
 
-- **Authentication**: JWT verification for all sensitive operations
+- **Authentication**: Edge Functions verify Clerk tokens with `verifyToken` and forward them to Supabase
 - **Input Validation**: Enhanced validation with XSS and SQL injection protection
 - **Rate Limiting**: Per-user and per-endpoint rate limiting
 - **Audit Logging**: Security event tracking and monitoring

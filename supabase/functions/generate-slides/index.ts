@@ -2,6 +2,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import OpenAI from 'npm:openai'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
+import { verifyToken } from 'npm:@clerk/backend'
 
 const apiKey = Deno.env.get('OPENAI_API_KEY')
 const openai = new OpenAI({ apiKey })
@@ -29,19 +30,22 @@ serve(async (req) => {
       const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 
       // Create Supabase client with proper token handling
+      if (!token) {
+        return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+      }
+
+      let userId: string
+      try {
+        const { payload } = await verifyToken(token)
+        userId = payload.sub
+      } catch {
+        return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+      }
+
       const authed = createClient(supabaseUrl, supabaseServiceKey, {
         accessToken: () => Promise.resolve(token),
       })
 
-      // Get authenticated user using Supabase auth
-      const { data: { user }, error: authError } = await authed.auth.getUser()
-      
-      if (authError || !user) {
-        console.error('Authentication failed:', authError?.message)
-        return new Response('Unauthorized', { status: 401, headers: corsHeaders })
-      }
-
-      const userId = user.id
       console.log('Received request with prompt:', prompt, 'slides:', count, 'user:', userId)
 
       try {

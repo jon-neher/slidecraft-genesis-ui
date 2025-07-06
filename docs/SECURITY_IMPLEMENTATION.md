@@ -6,7 +6,7 @@ This document outlines the comprehensive security measures implemented in the Sl
 ## Security Features Implemented
 
 ### 1. Authentication & Authorization
-- **JWT Verification**: All sensitive Edge Functions now require authentication
+- **JWT Verification**: Edge Functions validate Clerk tokens with `verifyToken` from `@clerk/backend` (or JOSE as a fallback) before using them
 - **Row Level Security (RLS)**: Comprehensive policies ensure data isolation between users
 - **OAuth State Security**: 32-byte entropy state parameters with timestamp validation
 - **Session Management**: Automatic cleanup of expired OAuth states
@@ -41,12 +41,10 @@ All Edge Functions now include security headers:
 ## Security Configurations
 
 ### Edge Functions Security
+Edge Functions verify Clerk tokens using `verifyToken` and pass the same token to Supabase for RLS checks.
 ```toml
 # Sensitive functions require JWT verification
 [functions.hubspot_tokens]
-verify_jwt = true
-
-[functions.search_contacts]
 verify_jwt = true
 
 [functions.post_note]
