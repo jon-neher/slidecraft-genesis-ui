@@ -33,7 +33,13 @@ export const useFileUpload = () => {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Upload failed';
       setError(message);
-      console.error('File upload error:', err);
+      if (err && typeof err === 'object') {
+        console.error('File upload error:', JSON.stringify(err, null, 2));
+        console.error('Error status:', (err as any).status);
+        console.error('Error message:', (err as any).message);
+      } else {
+        console.error('File upload error:', err);
+      }
       return null;
     } finally {
       setUploading(false);
