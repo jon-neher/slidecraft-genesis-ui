@@ -19,21 +19,31 @@ serve(async (req) => {
     const authHeader = req.headers.get('Authorization') ?? ''
     const token = authHeader.replace(/^Bearer\s+/i, '')
 
-    // Create Supabase client with proper token handling
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      accessToken: () => Promise.resolve(token),
-    })
+    // Create Supabase client
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-    // Get authenticated user using Supabase auth
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    
-    if (authError || !user) {
-      console.error('Authentication failed:', authError?.message)
+    // Extract user ID from Clerk JWT token
+    if (!token) {
+      console.error('No authorization token provided')
       return new Response('Unauthorized', { status: 401, headers: corsHeaders })
     }
 
-    const userId = user.id
-    console.log('Authenticated user ID:', userId)
+    let userId: string
+    try {
+      // Decode the JWT token to get the user ID
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      userId = payload.sub
+      
+      if (!userId) {
+        console.error('No user ID found in token')
+        return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+      }
+      
+      console.log('Authenticated user ID:', userId)
+    } catch (error) {
+      console.error('Failed to decode JWT token:', error)
+      return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+    }
 
     const {
       title,
