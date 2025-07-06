@@ -1,6 +1,7 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
 import OpenAI from 'npm:openai'
+import { verifyToken } from 'npm:@clerk/backend'
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -102,21 +103,20 @@ export async function handleRequest(req: Request): Promise<Response> {
   const auth = req.headers.get('Authorization') || ''
   const token = auth.replace(/^Bearer\s+/i, '')
 
-  // Create Supabase client with proper token handling
-  const client = getSupabaseClient(token)
-
-  // Get authenticated user using Supabase auth
-  const { data: { user }, error: authError } = await client.auth.getUser()
-  
-  if (authError || !user) {
-    console.error('Authentication failed:', authError?.message)
-    return new Response('Unauthorized', {
-      status: 401,
-      headers: corsHeaders,
-    })
+  if (!token) {
+    return new Response('Unauthorized', { status: 401, headers: corsHeaders })
   }
 
-  const userId = user.id
+  let userId: string
+  try {
+    const { payload } = await verifyToken(token)
+    userId = payload.sub
+  } catch {
+    return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+  }
+
+  // Create Supabase client with proper token handling
+  const client = getSupabaseClient(token)
 
   const { goal = '', audience = '', creative = false } = await req.json()
 
