@@ -283,17 +283,14 @@ try {
 
 ### Edge Functions Development
 
-**Function Structure:**
+**Native Clerk Authentication Pattern:**
 ```typescript
-// ✅ Correct Edge Function template
+// ✅ Correct Edge Function with Clerk authentication
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'X-Content-Type-Options': 'nosniff',
-  'X-Frame-Options': 'DENY',
-  'X-XSS-Protection': '1; mode=block',
 }
 
 Deno.serve(async (req) => {
@@ -302,8 +299,35 @@ Deno.serve(async (req) => {
   }
   
   try {
-    // Function logic here
-    return new Response(JSON.stringify(result), {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    const authHeader = req.headers.get('Authorization') ?? ''
+    const token = authHeader.replace(/^Bearer\s+/i, '')
+
+    if (!token) {
+      return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+    }
+
+    // Create Supabase client with Clerk token
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      accessToken: () => Promise.resolve(token),
+    })
+
+    // Get authenticated user (Clerk validates token automatically)
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+    }
+
+    const userId = user.id // This is the Clerk user ID (string)
+    
+    // Your business logic here
+    const { data, error } = await supabase
+      .from('your_table')
+      .select('*')
+      .eq('user_id', userId)
+
+    return new Response(JSON.stringify({ data }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   } catch (error) {
@@ -315,9 +339,45 @@ Deno.serve(async (req) => {
 });
 ```
 
+**Key Authentication Principles:**
+- Always use `supabase.auth.getUser()` for authentication validation
+- Clerk tokens are passed via the `accessToken` function
+- User ID from Clerk is a string, not UUID (important for RLS policies)
+- Never manually verify JWT tokens - let Supabase handle it
+
 **Security Requirements:**
 - Always validate inputs with comprehensive patterns
 - Implement rate limiting for public endpoints
+- Use Row Level Security (RLS) for data access
+- Log security events for audit trails
+- Sanitize user content to prevent XSS
+
+### Storage Integration with Clerk
+
+**Storage Policy Configuration:**
+```sql
+-- Storage policies for Clerk string user IDs
+CREATE POLICY "Users can upload their own files"
+ON storage.objects
+FOR INSERT
+WITH CHECK (
+  bucket_id = 'user-uploads' AND 
+  auth.uid()::text = (storage.foldername(name))[1]
+);
+
+CREATE POLICY "Users can view their own files"
+ON storage.objects
+FOR SELECT
+USING (
+  bucket_id = 'user-uploads' AND
+  auth.uid()::text = (storage.foldername(name))[1]
+);
+```
+
+**Important Storage Notes:**
+- Clerk user IDs are strings, not UUIDs
+- Use `auth.uid()::text` in storage policies for string comparison
+- Organize files by user ID: `user-uploads/clerk-user-id/filename.ext`
 - Use Row Level Security (RLS) for data access
 - Log security events for audit trails
 - Sanitize user content to prevent XSS

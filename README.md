@@ -240,11 +240,25 @@ const client = createClient(
 )
 ```
 
-Edge Functions verify this token using `verifyToken` before forwarding it in the Authorization header of the Supabase client.
+Edge Functions use the native Supabase client with Clerk tokens for authentication:
+
+```typescript
+// In Edge Functions
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  accessToken: () => Promise.resolve(token),
+})
+
+// Get authenticated user
+const { data: { user }, error } = await supabase.auth.getUser()
+if (error || !user) {
+  return new Response('Unauthorized', { status: 401 })
+}
+```
 
 **Critical Configuration Rules:**
-- ✅ **DO**: Use the `accessToken` configuration key
-- ❌ **DON'T**: Use Bearer headers in `global.headers`
+- ✅ **DO**: Use the `accessToken` configuration key in both client and Edge Functions
+- ✅ **DO**: Use `supabase.auth.getUser()` for authentication in Edge Functions
+- ❌ **DON'T**: Use manual JWT verification or Bearer headers
 - ✅ **DO**: Keep RLS enabled and scope access using Clerk's `sub` claim
 - ✅ **DO**: Use `auth.uid()` or `(auth.jwt() ->> 'sub')` in RLS policies
 
