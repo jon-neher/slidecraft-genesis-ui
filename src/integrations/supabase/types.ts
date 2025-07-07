@@ -672,6 +672,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      auth_jwt_sub: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       cleanup_expired_oauth_states: {
         Args: Record<PropertyKey, never>
         Returns: undefined
