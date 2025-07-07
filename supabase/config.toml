@@ -98,4 +98,8 @@ verify_jwt = false
 [functions.process-presentation-request]
 verify_jwt = true
 
+[auth.third_party.clerk]
+enabled = true
+domain = "https://ideal-lion-39.clerk.accounts.dev/"
+
 # Authenticated edge functions use default verify_jwt = true
