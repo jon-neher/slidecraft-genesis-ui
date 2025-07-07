@@ -19,10 +19,30 @@ serve(async (req) => {
     const authHeader = req.headers.get('Authorization') ?? ''
     const token = authHeader.replace(/^Bearer\s+/i, '')
 
-    // Create Supabase client with Clerk token
+    // Enhanced token validation and logging
+    console.log('Auth header present:', !!authHeader)
+    console.log('Token extracted:', !!token)
+    console.log('Token format valid:', token.includes('.'))
+    
     if (!token) {
       console.error('No authorization token provided')
-      return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+      return new Response(JSON.stringify({ 
+        error: 'No authorization token provided',
+        debug: { authHeaderPresent: !!authHeader }
+      }), { 
+        status: 401, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    if (!token.includes('.')) {
+      console.error('Invalid token format')
+      return new Response(JSON.stringify({ 
+        error: 'Invalid token format' 
+      }), { 
+        status: 401, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
     }
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -30,14 +50,35 @@ serve(async (req) => {
     })
 
     // Get user ID from auth context (Clerk will validate the token)
+    console.log('Attempting to validate token with Supabase...')
     const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      console.error('Authentication failed:', authError)
-      return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+    
+    if (authError) {
+      console.error('Supabase auth error:', authError.message, authError.status)
+      return new Response(JSON.stringify({ 
+        error: 'Authentication failed',
+        debug: { 
+          authError: authError.message,
+          status: authError.status 
+        }
+      }), { 
+        status: 401, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+    
+    if (!user) {
+      console.error('No user returned from auth validation')
+      return new Response(JSON.stringify({ 
+        error: 'No user found' 
+      }), { 
+        status: 401, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
     }
 
     const userId = user.id
-    console.log('Authenticated user ID:', userId)
+    console.log('Successfully authenticated user ID:', userId)
 
     const {
       title,

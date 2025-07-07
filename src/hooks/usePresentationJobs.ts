@@ -69,39 +69,69 @@ export const usePresentationJobs = () => {
     presentation_type?: string;
     slide_count_preference?: number;
   }) => {
-    try {
-      const token = await getToken();
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 1000; // 1 second
 
-      if (!token) {
-        throw new Error('Failed to get authentication token');
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        // Wait for authentication state to settle on first attempt
+        if (attempt === 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        const token = await getToken();
+
+        if (!token) {
+          throw new Error('Failed to get authentication token');
+        }
+
+        // Validate token format (basic check)
+        if (!token.includes('.')) {
+          throw new Error('Invalid token format');
+        }
+
+        const { data, error } = await supabase.functions.invoke('process-presentation-request', {
+          body: input,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (error) {
+          // If it's an auth error and we have retries left, retry
+          if (error.message?.includes('Unauthorized') && attempt < MAX_RETRIES) {
+            console.log(`Auth error on attempt ${attempt}, retrying...`);
+            await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * attempt));
+            continue;
+          }
+          throw error;
+        }
+
+        toast({
+          title: 'Success',
+          description: 'Presentation generation started. You can track progress below.',
+        });
+
+        // Refresh jobs list
+        fetchJobs();
+
+        return data;
+      } catch (error) {
+        console.error(`Error creating presentation request (attempt ${attempt}):`, error);
+        
+        // If this is the last attempt or not an auth error, throw
+        if (attempt === MAX_RETRIES || !error.message?.includes('Unauthorized')) {
+          toast({
+            title: 'Error',
+            description: `Failed to start presentation generation: ${error.message}`,
+            variant: 'destructive',
+          });
+          throw error;
+        }
+
+        // Wait before retrying
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * attempt));
       }
-
-      const { data, error } = await supabase.functions.invoke('process-presentation-request', {
-        body: input,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: 'Success',
-        description: 'Presentation generation started. You can track progress below.',
-      });
-
-      // Refresh jobs list
-      fetchJobs();
-
-      return data;
-    } catch (error) {
-      console.error('Error creating presentation request:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to start presentation generation',
-        variant: 'destructive',
-      });
-      throw error;
     }
   };
 
