@@ -1,7 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
-import { verifyToken } from 'npm:@clerk/backend'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,25 +19,25 @@ serve(async (req) => {
     const authHeader = req.headers.get('Authorization') ?? ''
     const token = authHeader.replace(/^Bearer\s+/i, '')
 
-    // Create Supabase client and verify token
+    // Create Supabase client with Clerk token
     if (!token) {
       console.error('No authorization token provided')
-      return new Response('Unauthorized', { status: 401, headers: corsHeaders })
-    }
-
-    let userId: string
-    try {
-      const { payload } = await verifyToken(token)
-      userId = payload.sub
-      console.log('Authenticated user ID:', userId)
-    } catch (error) {
-      console.error('Token verification failed:', error)
       return new Response('Unauthorized', { status: 401, headers: corsHeaders })
     }
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       accessToken: () => Promise.resolve(token),
     })
+
+    // Get user ID from auth context (Clerk will validate the token)
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      console.error('Authentication failed:', authError)
+      return new Response('Unauthorized', { status: 401, headers: corsHeaders })
+    }
+
+    const userId = user.id
+    console.log('Authenticated user ID:', userId)
 
     const {
       title,

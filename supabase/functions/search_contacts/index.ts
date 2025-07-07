@@ -1,5 +1,4 @@
 import { createClient, type SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
-import { verifyToken } from 'npm:@clerk/backend'
 
 // Include RateLimiterMemory class directly in the edge function
 class RateLimiterMemory {
@@ -260,18 +259,22 @@ Deno.serve(async (req) => {
       })
     }
 
-    let userId: string
-    try {
-      const { payload } = await verifyToken(token)
-      userId = payload.sub
-    } catch {
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      accessToken: () => Promise.resolve(token),
+    })
+
+    // Get user ID from auth context (Clerk will validate the token)
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
       return new Response('Unauthorized', {
         status: 401,
         headers: corsHeaders,
       })
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    const userId = user.id
+
+    const supabaseWithToken = createClient(supabaseUrl, supabaseServiceKey, {
       accessToken: () => Promise.resolve(token),
     })
 

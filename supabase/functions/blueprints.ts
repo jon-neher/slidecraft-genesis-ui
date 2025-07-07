@@ -1,6 +1,5 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0'
-import { verifyToken } from 'npm:@clerk/backend'
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -84,20 +83,20 @@ export async function handleRequest(req: Request): Promise<Response> {
   const auth = req.headers.get('Authorization') || ''
   const token = auth.replace(/^Bearer\s+/i, '')
 
-  // Create Supabase client with proper token handling
+  // Create Supabase client with Clerk token
   if (!token) {
     return new Response('Unauthorized', { status: 401, headers: corsHeaders })
   }
 
-  let userId: string
-  try {
-    const { payload } = await verifyToken(token)
-    userId = payload.sub
-  } catch {
+  const client = getSupabaseClient(token)
+
+  // Get user ID from auth context (Clerk will validate the token)
+  const { data: { user }, error: authError } = await client.auth.getUser()
+  if (authError || !user) {
     return new Response('Unauthorized', { status: 401, headers: corsHeaders })
   }
 
-  const client = getSupabaseClient(token)
+  const userId = user.id
 
   const path = parsed.pathname.replace(/\/+/, '/').replace(/^\/+|\/+$/g, '')
   const segments = path.split('/')
