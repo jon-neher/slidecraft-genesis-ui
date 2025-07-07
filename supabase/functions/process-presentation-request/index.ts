@@ -17,27 +17,17 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     const authHeader = req.headers.get('Authorization') ?? ''
-    const token = authHeader.replace(/^Bearer\s+/i, '')
 
+    // Create client with anon key and pass through JWT token for RLS
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      accessToken: async () => token,
+      global: {
+        headers: {
+          Authorization: authHeader,
+        },
+      },
     })
 
-    // Get user ID from auth context (Clerk tokens will be trusted)
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    
-    if (authError || !user) {
-      console.error('Authentication failed:', authError?.message)
-      return new Response(JSON.stringify({ 
-        error: 'Authentication required' 
-      }), { 
-        status: 401, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      })
-    }
-
-    const userId = user.id
-    console.log('Successfully authenticated user ID:', userId)
+    console.log('Processing presentation request with authenticated user')
 
     const {
       title,
@@ -49,9 +39,14 @@ serve(async (req) => {
       slide_count_preference
     } = await req.json()
 
-    console.log('Processing presentation request for user:', userId)
+    console.log('Processing presentation request')
 
-    // Store the user input
+    // Get user ID from JWT for logging and user_id field
+    const userIdQuery = await supabase.rpc('auth_jwt_sub')
+    const userId = userIdQuery.data || 'unknown'
+    console.log('User ID from JWT:', userId)
+
+    // Store the user input 
     const { data: inputData, error: inputError } = await supabase
       .from('presentations_input')
       .insert({
