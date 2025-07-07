@@ -95,4 +95,7 @@ verify_jwt = true
 [functions.clerk-webhook]
 verify_jwt = false
 
+[functions.process-presentation-request]
+verify_jwt = true
+
 # Authenticated edge functions use default verify_jwt = true
