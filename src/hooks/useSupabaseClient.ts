@@ -9,6 +9,22 @@ export const useSupabaseClient = () => {
   const { getToken } = useAuth();
 
   const supabase = useMemo(() => {
+    const accessTokenFn = async () => {
+      try {
+        const token = await getToken();
+        console.log('🔍 [useSupabaseClient] Retrieved Clerk token:', {
+          tokenExists: !!token,
+          tokenType: typeof token,
+          tokenLength: token?.length,
+          tokenPreview: token ? `${token.substring(0, 20)}...` : 'null'
+        });
+        return token;
+      } catch (error) {
+        console.error('❌ [useSupabaseClient] Error getting Clerk token:', error);
+        return null;
+      }
+    };
+
     return createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
         autoRefreshToken: true,
@@ -19,7 +35,7 @@ export const useSupabaseClient = () => {
           'x-client-info': 'lovable-app',
         },
       },
-      accessToken: getToken,
+      accessToken: accessTokenFn,
     });
   }, [getToken]);
 

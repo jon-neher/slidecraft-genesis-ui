@@ -18,6 +18,16 @@ serve(async (req) => {
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     const authHeader = req.headers.get('Authorization') ?? ''
 
+    // Debug logging for authentication
+    console.log('🔍 [process-presentation-request] Auth debugging:', {
+      hasAuthHeader: !!authHeader,
+      authHeaderType: typeof authHeader,
+      authHeaderLength: authHeader?.length,
+      authHeaderPreview: authHeader ? `${authHeader.substring(0, 30)}...` : 'null',
+      supabaseUrl: supabaseUrl ? 'present' : 'missing',
+      supabaseAnonKey: supabaseAnonKey ? 'present' : 'missing'
+    })
+
     // Create client with anon key and pass through JWT token for RLS
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
@@ -42,9 +52,28 @@ serve(async (req) => {
     console.log('Processing presentation request')
 
     // Get user ID from JWT for logging and user_id field
+    console.log('🔍 [process-presentation-request] Attempting to get user ID from JWT...')
     const userIdQuery = await supabase.rpc('auth_jwt_sub')
+    console.log('🔍 [process-presentation-request] auth_jwt_sub result:', {
+      data: userIdQuery.data,
+      error: userIdQuery.error,
+      status: userIdQuery.status,
+      statusText: userIdQuery.statusText
+    })
+    
     const userId = userIdQuery.data || 'unknown'
-    console.log('User ID from JWT:', userId)
+    console.log('🔍 [process-presentation-request] Final user ID:', userId)
+    
+    if (userIdQuery.error) {
+      console.error('❌ [process-presentation-request] Error getting user ID:', userIdQuery.error)
+      return new Response(JSON.stringify({ 
+        error: 'Authentication failed', 
+        details: userIdQuery.error 
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      })
+    }
 
     // Store the user input 
     const { data: inputData, error: inputError } = await supabase
